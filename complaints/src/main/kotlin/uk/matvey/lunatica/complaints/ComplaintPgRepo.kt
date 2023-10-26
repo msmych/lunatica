@@ -12,18 +12,23 @@ import java.sql.ResultSet
 import java.util.UUID
 import javax.sql.DataSource
 
-class ComplaintPgRepo(ds: DataSource, dispatcher: CoroutineDispatcher) : PgEntityRepo<ColumnValue.Uuid, Complaint>("complaints", ds, dispatcher) {
+class ComplaintPgRepo(ds: DataSource, dispatcher: CoroutineDispatcher) :
+    PgEntityRepo<ColumnValue.Uuid, Complaint>("complaints", ds, dispatcher),
+    ComplaintRepo {
 
-    suspend fun get(id: UUID): Complaint {
+    override suspend fun get(id: UUID): Complaint {
         return selectStar("where id = ?", ColumnValue.Uuid(id)).single()
     }
 
-    suspend fun list(limit: Int): List<Complaint> {
+    override suspend fun list(limit: Int): List<Complaint> {
         return selectStar("limit $limit")
     }
 
-    suspend fun findLastDraftByTgUserId(tgUserId: Long): Complaint? {
-        return selectStar("where state = 'DRAFT' and contact_details ->> 'tgUserId' = ?", ColumnValue.Text(tgUserId.toString()))
+    override suspend fun findLastDraftByTgUserId(tgUserId: Long): Complaint? {
+        return selectStar(
+            "where state = 'DRAFT' and contact_details ->> 'tgUserId' = ?",
+            ColumnValue.Text(tgUserId.toString())
+        )
             .maxByOrNull { it.updatedAt }
     }
 
