@@ -18,13 +18,13 @@ import uk.matvey.lunatica.app.yabeda.YabedaAction.SendComplaintMessage
 import uk.matvey.lunatica.app.yabeda.YabedaAction.SetContactEmail
 import uk.matvey.lunatica.app.yabeda.YabedaAction.SetProblemCountry
 import uk.matvey.lunatica.complaints.Complaint
-import uk.matvey.lunatica.complaints.ComplaintPgRepo
-import uk.matvey.lunatica.complaints.ComplaintSetup
-import uk.matvey.lunatica.complaints.Message
-import uk.matvey.lunatica.complaints.MessagePgRepo
+import uk.matvey.lunatica.complaints.ComplaintRepo
+import uk.matvey.lunatica.complaints.ComplaintSetup.PROBLEM_COUNTRIES
+import uk.matvey.lunatica.complaints.messages.Message
+import uk.matvey.lunatica.complaints.messages.MessageRepo
 
 @OptIn(DelicateCoroutinesApi::class)
-fun startYabedaBot(complaintRepo: ComplaintPgRepo, messageRepo: MessagePgRepo) {
+fun startYabedaBot(complaintRepo: ComplaintRepo, messageRepo: MessageRepo) {
     val bot = TelegramBot(System.getenv("YABEDA_BOT_TOKEN"))
     val actionSelector = YabedaActionSelector(complaintRepo, messageRepo, bot)
     val yabedaScope = CoroutineScope(newSingleThreadContext("yabeda-bot"))
@@ -42,7 +42,7 @@ fun startYabedaBot(complaintRepo: ComplaintPgRepo, messageRepo: MessagePgRepo) {
                         bot.execute(
                             SendMessage(action.userId, "В какой стране произошло нарушение?")
                                 .replyMarkup(InlineKeyboardMarkup().apply {
-                                    ComplaintSetup.PROBLEM_COUNTRIES.map { (code, info) ->
+                                    PROBLEM_COUNTRIES.map { (code, info) ->
                                         addRow(
                                             InlineKeyboardButton("${info.emoji} ${info.nameRu}").callbackData(code.name)
                                         )

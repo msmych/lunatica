@@ -1,4 +1,4 @@
-package uk.matvey.lunatica.complaints
+package uk.matvey.lunatica.complaints.messages
 
 import uk.matvey.lunatica.pg.ColumnValue
 import uk.matvey.lunatica.pg.Entity

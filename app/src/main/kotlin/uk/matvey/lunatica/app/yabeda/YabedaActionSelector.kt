@@ -3,13 +3,13 @@ package uk.matvey.lunatica.app.yabeda
 import com.neovisionaries.i18n.CountryCode
 import com.pengrad.telegrambot.TelegramBot
 import com.pengrad.telegrambot.model.Update
-import uk.matvey.lunatica.complaints.ComplaintPgRepo
+import uk.matvey.lunatica.complaints.ComplaintRepo
 import uk.matvey.lunatica.complaints.ComplaintSetup.PROBLEM_COUNTRIES
-import uk.matvey.lunatica.complaints.MessagePgRepo
+import uk.matvey.lunatica.complaints.messages.MessageRepo
 
 class YabedaActionSelector(
-    private val complaintRepo: ComplaintPgRepo,
-    private val messagePgRepo: MessagePgRepo,
+    private val complaintRepo: ComplaintRepo,
+    private val messagePgRepo: MessageRepo,
     private val bot: TelegramBot
 ) {
 

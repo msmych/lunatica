@@ -18,7 +18,7 @@ import kotlinx.html.p
 import java.time.LocalDate
 import java.util.UUID
 
-fun Route.complaintRouting(complaintRepo: ComplaintPgRepo) {
+fun Route.complaintRouting(complaintRepo: ComplaintRepo) {
     route("complaints") {
         post {
             val params = call.receiveParameters()

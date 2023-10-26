@@ -9,11 +9,11 @@ abstract class PgEntityRepo<ID : ColumnValue, E : Entity<ID>>(
     tableName: String,
     ds: DataSource,
     dispatcher: CoroutineDispatcher
-) : PgRepo<E>(tableName, ds, dispatcher) {
+) : PgRepo<E>(tableName, ds, dispatcher), EntityRepo<E> {
 
     private val log = KotlinLogging.logger {}
 
-    suspend fun update(entity: E): Instant? {
+    override suspend fun update(entity: E): Instant? {
         return withConnection { conn ->
             val columns = entity.toTableRecord().columns
                 .filterKeys { it != "id" }

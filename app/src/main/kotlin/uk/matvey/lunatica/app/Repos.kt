@@ -5,7 +5,7 @@ import com.zaxxer.hikari.HikariDataSource
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.newFixedThreadPoolContext
 import uk.matvey.lunatica.complaints.ComplaintPgRepo
-import uk.matvey.lunatica.complaints.MessagePgRepo
+import uk.matvey.lunatica.complaints.messages.MessagePgRepo
 
 class Repos(hikariConfig: HikariConfig) {
 
