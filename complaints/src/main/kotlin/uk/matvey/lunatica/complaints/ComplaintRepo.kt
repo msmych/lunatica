@@ -8,5 +8,7 @@ interface ComplaintRepo : EntityRepo<Complaint> {
 
     suspend fun list(limit: Int): List<Complaint>
 
+    suspend fun findAllDraftByTgUserId(tgUserId: Long): List<Complaint>
+
     suspend fun findLastDraftByTgUserId(tgUserId: Long): Complaint?
 }

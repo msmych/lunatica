@@ -30,12 +30,15 @@ class ComplaintPgRepo(ds: DataSource, dispatcher: CoroutineDispatcher) :
         return selectStar("limit $limit")
     }
 
-    override suspend fun findLastDraftByTgUserId(tgUserId: Long): Complaint? {
+    override suspend fun findAllDraftByTgUserId(tgUserId: Long): List<Complaint> {
         return selectStar(
             "where state = 'DRAFT' and contact_details ->> 'tgUserId' = ?",
             textRel(tgUserId.toString())
         )
-            .maxByOrNull { it.updatedAt }
+    }
+
+    override suspend fun findLastDraftByTgUserId(tgUserId: Long): Complaint? {
+        return findAllDraftByTgUserId(tgUserId).maxByOrNull { it.updatedAt }
     }
 
     override fun Complaint.toTableRecord(): RelTab {

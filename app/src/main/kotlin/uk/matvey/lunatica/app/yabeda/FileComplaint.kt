@@ -7,7 +7,7 @@ import com.pengrad.telegrambot.model.request.InlineKeyboardMarkup
 import com.pengrad.telegrambot.request.SendMessage
 import uk.matvey.lunatica.complaints.Complaint
 import uk.matvey.lunatica.complaints.ComplaintRepo
-import uk.matvey.lunatica.complaints.ComplaintSetup
+import uk.matvey.lunatica.complaints.ComplaintSetup.PROBLEM_COUNTRIES
 
 suspend fun fileComplaint(
     action: YabedaAction.FileComplaint,
@@ -19,11 +19,12 @@ suspend fun fileComplaint(
             "tgUserId" to action.userId.toString()
         )
     )
+    complaintRepo.findAllDraftByTgUserId(action.userId).forEach { complaintRepo.delete(it) }
     complaintRepo.insert(complaint)
     bot.execute(
         SendMessage(action.userId, "В какой стране произошло нарушение?")
             .replyMarkup(InlineKeyboardMarkup().apply {
-                ComplaintSetup.PROBLEM_COUNTRIES.map { (code, info) ->
+                PROBLEM_COUNTRIES.map { (code, info) ->
                     addRow(
                         InlineKeyboardButton("${info.emoji} ${info.nameRu}").callbackData(code.name)
                     )

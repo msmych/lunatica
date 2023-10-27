@@ -40,4 +40,18 @@ abstract class PgEntityRepo<ID : RelCol, E : Entity<ID>>(
                 }
         }
     }
+
+    override suspend fun delete(entity: E) {
+        return withConnection { conn ->
+            conn.prepareStatement("delete from $tableName where id = ? and updated_at = ?").use { statement ->
+                setQueryParam(statement, 1, entity.id())
+                setQueryParam(statement, 2, entity.updatedAt())
+                try {
+                    statement.executeUpdate()
+                } catch (e: Exception) {
+                    log.error(e) {}
+                }
+            }
+        }
+    }
 }

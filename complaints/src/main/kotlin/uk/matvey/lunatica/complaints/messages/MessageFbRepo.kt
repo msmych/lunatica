@@ -1,7 +1,6 @@
 package uk.matvey.lunatica.complaints.messages
 
 import com.google.cloud.firestore.Firestore
-import kotlinx.coroutines.withContext
 import uk.matvey.lunatica.fb.FbRepo
 import java.time.Instant
 import java.util.UUID
@@ -10,11 +9,10 @@ import kotlin.coroutines.CoroutineContext
 class MessageFbRepo(db: Firestore, dispatcher: CoroutineContext) : FbRepo<Message>("messages", db, dispatcher),
     MessageRepo {
     override suspend fun listByComplaintId(complaintId: UUID): List<Message> {
-        return withContext(dispatcher) {
-            db.collection(collectionName)
-                .whereEqualTo("complaintId", complaintId.toString())
+        return withCollection { coll ->
+            coll.whereEqualTo("complaintId", complaintId.toString())
                 .get().get()
-                .map { it.data.toEntity() }
+                .map { it.data.toEntity(it.id) }
         }
     }
 
@@ -28,9 +26,9 @@ class MessageFbRepo(db: Firestore, dispatcher: CoroutineContext) : FbRepo<Messag
         )
     }
 
-    override fun Map<String, Any?>.toEntity(): Message {
+    override fun Map<String, Any?>.toEntity(id: String): Message {
         return Message(
-            UUID.fromString(this.getValue("id").toString()),
+            UUID.fromString(id),
             this["complaintId"]?.toString()?.let(UUID::fromString),
             this.getValue("content").toString(),
             Instant.parse(this.getValue("createdAt").toString()),

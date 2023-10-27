@@ -3,7 +3,6 @@ package uk.matvey.lunatica.complaints
 import com.google.cloud.firestore.FieldPath
 import com.google.cloud.firestore.Firestore
 import com.neovisionaries.i18n.CountryCode
-import kotlinx.coroutines.withContext
 import uk.matvey.lunatica.fb.FbRepo
 import java.time.Instant
 import java.time.LocalDate
@@ -27,9 +26,9 @@ class ComplaintFbRepo(db: Firestore, dispatcher: CoroutineContext) : FbRepo<Comp
             .toMap()
     }
 
-    override fun Map<String, Any?>.toEntity(): Complaint {
+    override fun Map<String, Any?>.toEntity(id: String): Complaint {
         return Complaint(
-            UUID.fromString(this.getValue("id").toString()),
+            UUID.fromString(id),
             Complaint.State.valueOf(this.getValue("state").toString()),
             this["problemCountry"]?.toString()?.let(CountryCode::valueOf),
             this["problemDate"]?.toString()?.let(LocalDate::parse),
@@ -41,27 +40,30 @@ class ComplaintFbRepo(db: Firestore, dispatcher: CoroutineContext) : FbRepo<Comp
     }
 
     override suspend fun get(id: UUID): Complaint {
-        return withContext(dispatcher) {
-            requireNotNull(db.collection(collectionName).document(id.toString()).get().get().data).toEntity()
+        return withCollection { coll ->
+            requireNotNull(coll.document(id.toString()).get().get().data)
+                .toEntity(id.toString())
         }
     }
 
     override suspend fun list(limit: Int): List<Complaint> {
-        return withContext(dispatcher) {
-            db.collection(collectionName)
-                .limit(limit)
+        return withCollection { coll ->
+            coll.limit(limit)
                 .get().get()
-                .map { it.data.toEntity() }
+                .map { it.data.toEntity(it.id) }
+        }
+    }
+
+    override suspend fun findAllDraftByTgUserId(tgUserId: Long): List<Complaint> {
+        return withCollection { coll ->
+            coll.whereEqualTo(FieldPath.of("contactDetails", "tgUserId"), tgUserId.toString())
+                .whereEqualTo("state", Complaint.State.DRAFT)
+                .get().get()
+                .map { it.data.toEntity(it.id) }
         }
     }
 
     override suspend fun findLastDraftByTgUserId(tgUserId: Long): Complaint? {
-        return withContext(dispatcher) {
-            db.collection(collectionName)
-                .whereEqualTo(FieldPath.of("contactDetails", "tgUserId"), tgUserId.toString())
-                .get().get()
-                .map { it.data.toEntity() }
-                .maxByOrNull { it.updatedAt }
-        }
+        return findAllDraftByTgUserId(tgUserId).maxByOrNull { it.updatedAt }
     }
 }
