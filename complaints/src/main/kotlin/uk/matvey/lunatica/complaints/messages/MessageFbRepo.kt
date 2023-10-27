@@ -11,14 +11,17 @@ class MessageFbRepo(db: Firestore, dispatcher: CoroutineContext) : FbRepo<Messag
     MessageRepo {
     override suspend fun listByComplaintId(complaintId: UUID): List<Message> {
         return withContext(dispatcher) {
-            db.collection(collectionName).listDocuments().mapNotNull { it.get().get().data?.toEntity() }
+            db.collection(collectionName)
+                .whereEqualTo("complaintId", complaintId.toString())
+                .get().get()
+                .map { it.data.toEntity() }
         }
     }
 
     override fun Message.toDoc(): Map<String, Any?> {
         return linkedMapOf(
             "id" to this.id.toString(),
-            "complaintId" to this.complaintId.toString(),
+            "complaintId" to this.complaintId?.toString(),
             "content" to this.content,
             "createdAt" to this.createdAt.toString(),
             "updatedAt" to this.updatedAt.toString(),

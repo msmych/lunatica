@@ -1,7 +1,6 @@
 package uk.matvey.lunatica.app.yabeda
 
 import com.pengrad.telegrambot.TelegramBot
-import com.pengrad.telegrambot.model.Update
 import com.pengrad.telegrambot.model.request.InlineKeyboardButton
 import com.pengrad.telegrambot.model.request.InlineKeyboardMarkup
 import com.pengrad.telegrambot.request.AnswerCallbackQuery
@@ -11,8 +10,7 @@ import uk.matvey.lunatica.complaints.ComplaintRepo
 suspend fun setProblemCountry(
     complaintRepo: ComplaintRepo,
     action: YabedaAction.SetProblemCountry,
-    bot: TelegramBot,
-    update: Update
+    bot: TelegramBot
 ) {
     complaintRepo.update(
         action.complaint.copy(
@@ -28,5 +26,5 @@ suspend fun setProblemCountry(
             InlineKeyboardMarkup(*arrayOf<InlineKeyboardButton>())
         )
     )
-    bot.execute(AnswerCallbackQuery(update.callbackQuery().id()))
+    bot.execute(AnswerCallbackQuery(action.callbackQueryId))
 }

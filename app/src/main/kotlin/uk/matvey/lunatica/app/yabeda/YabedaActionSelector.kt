@@ -23,6 +23,7 @@ class YabedaActionSelector(
                 return YabedaAction.SetProblemCountry(
                     update.callbackQuery().from().id(),
                     update.callbackQuery().message().messageId(),
+                    update.callbackQuery().id(),
                     draftComplaint,
                     CountryCode.valueOf(update.callbackQuery().data())
                 )

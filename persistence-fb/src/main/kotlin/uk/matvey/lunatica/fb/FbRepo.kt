@@ -20,7 +20,7 @@ abstract class FbRepo<E>(val collectionName: String, val db: Firestore, val disp
             val doc = entity.toDoc()
             val updatedAt = Instant.now()
             db.collection(collectionName).document(doc.getValue("id").toString())
-                .set(doc + mapOf("updatedAt" to updatedAt))
+                .set(doc + mapOf("updatedAt" to updatedAt.toString()))
             updatedAt
         }
     }

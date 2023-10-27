@@ -1,5 +1,6 @@
 package uk.matvey.lunatica.complaints
 
+import com.google.cloud.firestore.FieldPath
 import com.google.cloud.firestore.Firestore
 import com.neovisionaries.i18n.CountryCode
 import kotlinx.coroutines.withContext
@@ -16,12 +17,14 @@ class ComplaintFbRepo(db: Firestore, dispatcher: CoroutineContext) : FbRepo<Comp
             "id" to this.id.toString(),
             "state" to this.state,
             "problemCountry" to this.problemCountry,
-            "problemDate" to this.problemDate.toString(),
-            "type" to this.type.toString(),
+            "problemDate" to this.problemDate?.toString(),
+            "type" to this.type?.toString(),
             "contactDetails" to this.contactDetails,
             "createdAt" to this.createdAt.toString(),
             "updatedAt" to this.updatedAt.toString(),
         )
+            .mapNotNull { (k, v) -> v?.let { k to v } }
+            .toMap()
     }
 
     override fun Map<String, Any?>.toEntity(): Complaint {
@@ -39,19 +42,26 @@ class ComplaintFbRepo(db: Firestore, dispatcher: CoroutineContext) : FbRepo<Comp
 
     override suspend fun get(id: UUID): Complaint {
         return withContext(dispatcher) {
-            db.collection(collectionName).document(id.toString()).get().get().data!!.toEntity()
+            requireNotNull(db.collection(collectionName).document(id.toString()).get().get().data).toEntity()
         }
     }
 
     override suspend fun list(limit: Int): List<Complaint> {
         return withContext(dispatcher) {
-            db.collection(collectionName).listDocuments().mapNotNull { it.get().get().data?.toEntity() }
+            db.collection(collectionName)
+                .limit(limit)
+                .get().get()
+                .map { it.data.toEntity() }
         }
     }
 
     override suspend fun findLastDraftByTgUserId(tgUserId: Long): Complaint? {
         return withContext(dispatcher) {
-            db.collection(collectionName).listDocuments().mapNotNull { it.get().get().data?.toEntity() }
-        }.firstOrNull()
+            db.collection(collectionName)
+                .whereEqualTo(FieldPath.of("contactDetails", "tgUserId"), tgUserId.toString())
+                .get().get()
+                .map { it.data.toEntity() }
+                .maxByOrNull { it.updatedAt }
+        }
     }
 }
