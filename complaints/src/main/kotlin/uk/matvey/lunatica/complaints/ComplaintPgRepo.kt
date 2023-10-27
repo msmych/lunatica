@@ -5,19 +5,24 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.encodeToJsonElement
 import org.postgresql.util.PGobject
-import uk.matvey.lunatica.pg.ColumnValue
+import uk.matvey.lunatica.repo.RelCol
 import uk.matvey.lunatica.pg.PgEntityRepo
-import uk.matvey.lunatica.pg.TableRecord
+import uk.matvey.lunatica.repo.RelCol.Date
+import uk.matvey.lunatica.repo.RelCol.Jsonb
+import uk.matvey.lunatica.repo.RelCol.Text
+import uk.matvey.lunatica.repo.RelCol.TimeStamp
+import uk.matvey.lunatica.repo.RelCol.Uuid
+import uk.matvey.lunatica.repo.RelTab
 import java.sql.ResultSet
 import java.util.UUID
 import javax.sql.DataSource
 
 class ComplaintPgRepo(ds: DataSource, dispatcher: CoroutineDispatcher) :
-    PgEntityRepo<ColumnValue.Uuid, Complaint>("complaints", ds, dispatcher),
+    PgEntityRepo<Uuid, Complaint>("complaints", ds, dispatcher),
     ComplaintRepo {
 
     override suspend fun get(id: UUID): Complaint {
-        return selectStar("where id = ?", ColumnValue.Uuid(id)).single()
+        return selectStar("where id = ?", Uuid(id)).single()
     }
 
     override suspend fun list(limit: Int): List<Complaint> {
@@ -27,22 +32,22 @@ class ComplaintPgRepo(ds: DataSource, dispatcher: CoroutineDispatcher) :
     override suspend fun findLastDraftByTgUserId(tgUserId: Long): Complaint? {
         return selectStar(
             "where state = 'DRAFT' and contact_details ->> 'tgUserId' = ?",
-            ColumnValue.Text(tgUserId.toString())
+            Text(tgUserId.toString())
         )
             .maxByOrNull { it.updatedAt }
     }
 
-    override fun Complaint.toTableRecord(): TableRecord {
-        return TableRecord(
+    override fun Complaint.toTableRecord(): RelTab {
+        return RelTab(
             linkedMapOf(
-                "id" to ColumnValue.Uuid(id),
-                "state" to ColumnValue.Text(state.name),
-                "problem_country" to ColumnValue.Text(problemCountry?.name),
-                "problem_date" to ColumnValue.Date(problemDate),
-                "type" to ColumnValue.Text(type?.name),
-                "contact_details" to ColumnValue.Jsonb(Json.encodeToJsonElement(contactDetails)),
-                "created_at" to ColumnValue.TimeStamp(createdAt),
-                "updated_at" to ColumnValue.TimeStamp(updatedAt),
+                "id" to Uuid(id),
+                "state" to Text(state.name),
+                "problem_country" to Text(problemCountry?.name),
+                "problem_date" to Date(problemDate),
+                "type" to Text(type?.name),
+                "contact_details" to Jsonb(Json.encodeToJsonElement(contactDetails)),
+                "created_at" to TimeStamp(createdAt),
+                "updated_at" to TimeStamp(updatedAt),
             )
         )
     }

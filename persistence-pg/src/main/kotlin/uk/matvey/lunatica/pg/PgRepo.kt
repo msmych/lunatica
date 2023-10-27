@@ -5,12 +5,17 @@ import kotlinx.coroutines.withContext
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import org.postgresql.util.PGobject
+import uk.matvey.lunatica.repo.RelCol
+import uk.matvey.lunatica.repo.RelCol.Date
+import uk.matvey.lunatica.repo.RelCol.Jsonb
+import uk.matvey.lunatica.repo.RelCol.Text
+import uk.matvey.lunatica.repo.RelCol.TimeStamp
+import uk.matvey.lunatica.repo.RelCol.Uuid
+import uk.matvey.lunatica.repo.RelTab
 import java.sql.Connection
-import java.sql.Date
 import java.sql.PreparedStatement
 import java.sql.ResultSet
 import java.sql.Timestamp
-import java.time.ZoneOffset
 import java.time.ZoneOffset.UTC
 import javax.sql.DataSource
 
@@ -36,7 +41,7 @@ abstract class PgRepo<E>(
         }
     }
 
-    suspend fun selectStar(where: String, vararg params: ColumnValue): List<E> {
+    suspend fun selectStar(where: String, vararg params: RelCol): List<E> {
         return withConnection { conn ->
             conn.prepareStatement("select * from $tableName $where").use { statement ->
                 params.forEachIndexed { i, v ->
@@ -52,24 +57,26 @@ abstract class PgRepo<E>(
         }
     }
 
-    protected fun setQueryParam(statement: PreparedStatement, i: Int, value: ColumnValue) {
+    protected fun setQueryParam(statement: PreparedStatement, i: Int, value: RelCol) {
         when (value) {
-            is ColumnValue.Uuid -> statement.setObject(i, value.value)
-            is ColumnValue.Text -> statement.setString(i, value.value)
-            is ColumnValue.Date -> statement.setDate(
-                i,
-                value.value?.atStartOfDay()?.toInstant(UTC)?.toEpochMilli()?.let(::Date)
-            )
+            is Uuid -> statement.setObject(i, value.value)
+            is Text -> statement.setString(i, value.value)
+            is Date -> {
+                statement.setDate(
+                    i,
+                    value.value?.atStartOfDay()?.toInstant(UTC)?.toEpochMilli()?.let { java.sql.Date(it) }
+                )
+            }
 
-            is ColumnValue.TimeStamp -> statement.setTimestamp(i, Timestamp.from(value.value))
-            is ColumnValue.Jsonb -> statement.setObject(i, PGobject().apply {
+            is TimeStamp -> statement.setTimestamp(i, Timestamp.from(value.value))
+            is Jsonb -> statement.setObject(i, PGobject().apply {
                 this.type = "jsonb"
                 this.value = Json.encodeToString(value.value)
             })
         }
     }
 
-    abstract fun E.toTableRecord(): TableRecord
+    abstract fun E.toTableRecord(): RelTab
 
     abstract fun ResultSet.toEntity(): E
 

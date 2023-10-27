@@ -1,6 +1,6 @@
 package uk.matvey.lunatica.complaints.messages
 
-import uk.matvey.lunatica.pg.EntityRepo
+import uk.matvey.lunatica.repo.EntityRepo
 import java.util.UUID
 
 interface MessageRepo: EntityRepo<Message> {

@@ -1,4 +1,4 @@
-package uk.matvey.lunatica.pg
+package uk.matvey.lunatica.repo
 
 import java.time.Instant
 

@@ -12,4 +12,5 @@ dependencies {
     implementation("ch.qos.logback:logback-classic:1.2.9")
 
     api(project(":persistence-pg"))
+    api(project(":persistence-fb"))
 }
