@@ -5,7 +5,7 @@ import mu.KotlinLogging
 import uk.matvey.lunatica.repo.Entity
 import uk.matvey.lunatica.repo.EntityRepo
 import uk.matvey.lunatica.repo.RelCol
-import uk.matvey.lunatica.repo.RelCol.TimeStamp
+import uk.matvey.lunatica.repo.RelCol.TimeStamp.Companion.timeStampRel
 import java.time.Instant
 import javax.sql.DataSource
 
@@ -27,7 +27,7 @@ abstract class PgEntityRepo<ID : RelCol, E : Entity<ID>>(
                 .use { statement ->
                     columns.values.forEachIndexed { i, v -> setQueryParam(statement, i + 1, v) }
                     val updatedAt = Instant.now()
-                    setQueryParam(statement, columns.size + 1, TimeStamp(updatedAt))
+                    setQueryParam(statement, columns.size + 1, timeStampRel(updatedAt))
                     setQueryParam(statement, columns.size + 2, entity.id())
                     setQueryParam(statement, columns.size + 3, entity.updatedAt())
                     try {

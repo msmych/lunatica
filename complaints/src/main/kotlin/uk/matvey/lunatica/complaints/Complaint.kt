@@ -5,7 +5,9 @@ import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
 import uk.matvey.lunatica.repo.Entity
 import uk.matvey.lunatica.repo.RelCol.TimeStamp
+import uk.matvey.lunatica.repo.RelCol.TimeStamp.Companion.timeStampRel
 import uk.matvey.lunatica.repo.RelCol.Uuid
+import uk.matvey.lunatica.repo.RelCol.Uuid.Companion.uuidRel
 import java.time.Instant
 import java.time.LocalDate
 import java.util.UUID
@@ -37,11 +39,11 @@ data class Complaint(
     }
 
     override fun id(): Uuid {
-        return Uuid(this.id)
+        return uuidRel(this.id)
     }
 
     override fun updatedAt(): TimeStamp {
-        return TimeStamp(this.updatedAt)
+        return timeStampRel(this.updatedAt)
     }
 
     companion object {

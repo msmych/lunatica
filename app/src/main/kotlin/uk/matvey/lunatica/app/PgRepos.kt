@@ -7,11 +7,12 @@ import kotlinx.coroutines.newFixedThreadPoolContext
 import uk.matvey.lunatica.complaints.ComplaintPgRepo
 import uk.matvey.lunatica.complaints.messages.MessagePgRepo
 
-class Repos(hikariConfig: HikariConfig) {
+class PgRepos(hikariConfig: HikariConfig) {
 
     val ds = HikariDataSource(hikariConfig)
     @OptIn(DelicateCoroutinesApi::class)
-    val dsDispatcher = newFixedThreadPoolContext(4, "data-source")
-    val complaintRepo = ComplaintPgRepo(ds, dsDispatcher)
-    val messageRepo = MessagePgRepo(ds, dsDispatcher)
+    val dispatcher = newFixedThreadPoolContext(4, "data-source")
+
+    val complaintRepo = ComplaintPgRepo(ds, dispatcher)
+    val messageRepo = MessagePgRepo(ds, dispatcher)
 }

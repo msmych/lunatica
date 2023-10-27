@@ -2,9 +2,10 @@ package uk.matvey.lunatica.complaints.messages
 
 import kotlinx.coroutines.CoroutineDispatcher
 import uk.matvey.lunatica.pg.PgEntityRepo
-import uk.matvey.lunatica.repo.RelCol.Text
-import uk.matvey.lunatica.repo.RelCol.TimeStamp
+import uk.matvey.lunatica.repo.RelCol.Text.Companion.textRel
+import uk.matvey.lunatica.repo.RelCol.TimeStamp.Companion.timeStampRel
 import uk.matvey.lunatica.repo.RelCol.Uuid
+import uk.matvey.lunatica.repo.RelCol.Uuid.Companion.uuidRel
 import uk.matvey.lunatica.repo.RelTab
 import java.sql.ResultSet
 import java.util.UUID
@@ -15,17 +16,17 @@ class MessagePgRepo(ds: DataSource, dispatcher: CoroutineDispatcher) :
     MessageRepo {
 
     override suspend fun listByComplaintId(complaintId: UUID): List<Message> {
-        return selectStar("where complaint_id = ? order by created_at desc", Uuid(complaintId))
+        return selectStar("where complaint_id = ? order by created_at desc", uuidRel(complaintId))
     }
 
     override fun Message.toTableRecord(): RelTab {
         return RelTab(
             linkedMapOf(
-                "id" to Uuid(this.id),
-                "complaint_id" to Uuid(this.complaintId),
-                "content" to Text(this.content),
-                "created_at" to TimeStamp(this.createdAt),
-                "updated_at" to TimeStamp(this.updatedAt)
+                "id" to uuidRel(this.id),
+                "complaint_id" to uuidRel(this.complaintId),
+                "content" to textRel(this.content),
+                "created_at" to timeStampRel(this.createdAt),
+                "updated_at" to timeStampRel(this.updatedAt)
             )
         )
     }
