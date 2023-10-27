@@ -1,30 +1,36 @@
 package uk.matvey.lunatica.complaints.messages
 
-import uk.matvey.lunatica.pg.ColumnValue
-import uk.matvey.lunatica.pg.Entity
+import kotlinx.serialization.Contextual
+import kotlinx.serialization.Serializable
+import uk.matvey.lunatica.repo.Entity
+import uk.matvey.lunatica.repo.RelCol
+import uk.matvey.lunatica.repo.RelCol.TimeStamp
+import uk.matvey.lunatica.repo.RelCol.Uuid
 import java.time.Instant
 import java.util.UUID
+import java.util.UUID.randomUUID
 
+@Serializable
 data class Message(
-    val id: UUID,
-    val complaintId: UUID?,
+    val id: @Contextual UUID,
+    val complaintId: @Contextual UUID?,
     val content: String,
-    val createdAt: Instant,
-    val updatedAt: Instant,
-) : Entity<ColumnValue.Uuid> {
-    override fun id(): ColumnValue.Uuid {
-        return ColumnValue.Uuid(id)
+    val createdAt: @Contextual Instant,
+    val updatedAt: @Contextual Instant,
+) : Entity<Uuid> {
+    override fun id(): Uuid {
+        return Uuid(id)
     }
 
-    override fun updatedAt(): ColumnValue.TimeStamp {
-        return ColumnValue.TimeStamp(updatedAt)
+    override fun updatedAt(): TimeStamp {
+        return TimeStamp(updatedAt)
     }
 
     companion object {
 
         fun complaintMessage(complaintId: UUID, content: String): Message {
             val now = Instant.now()
-            return Message(UUID.randomUUID(), complaintId, content, now, now)
+            return Message(randomUUID(), complaintId, content, now, now)
         }
     }
 }

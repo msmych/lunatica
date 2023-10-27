@@ -14,22 +14,23 @@ import io.ktor.server.routing.get
 import io.ktor.server.routing.route
 import io.ktor.server.routing.routing
 import org.slf4j.event.Level
+import uk.matvey.lunatica.complaints.ComplaintRepo
 import uk.matvey.lunatica.complaints.complaintRouting
 
-fun createServer(repos: Repos): ApplicationEngine {
+fun createServer(complaintRepo: ComplaintRepo): ApplicationEngine {
     return embeddedServer(Netty, port = 8080) {
-        setupServer(repos)
+        setupServer(complaintRepo)
     }
 }
 
-fun Application.setupServer(repos: Repos) {
+fun Application.setupServer(complaintPgRepo: ComplaintRepo) {
     install(CallLogging) {
         level = Level.INFO
     }
-    setupRouting(repos)
+    setupRouting(complaintPgRepo)
 }
 
-fun Application.setupRouting(repos: Repos) {
+fun Application.setupRouting(complaintRepo: ComplaintRepo) {
     routing {
         get("/healthcheck") {
             call.respond(OK)
@@ -38,7 +39,7 @@ fun Application.setupRouting(repos: Repos) {
             call.respondHtml(block = { index() })
         }
         route("/api") {
-            complaintRouting(repos.complaintRepo)
+            complaintRouting(complaintRepo)
         }
     }
 }
