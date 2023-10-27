@@ -5,13 +5,14 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.encodeToJsonElement
 import org.postgresql.util.PGobject
-import uk.matvey.lunatica.repo.RelCol
+import uk.matvey.lunatica.complaints.ComplaintSetup.JSON
 import uk.matvey.lunatica.pg.PgEntityRepo
-import uk.matvey.lunatica.repo.RelCol.Date
-import uk.matvey.lunatica.repo.RelCol.Jsonb
-import uk.matvey.lunatica.repo.RelCol.Text
-import uk.matvey.lunatica.repo.RelCol.TimeStamp
+import uk.matvey.lunatica.repo.RelCol.Date.Companion.dateRel
+import uk.matvey.lunatica.repo.RelCol.Jsonb.Companion.jsonbRel
+import uk.matvey.lunatica.repo.RelCol.Text.Companion.textRel
+import uk.matvey.lunatica.repo.RelCol.TimeStamp.Companion.timeStampRel
 import uk.matvey.lunatica.repo.RelCol.Uuid
+import uk.matvey.lunatica.repo.RelCol.Uuid.Companion.uuidRel
 import uk.matvey.lunatica.repo.RelTab
 import java.sql.ResultSet
 import java.util.UUID
@@ -22,7 +23,7 @@ class ComplaintPgRepo(ds: DataSource, dispatcher: CoroutineDispatcher) :
     ComplaintRepo {
 
     override suspend fun get(id: UUID): Complaint {
-        return selectStar("where id = ?", Uuid(id)).single()
+        return selectStar("where id = ?", uuidRel(id)).single()
     }
 
     override suspend fun list(limit: Int): List<Complaint> {
@@ -32,7 +33,7 @@ class ComplaintPgRepo(ds: DataSource, dispatcher: CoroutineDispatcher) :
     override suspend fun findLastDraftByTgUserId(tgUserId: Long): Complaint? {
         return selectStar(
             "where state = 'DRAFT' and contact_details ->> 'tgUserId' = ?",
-            Text(tgUserId.toString())
+            textRel(tgUserId.toString())
         )
             .maxByOrNull { it.updatedAt }
     }
@@ -40,14 +41,14 @@ class ComplaintPgRepo(ds: DataSource, dispatcher: CoroutineDispatcher) :
     override fun Complaint.toTableRecord(): RelTab {
         return RelTab(
             linkedMapOf(
-                "id" to Uuid(id),
-                "state" to Text(state.name),
-                "problem_country" to Text(problemCountry?.name),
-                "problem_date" to Date(problemDate),
-                "type" to Text(type?.name),
-                "contact_details" to Jsonb(Json.encodeToJsonElement(contactDetails)),
-                "created_at" to TimeStamp(createdAt),
-                "updated_at" to TimeStamp(updatedAt),
+                "id" to uuidRel(id),
+                "state" to textRel(state.name),
+                "problem_country" to textRel(problemCountry?.name),
+                "problem_date" to dateRel(problemDate),
+                "type" to textRel(type?.name),
+                "contact_details" to jsonbRel(JSON.encodeToJsonElement(contactDetails)),
+                "created_at" to timeStampRel(createdAt),
+                "updated_at" to timeStampRel(updatedAt),
             )
         )
     }

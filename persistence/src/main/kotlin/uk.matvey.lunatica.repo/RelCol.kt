@@ -7,13 +7,33 @@ import java.util.UUID
 
 sealed interface RelCol {
 
-    class Uuid(val value: UUID?) : RelCol
+    class Uuid(val value: UUID?) : RelCol {
+        companion object {
+            fun uuidRel(value: UUID?) = Uuid(value)
+        }
+    }
 
-    class Text(val value: String?) : RelCol
+    class Text(val value: String?) : RelCol {
+        companion object {
+            fun textRel(value: String?) = Text(value)
+        }
+    }
 
-    class Date(val value: LocalDate?) : RelCol
+    class Date(val value: LocalDate?) : RelCol {
+        companion object {
+            fun dateRel(value: LocalDate?) = Date(value)
+        }
+    }
 
-    class TimeStamp(val value: Instant?) : RelCol
+    class TimeStamp(val value: Instant?) : RelCol {
+        companion object {
+            fun timeStampRel(value: Instant?) = TimeStamp(value)
+        }
+    }
 
-    class Jsonb(val value: JsonElement) : RelCol
+    class Jsonb(val value: JsonElement) : RelCol {
+        companion object {
+            fun jsonbRel(value: JsonElement) = Jsonb(value)
+        }
+    }
 }

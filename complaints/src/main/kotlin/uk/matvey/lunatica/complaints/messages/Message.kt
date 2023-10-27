@@ -3,9 +3,10 @@ package uk.matvey.lunatica.complaints.messages
 import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
 import uk.matvey.lunatica.repo.Entity
-import uk.matvey.lunatica.repo.RelCol
 import uk.matvey.lunatica.repo.RelCol.TimeStamp
+import uk.matvey.lunatica.repo.RelCol.TimeStamp.Companion.timeStampRel
 import uk.matvey.lunatica.repo.RelCol.Uuid
+import uk.matvey.lunatica.repo.RelCol.Uuid.Companion.uuidRel
 import java.time.Instant
 import java.util.UUID
 import java.util.UUID.randomUUID
@@ -19,11 +20,11 @@ data class Message(
     val updatedAt: @Contextual Instant,
 ) : Entity<Uuid> {
     override fun id(): Uuid {
-        return Uuid(id)
+        return uuidRel(id)
     }
 
     override fun updatedAt(): TimeStamp {
-        return TimeStamp(updatedAt)
+        return timeStampRel(updatedAt)
     }
 
     companion object {
