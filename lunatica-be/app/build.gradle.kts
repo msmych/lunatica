@@ -10,6 +10,7 @@ apply(plugin = "io.spring.dependency-management")
 dependencies {
     implementation("com.neovisionaries:nv-i18n:1.29")
     implementation("org.springframework.boot:spring-boot-starter-web")
+    implementation("com.github.pengrad:java-telegram-bot-api:6.9.1")
     implementation("com.google.firebase:firebase-admin:9.2.0") {
         exclude(group = "org.slf4j")
     }

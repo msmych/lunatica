@@ -17,6 +17,10 @@ class MessageRepo(private val db: Firestore) {
         return fromDoc(id, requireNotNull(doc.data))
     }
 
+    fun listByComplaintId(complaintId: UUID): List<Message> {
+        return listOf()
+    }
+
     private fun Message.toDoc(): Map<String, Any> {
         return listOfNotNull(
             complaintId?.let { "complaintId" to it.toString() },
