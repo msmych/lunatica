@@ -17,6 +17,10 @@ class ComplaintRepo(private val db: Firestore) {
         return fromDoc(id, requireNotNull(doc.data))
     }
 
+    fun findLastDraftByTgUserId(tgUserId: Long): Complaint? {
+        return null
+    }
+
     private fun Complaint.toDoc(): Map<String, Any> {
         return listOfNotNull(
             "accountId" to this.accountId.toString(),
