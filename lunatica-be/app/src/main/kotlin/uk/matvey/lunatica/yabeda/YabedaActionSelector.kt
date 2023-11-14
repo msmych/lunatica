@@ -1,44 +1,57 @@
 package uk.matvey.lunatica.yabeda
 
 import com.neovisionaries.i18n.CountryCode
-import com.pengrad.telegrambot.TelegramBot
 import com.pengrad.telegrambot.model.Update
+import uk.matvey.lunatica.account.AccountRepo
 import uk.matvey.lunatica.complaint.ComplaintRepo
 import uk.matvey.lunatica.message.MessageRepo
+import uk.matvey.lunatica.yabeda.YabedaAction.FileComplaint
+import uk.matvey.lunatica.yabeda.YabedaAction.SendComplaintMessage
+import uk.matvey.lunatica.yabeda.YabedaAction.SetComplaintCountry
+import uk.matvey.lunatica.yabeda.YabedaAction.SetContactEmail
 import uk.matvey.lunatica.yabeda.YabedaSetup.PROBLEM_COUNTRIES
 
 class YabedaActionSelector(
+    private val accountRepo: AccountRepo,
     private val complaintRepo: ComplaintRepo,
-    private val messageRepo: MessageRepo,
-    private val bot: TelegramBot
+    private val messageRepo: MessageRepo
 ) {
 
     fun select(update: Update): YabedaAction {
         if (update.message()?.text() == "/complaint") {
-            return YabedaAction.FileComplaint(update.message().from().id())
+            return FileComplaint(update.message().from().id())
         }
-        var draftComplaint = update.callbackQuery()?.from()?.id()?.let { complaintRepo.findLastDraftByTgUserId(it) }
-        if (draftComplaint != null) {
-            if (PROBLEM_COUNTRIES.keys.map { it.name }.contains(update.callbackQuery().data())) {
-                return YabedaAction.SetProblemCountry(
-                    update.callbackQuery().from().id(),
-                    update.callbackQuery().message().messageId(),
-                    update.callbackQuery().id(),
-                    draftComplaint,
-                    CountryCode.valueOf(update.callbackQuery().data())
-                )
+        var account = update.callbackQuery()?.from()?.id()?.let { accountRepo.getByTgChatId(it) }
+        if (account != null) {
+            complaintRepo.findLastDraftByAccountId(account.id)?.let { draftComplaint ->
+                if (PROBLEM_COUNTRIES.keys.map { it.name }.contains(update.callbackQuery().data())) {
+                    return SetComplaintCountry(
+                        update.callbackQuery().from().id(),
+                        update.callbackQuery().message().messageId(),
+                        update.callbackQuery().id(),
+                        draftComplaint,
+                        CountryCode.valueOf(update.callbackQuery().data())
+                    )
+                }
             }
         }
-        draftComplaint = update.message()?.from()?.id()?.let { complaintRepo.findLastDraftByTgUserId(it) }
-        if (draftComplaint != null) {
-            if (update.message().text() != null) {
-                return if (messageRepo.listByComplaintId(draftComplaint.id).isEmpty())
-                    YabedaAction.SendComplaintMessage(
+        account = update.message()?.from()?.id()?.let { accountRepo.getByTgChatId(it) }
+        if (account != null) {
+            complaintRepo.findLastDraftByAccountId(account.id)?.let { draftComplaint ->
+                if (update.message().text() != null) {
+                    return if (messageRepo.listByComplaintId(draftComplaint.id).isEmpty())
+                        SendComplaintMessage(
+                            update.message().from().id(),
+                            draftComplaint,
+                            update.message().text()
+                        )
+                    else SetContactEmail(
                         update.message().from().id(),
+                        account,
                         draftComplaint,
                         update.message().text()
                     )
-                else YabedaAction.SetContactEmail(update.message().from().id(), draftComplaint, update.message().text())
+                }
             }
         }
         return YabedaAction.Noop

@@ -8,7 +8,7 @@ import java.util.UUID
 @Component
 class AccountRepo(private val db: Firestore) {
     fun add(account: Account) {
-        db.collection("accounts").document(account.id.toString()).set(toDoc(account))
+        db.collection("accounts").document(account.id.toString()).set(account.toDoc())
     }
 
     fun get(id: UUID): Account {
@@ -16,14 +16,24 @@ class AccountRepo(private val db: Firestore) {
             .let { fromDoc(id.toString(), requireNotNull(it.data)) }
     }
 
+    fun update(account: Account) {
+        db.collection("accounts").document(account.id.toString())
+            .set(account.toDoc())
+    }
+
+    fun getByTgChatId(tgChatId: Long): Account {
+        return db.collection("accounts").whereEqualTo("tgChatId", tgChatId).get().get().single()
+            .let { fromDoc(it.id, requireNotNull(it.data)) }
+    }
+
     companion object {
-        private fun toDoc(account: Account): Map<String, Any> {
+        private fun Account.toDoc(): Map<String, Any> {
             return listOfNotNull(
-                "email" to account.email,
-                "passHash" to account.passHash,
-                "createdAt" to account.createdAt.toString(),
-                "updatedAt" to account.updatedAt.toString(),
-                account.tgChatId?.let { "tgChatId" to it },
+                "email" to this.email,
+                "passHash" to this.passHash,
+                "createdAt" to this.createdAt.toString(),
+                "updatedAt" to this.updatedAt.toString(),
+                this.tgChatId?.let { "tgChatId" to it },
             ).toMap()
         }
 

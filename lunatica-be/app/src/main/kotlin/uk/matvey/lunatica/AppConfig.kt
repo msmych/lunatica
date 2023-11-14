@@ -9,6 +9,7 @@ import com.pengrad.telegrambot.TelegramBot
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import uk.matvey.lunatica.yabeda.YabedaBot
 
 @Configuration
 open class AppConfig {
@@ -21,7 +22,7 @@ open class AppConfig {
     }
 
     @Bean
-    open fun telegramBot(@Value("\${yabeda-bot-token.start}") yabedaBotToken: Boolean): TelegramBot? {
-        return if (yabedaBotToken) TelegramBot(System.getenv("YABEDA_BOT_TOKEN")) else null
+    open fun telegramBotHolder(@Value("\${yabeda.bot-token}") yabedaBotToken: String): YabedaBot.TelegramBotHolder {
+        return YabedaBot.TelegramBotHolder(yabedaBotToken.takeIf { it != "NONE" }?.let { TelegramBot(it) })
     }
 }

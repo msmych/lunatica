@@ -17,8 +17,15 @@ class ComplaintRepo(private val db: Firestore) {
         return fromDoc(id, requireNotNull(doc.data))
     }
 
-    fun findLastDraftByTgUserId(tgUserId: Long): Complaint? {
-        return null
+    fun update(complaint: Complaint) {
+        db.collection("complaints").document(complaint.id.toString()).set(complaint.toDoc())
+    }
+
+    fun findLastDraftByAccountId(accountId: UUID): Complaint? {
+        return db.collection("complaints").whereEqualTo("accountId", accountId.toString()).get().get()
+            .map { fromDoc(UUID.fromString(it.id), requireNotNull(it.data)) }
+            .filter { it.state == Complaint.State.DRAFT }
+            .maxBy { it.updatedAt }
     }
 
     private fun Complaint.toDoc(): Map<String, Any> {
