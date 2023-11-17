@@ -1,71 +1,48 @@
 package uk.matvey.lunatica.complaints
 
 import com.neovisionaries.i18n.CountryCode
-import io.ktor.http.HttpStatusCode
+import io.ktor.http.HttpStatusCode.Companion.Created
+import io.ktor.http.HttpStatusCode.Companion.OK
 import io.ktor.server.application.call
-import io.ktor.server.html.respondHtml
-import io.ktor.server.request.receiveParameters
+import io.ktor.server.response.respond
 import io.ktor.server.routing.Route
 import io.ktor.server.routing.get
 import io.ktor.server.routing.post
 import io.ktor.server.routing.route
-import io.ktor.server.util.getOrFail
-import kotlinx.html.body
-import kotlinx.html.div
-import kotlinx.html.id
-import kotlinx.html.label
-import kotlinx.html.p
+import kotlinx.serialization.Contextual
+import kotlinx.serialization.Serializable
+import uk.matvey.lunatica.complaints.messages.Message
+import uk.matvey.lunatica.complaints.messages.MessageRepo
 import java.time.LocalDate
 import java.util.UUID
+import java.util.UUID.randomUUID
 
-fun Route.complaintRouting(complaintRepo: ComplaintRepo) {
+fun Route.complaintRouting(complaintRepo: ComplaintRepo, messageRepo: MessageRepo) {
     route("complaints") {
-        post {
-            val params = call.receiveParameters()
-            val content = params.getOrFail("content")
+        post { request: CreateComplaintRequest ->
             val complaint = Complaint.new(
-                UUID.randomUUID(),
-                CountryCode.valueOf(params.getOrFail("problemCountry")),
-                params["problemDate"].let(LocalDate::parse),
-                params["type"].let { Complaint.Type.valueOf(it.toString()) }
+                randomUUID(),
+                request.problemCountry,
+                request.problemDate,
+                request.type
             )
             complaintRepo.insert(complaint)
-            call.respondHtml(HttpStatusCode.Created) {
-                body {
-                    p {
-                        label {
-                            +complaint.id.toString()
-                        }
-                    }
-                    div {
-                        id = "complaintContent"
-                    }
-                }
-            }
-        }
-        get {
-            val complaints = complaintRepo.list(20)
-            call.respondHtml {
-                body {
-                    complaints.forEach { complaint ->
-                        p {
-                            +"${complaint.createdAt}"
-                        }
-                    }
-                }
-            }
+            messageRepo.insert(Message.complaintMessage(complaint.id, request.content))
+            call.respond(Created, """{"id":"${complaint.id}"}""")
         }
         route("/{id}") {
             get {
                 val complaint = complaintRepo.get(UUID.fromString(call.parameters["id"]))
-                call.respondHtml {
-                    body {
-                        p {
-                            +"${complaint.createdAt}"
-                        }
-                    }
-                }
+                call.respond(OK, complaint)
             }
         }
     }
 }
+
+@Serializable
+data class CreateComplaintRequest(
+    val problemCountry: CountryCode,
+    val problemDate: @Contextual LocalDate,
+    val type: Complaint.Type,
+    val content: String,
+)
