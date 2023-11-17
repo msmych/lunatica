@@ -1,6 +1,8 @@
 package uk.matvey.lunatica.complaints
 
 import com.neovisionaries.i18n.CountryCode
+import kotlinx.serialization.Contextual
+import kotlinx.serialization.Serializable
 import uk.matvey.lunatica.repo.Entity
 import uk.matvey.lunatica.repo.RelCol.TimeStamp
 import uk.matvey.lunatica.repo.RelCol.TimeStamp.Companion.timeStampRel
@@ -11,15 +13,16 @@ import java.time.LocalDate
 import java.util.UUID
 import java.util.UUID.randomUUID
 
+@Serializable
 data class Complaint(
-    val id: UUID,
-    val accountId: UUID,
+    val id: @Contextual UUID,
+    val accountId: @Contextual UUID,
     val state: State,
     val problemCountry: CountryCode?,
-    val problemDate: LocalDate?,
+    val problemDate: @Contextual LocalDate?,
     val type: Type?,
-    val createdAt: Instant,
-    val updatedAt: Instant
+    val createdAt: @Contextual Instant,
+    val updatedAt: @Contextual Instant
 ) : Entity<Uuid> {
     enum class State {
         DRAFT,
