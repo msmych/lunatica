@@ -26,7 +26,7 @@ abstract class FbRepo<E>(
         val updatedAt = Instant.now()
         return withCollection { coll ->
             coll.document(doc.getValue("id").toString())
-                .set(doc.filterKeys { it != "id" } + mapOf("updatedAt" to updatedAt.toString()))
+                .set(doc.filterKeys { it != "id" } + mapOf("updated_at" to updatedAt.toString()))
             updatedAt
         }
     }

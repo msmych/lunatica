@@ -9,6 +9,8 @@ import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.newFixedThreadPoolContext
 import uk.matvey.lunatica.complaints.ComplaintFbRepo
 import uk.matvey.lunatica.complaints.ComplaintRepo
+import uk.matvey.lunatica.complaints.account.AccountFbRepo
+import uk.matvey.lunatica.complaints.account.AccountRepo
 import uk.matvey.lunatica.complaints.messages.MessageFbRepo
 import uk.matvey.lunatica.complaints.messages.MessageRepo
 
@@ -17,6 +19,7 @@ class FbRepos(projectId: String) {
 
     val db: Firestore
 
+    val accountRepo: AccountRepo
     val complaintRepo: ComplaintRepo
     val messageRepo: MessageRepo
 
@@ -27,6 +30,7 @@ class FbRepos(projectId: String) {
 
         db = FirestoreClient.getFirestore()
         val dispatcher = newFixedThreadPoolContext(4, "fb-data-source")
+        accountRepo = AccountFbRepo(db, dispatcher)
         complaintRepo = ComplaintFbRepo(db, dispatcher)
         messageRepo = MessageFbRepo(db, dispatcher)
     }

@@ -19,6 +19,12 @@ sealed interface RelCol {
         }
     }
 
+    class Num(val value: Long?) : RelCol {
+        companion object {
+            fun numRel(value: Long?) = Num(value)
+        }
+    }
+
     class Date(val value: LocalDate?) : RelCol {
         companion object {
             fun dateRel(value: LocalDate?) = Date(value)

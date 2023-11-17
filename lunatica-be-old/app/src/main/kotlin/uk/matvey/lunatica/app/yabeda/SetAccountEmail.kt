@@ -5,15 +5,17 @@ import com.pengrad.telegrambot.model.request.ParseMode
 import com.pengrad.telegrambot.request.SendMessage
 import uk.matvey.lunatica.complaints.Complaint
 import uk.matvey.lunatica.complaints.ComplaintRepo
+import uk.matvey.lunatica.complaints.account.AccountRepo
 
-suspend fun setContactEmail(
+suspend fun setAccountEmail(
+    accountRepo: AccountRepo,
     complaintRepo: ComplaintRepo,
-    action: YabedaAction.SetContactEmail,
+    action: YabedaAction.SetAccountEmail,
     bot: TelegramBot
 ) {
+    accountRepo.update(action.account.copy(email = action.email))
     complaintRepo.update(
         action.complaint.copy(
-            contactDetails = action.complaint.contactDetails + mapOf("email" to action.email),
             state = Complaint.State.NEW
         )
     )

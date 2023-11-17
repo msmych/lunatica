@@ -9,31 +9,30 @@ import kotlinx.coroutines.newSingleThreadContext
 import mu.KotlinLogging
 import uk.matvey.lunatica.app.yabeda.YabedaAction.FileComplaint
 import uk.matvey.lunatica.app.yabeda.YabedaAction.SendComplaintMessage
-import uk.matvey.lunatica.app.yabeda.YabedaAction.SetContactEmail
-import uk.matvey.lunatica.app.yabeda.YabedaAction.SetProblemCountry
+import uk.matvey.lunatica.app.yabeda.YabedaAction.SetAccountEmail
+import uk.matvey.lunatica.app.yabeda.YabedaAction.SetComplaintCountry
+import uk.matvey.lunatica.app.yabeda.YabedaAction.SetComplaintType
 import uk.matvey.lunatica.complaints.ComplaintRepo
+import uk.matvey.lunatica.complaints.account.AccountRepo
 import uk.matvey.lunatica.complaints.messages.MessageRepo
 
 private val log = KotlinLogging.logger("YabedaBot")
 
 @OptIn(DelicateCoroutinesApi::class)
-fun startYabedaBot(complaintRepo: ComplaintRepo, messageRepo: MessageRepo) {
+fun startYabedaBot(accountRepo: AccountRepo, complaintRepo: ComplaintRepo, messageRepo: MessageRepo) {
     val bot = TelegramBot(System.getenv("YABEDA_BOT_TOKEN"))
-    val actionSelector = YabedaActionSelector(complaintRepo, messageRepo, bot)
+    val actionSelector = YabedaActionSelector(accountRepo, complaintRepo, messageRepo)
     val yabedaScope = CoroutineScope(newSingleThreadContext("yabeda-bot"))
     bot.setUpdatesListener({ updates ->
         updates.forEach { update ->
             yabedaScope.launch {
                 when (val action = actionSelector.select(update)) {
-                    is FileComplaint -> fileComplaint(action, complaintRepo, bot)
-
-                    is SetProblemCountry -> setProblemCountry(complaintRepo, action, bot)
-
+                    is FileComplaint -> fileComplaint(action, accountRepo, complaintRepo, bot)
+                    is SetComplaintCountry -> setComplaintCountry(complaintRepo, action, bot)
+                    is SetComplaintType -> setComplaintType(complaintRepo, action, bot)
                     is SendComplaintMessage -> sendComplaintMessage(action, messageRepo, bot)
-
-                    is SetContactEmail -> setContactEmail(complaintRepo, action, bot)
-
-                    YabedaAction.Noop -> {}
+                    is SetAccountEmail -> setAccountEmail(accountRepo, complaintRepo, action, bot)
+                    is YabedaAction.Noop -> {}
                 }
             }
         }

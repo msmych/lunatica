@@ -15,7 +15,8 @@ import uk.matvey.lunatica.yabeda.YabedaBot
 open class AppConfig {
     @Bean
     open fun firestore(@Value("\${projectId}") projectId: String): Firestore {
-        val creds = GoogleCredentials.getApplicationDefault()
+        val creds = GoogleCredentials.newBuilder()
+            .build()
         val opts = FirebaseOptions.builder().setCredentials(creds).setProjectId(projectId).build()
         FirebaseApp.initializeApp(opts)
         return FirestoreClient.getFirestore()

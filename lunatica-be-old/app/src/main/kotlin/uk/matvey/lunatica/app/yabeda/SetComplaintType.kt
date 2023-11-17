@@ -7,22 +7,18 @@ import com.pengrad.telegrambot.request.AnswerCallbackQuery
 import com.pengrad.telegrambot.request.EditMessageText
 import uk.matvey.lunatica.complaints.ComplaintRepo
 
-suspend fun setProblemCountry(
+suspend fun setComplaintType(
     complaintRepo: ComplaintRepo,
-    action: YabedaAction.SetProblemCountry,
+    action: YabedaAction.SetComplaintType,
     bot: TelegramBot
 ) {
     complaintRepo.update(
         action.complaint.copy(
-            problemCountry = action.country
+            type = action.type
         )
     )
     bot.execute(
-        EditMessageText(
-            action.userId,
-            action.messageId,
-            "Подробно опишите нарушение:"
-        ).replyMarkup(
+        EditMessageText(action.userId, action.messageId, "Подробно опишите нарушение:").replyMarkup(
             InlineKeyboardMarkup(*arrayOf<InlineKeyboardButton>())
         )
     )

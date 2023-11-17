@@ -8,6 +8,7 @@ import org.postgresql.util.PGobject
 import uk.matvey.lunatica.repo.RelCol
 import uk.matvey.lunatica.repo.RelCol.Date
 import uk.matvey.lunatica.repo.RelCol.Jsonb
+import uk.matvey.lunatica.repo.RelCol.Num
 import uk.matvey.lunatica.repo.RelCol.Text
 import uk.matvey.lunatica.repo.RelCol.TimeStamp
 import uk.matvey.lunatica.repo.RelCol.Uuid
@@ -16,6 +17,7 @@ import java.sql.Connection
 import java.sql.PreparedStatement
 import java.sql.ResultSet
 import java.sql.Timestamp
+import java.sql.Types.INTEGER
 import java.time.ZoneOffset.UTC
 import javax.sql.DataSource
 
@@ -61,6 +63,7 @@ abstract class PgRepo<E>(
         when (value) {
             is Uuid -> statement.setObject(i, value.value)
             is Text -> statement.setString(i, value.value)
+            is Num -> value.value?.let { statement.setLong(i, it) } ?: statement.setNull(i, INTEGER)
             is Date -> {
                 statement.setDate(
                     i,

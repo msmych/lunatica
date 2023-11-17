@@ -10,5 +10,5 @@ interface ComplaintRepo : EntityRepo<Complaint> {
 
     suspend fun findAllDraftByTgUserId(tgUserId: Long): List<Complaint>
 
-    suspend fun findLastDraftByTgUserId(tgUserId: Long): Complaint?
+    suspend fun findLastDraftByAccountId(accountId: UUID): Complaint?
 }
