@@ -14,11 +14,11 @@ class ComplaintFbRepo(db: Firestore, dispatcher: CoroutineContext) : FbRepo<Comp
     override fun Complaint.toDoc(): Map<String, Any?> {
         return linkedMapOf(
             "id" to this.id.toString(),
+            "account_id" to this.accountId.toString(),
             "state" to this.state,
             "problemCountry" to this.problemCountry,
             "problemDate" to this.problemDate?.toString(),
             "type" to this.type?.toString(),
-            "contactDetails" to this.contactDetails,
             "createdAt" to this.createdAt.toString(),
             "updatedAt" to this.updatedAt.toString(),
         )
@@ -29,11 +29,11 @@ class ComplaintFbRepo(db: Firestore, dispatcher: CoroutineContext) : FbRepo<Comp
     override fun Map<String, Any?>.toEntity(id: String): Complaint {
         return Complaint(
             UUID.fromString(id),
+            UUID.fromString(this.getValue("account_id").toString()),
             Complaint.State.valueOf(this.getValue("state").toString()),
             this["problemCountry"]?.toString()?.let(CountryCode::valueOf),
             this["problemDate"]?.toString()?.let(LocalDate::parse),
             this["type"]?.toString()?.let(Complaint.Type::valueOf),
-            this["contactDetails"] as Map<String, String>,
             Instant.parse(this.getValue("createdAt").toString()),
             Instant.parse(this.getValue("updatedAt").toString()),
         )
@@ -63,7 +63,7 @@ class ComplaintFbRepo(db: Firestore, dispatcher: CoroutineContext) : FbRepo<Comp
         }
     }
 
-    override suspend fun findLastDraftByTgUserId(tgUserId: Long): Complaint? {
-        return findAllDraftByTgUserId(tgUserId).maxByOrNull { it.updatedAt }
+    override suspend fun findLastDraftByAccountId(accountId: UUID): Complaint? {
+        TODO("Not yet implemented")
     }
 }

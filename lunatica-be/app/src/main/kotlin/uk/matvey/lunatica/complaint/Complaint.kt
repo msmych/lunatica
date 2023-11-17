@@ -4,6 +4,7 @@ import com.neovisionaries.i18n.CountryCode
 import java.time.Instant
 import java.time.LocalDate
 import java.util.UUID
+import java.util.UUID.randomUUID
 
 data class Complaint(
     val id: UUID,
@@ -27,6 +28,7 @@ data class Complaint(
     enum class Type {
         BANK,
         AIRLINE,
+        OTHER,
     }
 
     companion object {
@@ -37,7 +39,23 @@ data class Complaint(
             type: Type
         ): Complaint {
             val now = Instant.now()
-            return Complaint(UUID.randomUUID(), accountId, State.NEW, problemCountry, problemDate, type, now, now)
+            return Complaint(randomUUID(), accountId, State.NEW, problemCountry, problemDate, type, now, now)
+        }
+
+        fun draft(
+            accountId: UUID,
+        ): Complaint {
+            val now = Instant.now()
+            return Complaint(
+                randomUUID(),
+                accountId,
+                State.DRAFT,
+                null,
+                null,
+                null,
+                now,
+                now
+            )
         }
     }
 }

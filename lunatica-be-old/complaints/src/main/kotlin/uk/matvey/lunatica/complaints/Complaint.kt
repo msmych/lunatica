@@ -1,8 +1,6 @@
 package uk.matvey.lunatica.complaints
 
 import com.neovisionaries.i18n.CountryCode
-import kotlinx.serialization.Contextual
-import kotlinx.serialization.Serializable
 import uk.matvey.lunatica.repo.Entity
 import uk.matvey.lunatica.repo.RelCol.TimeStamp
 import uk.matvey.lunatica.repo.RelCol.TimeStamp.Companion.timeStampRel
@@ -13,16 +11,15 @@ import java.time.LocalDate
 import java.util.UUID
 import java.util.UUID.randomUUID
 
-@Serializable
 data class Complaint(
-    val id: @Contextual UUID,
+    val id: UUID,
+    val accountId: UUID,
     val state: State,
     val problemCountry: CountryCode?,
-    val problemDate: @Contextual LocalDate?,
+    val problemDate: LocalDate?,
     val type: Type?,
-    val contactDetails: Map<String, String>,
-    val createdAt: @Contextual Instant,
-    val updatedAt: @Contextual Instant,
+    val createdAt: Instant,
+    val updatedAt: Instant
 ) : Entity<Uuid> {
     enum class State {
         DRAFT,
@@ -36,50 +33,42 @@ data class Complaint(
     enum class Type {
         BANK,
         AIRLINE,
-    }
-
-    override fun id(): Uuid {
-        return uuidRel(this.id)
-    }
-
-    override fun updatedAt(): TimeStamp {
-        return timeStampRel(this.updatedAt)
+        OTHER,
     }
 
     companion object {
+        fun new(
+            accountId: UUID,
+            problemCountry: CountryCode,
+            problemDate: LocalDate,
+            type: Type
+        ): Complaint {
+            val now = Instant.now()
+            return Complaint(randomUUID(), accountId, State.NEW, problemCountry, problemDate, type, now, now)
+        }
+
         fun draft(
-            contactDetails: Map<String, String>,
+            accountId: UUID,
         ): Complaint {
             val now = Instant.now()
             return Complaint(
                 randomUUID(),
+                accountId,
                 State.DRAFT,
                 null,
                 null,
                 null,
-                contactDetails,
                 now,
                 now
             )
         }
+    }
 
-        fun new(
-            problemCountry: CountryCode?,
-            problemDate: LocalDate?,
-            type: Type?,
-            contactDetails: Map<String, String>,
-        ): Complaint {
-            val now = Instant.now()
-            return Complaint(
-                randomUUID(),
-                State.NEW,
-                problemCountry,
-                problemDate,
-                type,
-                contactDetails,
-                now,
-                now
-            )
-        }
+    override fun id(): Uuid {
+        return uuidRel(id)
+    }
+
+    override fun updatedAt(): TimeStamp {
+        return timeStampRel(updatedAt)
     }
 }

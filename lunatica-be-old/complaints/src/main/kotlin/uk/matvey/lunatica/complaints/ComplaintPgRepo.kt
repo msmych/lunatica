@@ -2,13 +2,8 @@ package uk.matvey.lunatica.complaints
 
 import com.neovisionaries.i18n.CountryCode
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.encodeToJsonElement
-import org.postgresql.util.PGobject
-import uk.matvey.lunatica.complaints.ComplaintSetup.JSON
 import uk.matvey.lunatica.pg.PgEntityRepo
 import uk.matvey.lunatica.repo.RelCol.Date.Companion.dateRel
-import uk.matvey.lunatica.repo.RelCol.Jsonb.Companion.jsonbRel
 import uk.matvey.lunatica.repo.RelCol.Text.Companion.textRel
 import uk.matvey.lunatica.repo.RelCol.TimeStamp.Companion.timeStampRel
 import uk.matvey.lunatica.repo.RelCol.Uuid
@@ -37,19 +32,22 @@ class ComplaintPgRepo(ds: DataSource, dispatcher: CoroutineDispatcher) :
         )
     }
 
-    override suspend fun findLastDraftByTgUserId(tgUserId: Long): Complaint? {
-        return findAllDraftByTgUserId(tgUserId).maxByOrNull { it.updatedAt }
+    override suspend fun findLastDraftByAccountId(accountId: UUID): Complaint? {
+        return selectStar(
+            "where state = 'DRAFT' and account_id = ? order by updated_at desc limit 1",
+            uuidRel(accountId),
+        ).singleOrNull()
     }
 
     override fun Complaint.toTableRecord(): RelTab {
         return RelTab(
             linkedMapOf(
                 "id" to uuidRel(id),
+                "account_id" to uuidRel(accountId),
                 "state" to textRel(state.name),
                 "problem_country" to textRel(problemCountry?.name),
                 "problem_date" to dateRel(problemDate),
                 "type" to textRel(type?.name),
-                "contact_details" to jsonbRel(JSON.encodeToJsonElement(contactDetails)),
                 "created_at" to timeStampRel(createdAt),
                 "updated_at" to timeStampRel(updatedAt),
             )
@@ -59,11 +57,11 @@ class ComplaintPgRepo(ds: DataSource, dispatcher: CoroutineDispatcher) :
     override fun ResultSet.toEntity(): Complaint {
         return Complaint(
             UUID.fromString(this.getObject("id").toString()),
+            UUID.fromString(this.getObject("account_id").toString()),
             Complaint.State.valueOf(this.getString("state")),
             this.getString("problem_country")?.let(CountryCode::valueOf),
             this.getDate("problem_date")?.toLocalDate(),
             this.getString("type")?.let(Complaint.Type::valueOf),
-            (this.getObject("contact_details") as PGobject).value?.let { Json.decodeFromString(it) } ?: mapOf(),
             this.getTimestamp("created_at").toInstant(),
             this.getTimestamp("updated_at").toInstant(),
         )

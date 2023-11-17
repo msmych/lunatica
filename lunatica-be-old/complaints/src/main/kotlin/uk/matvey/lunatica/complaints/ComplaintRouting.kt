@@ -24,10 +24,10 @@ fun Route.complaintRouting(complaintRepo: ComplaintRepo) {
             val params = call.receiveParameters()
             val content = params.getOrFail("content")
             val complaint = Complaint.new(
+                UUID.randomUUID(),
                 CountryCode.valueOf(params.getOrFail("problemCountry")),
-                params["problemDate"]?.let(LocalDate::parse),
-                params["type"]?.let(Complaint.Type::valueOf),
-                mapOf("email" to params.getOrFail("email"))
+                params["problemDate"].let(LocalDate::parse),
+                params["type"].let { Complaint.Type.valueOf(it.toString()) }
             )
             complaintRepo.insert(complaint)
             call.respondHtml(HttpStatusCode.Created) {
