@@ -5,6 +5,9 @@ import io.ktor.serialization.kotlinx.json.json
 import io.ktor.server.application.Application
 import io.ktor.server.application.call
 import io.ktor.server.application.install
+import io.ktor.server.auth.UserIdPrincipal
+import io.ktor.server.auth.authentication
+import io.ktor.server.auth.basic
 import io.ktor.server.engine.ApplicationEngine
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
@@ -22,6 +25,7 @@ import uk.matvey.lunatica.complaints.account.accountRouting
 import uk.matvey.lunatica.complaints.complaintRouting
 import uk.matvey.lunatica.complaints.messages.MessageRepo
 import uk.matvey.lunatica.complaints.messages.messageRouting
+import uk.matvey.lunatica.sha256
 
 fun createServer(accountRepo: AccountRepo, complaintRepo: ComplaintRepo, messageRepo: MessageRepo): ApplicationEngine {
     return embeddedServer(Netty, port = 8080) {
@@ -36,7 +40,17 @@ fun Application.setupServer(accountRepo: AccountRepo, complaintRepo: ComplaintRe
     install(ContentNegotiation) {
         json(JSON)
     }
-    setupRouting(accountRepo, complaintRepo, messageRepo)
+    authentication {
+        basic {
+            realm = "Ktor"
+            validate { credentials ->
+                accountRepo.findByEmail(credentials.name)?.takeIf { account ->
+                    account.passHash == sha256(credentials.password)
+                }?.let { UserIdPrincipal(credentials.name) }
+            }
+        }
+    }
+    setupRouting (accountRepo, complaintRepo, messageRepo)
 }
 
 fun Application.setupRouting(accountRepo: AccountRepo, complaintRepo: ComplaintRepo, messageRepo: MessageRepo) {

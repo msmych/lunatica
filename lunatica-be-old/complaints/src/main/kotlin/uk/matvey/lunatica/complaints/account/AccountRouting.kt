@@ -7,8 +7,7 @@ import io.ktor.server.routing.Route
 import io.ktor.server.routing.post
 import io.ktor.server.routing.route
 import kotlinx.serialization.Serializable
-import org.apache.commons.codec.digest.MessageDigestAlgorithms.SHA_256
-import java.security.MessageDigest
+import uk.matvey.lunatica.sha256
 
 fun Route.accountRouting(accountRepo: AccountRepo) {
     route("/accounts") {
@@ -18,13 +17,6 @@ fun Route.accountRouting(accountRepo: AccountRepo) {
             call.respond(Created, """{"id":"${account.id}"}""")
         }
     }
-}
-
-fun sha256(s: String): String {
-    val digest = MessageDigest.getInstance(SHA_256)
-    val hash = digest.digest(s.toByteArray())
-    return hash.map { Integer.toHexString(0xff and it.toInt()) }
-        .joinToString("") { if (it.length == 1) "0" else it }
 }
 
 @Serializable
