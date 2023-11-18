@@ -10,7 +10,7 @@ dependencies {
     implementation("io.ktor:ktor-server-html-builder")
     implementation("io.github.microutils:kotlin-logging-jvm:2.0.11")
     implementation("ch.qos.logback:logback-classic:1.2.9")
+    implementation("commons-codec:commons-codec:1.16.0")
 
     api(project(":persistence-pg"))
-    api(project(":persistence-fb"))
 }

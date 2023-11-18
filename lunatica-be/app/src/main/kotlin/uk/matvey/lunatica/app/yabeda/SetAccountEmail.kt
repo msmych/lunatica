@@ -3,22 +3,18 @@ package uk.matvey.lunatica.app.yabeda
 import com.pengrad.telegrambot.TelegramBot
 import com.pengrad.telegrambot.model.request.ParseMode
 import com.pengrad.telegrambot.request.SendMessage
+import uk.matvey.lunatica.account.AccountService
 import uk.matvey.lunatica.complaint.Complaint
-import uk.matvey.lunatica.complaint.ComplaintRepo
-import uk.matvey.lunatica.account.AccountRepo
+import uk.matvey.lunatica.complaint.ComplaintService
 
 suspend fun setAccountEmail(
-    accountRepo: AccountRepo,
-    complaintRepo: ComplaintRepo,
+    accountService: AccountService,
+    complaintService: ComplaintService,
     action: YabedaAction.SetAccountEmail,
     bot: TelegramBot
 ) {
-    accountRepo.update(action.account.copy(email = action.email))
-    complaintRepo.update(
-        action.complaint.copy(
-            state = Complaint.State.NEW
-        )
-    )
+    accountService.updateAccountEmail(action.account, action.email)
+    complaintService.updateComplaintState(action.complaint, Complaint.State.NEW)
     bot.execute(
         SendMessage(
             action.userId,

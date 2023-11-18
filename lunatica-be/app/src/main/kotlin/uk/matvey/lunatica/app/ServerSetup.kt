@@ -18,32 +18,24 @@ import io.ktor.server.routing.get
 import io.ktor.server.routing.route
 import io.ktor.server.routing.routing
 import org.slf4j.event.Level
-import uk.matvey.lunatica.account.AccountRepo
-import uk.matvey.lunatica.account.AccountService
 import uk.matvey.lunatica.account.accountRouting
-import uk.matvey.lunatica.complaint.ComplaintRepo
 import uk.matvey.lunatica.complaint.ComplaintSetup.JSON
 import uk.matvey.lunatica.complaint.complaintRouting
-import uk.matvey.lunatica.message.MessageRepo
 import uk.matvey.lunatica.message.messageRouting
 import uk.matvey.lunatica.sha256
 
 fun createServer(
-    accountRepo: AccountRepo,
-    accountService: AccountService,
-    complaintRepo: ComplaintRepo,
-    messageRepo: MessageRepo
+    services: Services,
+    repos: Repos,
 ): ApplicationEngine {
     return embeddedServer(Netty, port = 8080) {
-        setupServer(accountRepo, accountService, complaintRepo, messageRepo)
+        setupServer(services, repos)
     }
 }
 
 fun Application.setupServer(
-    accountRepo: AccountRepo,
-    accountService: AccountService,
-    complaintRepo: ComplaintRepo,
-    messageRepo: MessageRepo
+    services: Services,
+    repos: Repos,
 ) {
     install(CallLogging) {
         level = Level.INFO
@@ -55,24 +47,24 @@ fun Application.setupServer(
         basic {
             realm = "Ktor"
             validate { credentials ->
-                accountRepo.findByEmail(credentials.name)?.takeIf { account ->
+                repos.accountRepo.findByEmail(credentials.name)?.takeIf { account ->
                     account.passHash == sha256(credentials.password)
                 }?.let { UserIdPrincipal(credentials.name) }
             }
         }
     }
-    setupRouting(accountService, complaintRepo, messageRepo)
+    setupRouting(services, repos)
 }
 
-fun Application.setupRouting(accountService: AccountService, complaintRepo: ComplaintRepo, messageRepo: MessageRepo) {
+fun Application.setupRouting(services: Services, repos: Repos) {
     routing {
         get("/healthcheck") {
             call.respond(OK)
         }
         route("/api") {
-            accountRouting(accountService)
-            complaintRouting(complaintRepo, messageRepo)
-            messageRouting(messageRepo)
+            accountRouting(services.accountService)
+            complaintRouting(repos.complaintRepo, repos.messageRepo)
+            messageRouting(repos.messageRepo)
         }
     }
 }

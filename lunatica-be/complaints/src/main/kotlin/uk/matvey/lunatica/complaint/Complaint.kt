@@ -39,12 +39,6 @@ data class Complaint(
         OTHER,
     }
 
-    fun update(state: State?): Complaint {
-        return copy(
-            state = state ?: this.state,
-        )
-    }
-
     companion object {
         fun draft(
             accountId: UUID,

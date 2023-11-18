@@ -20,6 +20,7 @@ data class Account(
     val createdAt: @Contextual Instant,
     val updatedAt: @Contextual Instant
 ) : Entity<Uuid> {
+
     companion object {
         fun tgAccount(tgChatId: Long): Account {
             val now = Instant.now()

@@ -4,6 +4,5 @@ include(
     "app",
     "complaints",
     "persistence",
-    "persistence-fb",
     "persistence-pg",
 )
