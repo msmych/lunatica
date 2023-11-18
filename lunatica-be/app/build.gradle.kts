@@ -1,31 +1,28 @@
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-
 plugins {
-    id("org.springframework.boot") version "3.1.5"
-    kotlin("plugin.spring") version "1.8.0"
+    id("io.ktor.plugin") version "2.3.5"
+    id("org.flywaydb.flyway") version "9.22.3"
 }
-
-apply(plugin = "io.spring.dependency-management")
 
 dependencies {
-    implementation("com.neovisionaries:nv-i18n:1.29")
-    implementation("org.springframework.boot:spring-boot-starter-web")
+    implementation("io.ktor:ktor-server-core")
+    implementation("io.ktor:ktor-server-netty")
+    implementation("io.ktor:ktor-server-call-logging")
+    implementation("io.ktor:ktor-server-content-negotiation")
+    implementation("io.ktor:ktor-serialization-kotlinx-json")
+    implementation("io.ktor:ktor-server-auth-jvm:2.3.5")
+    implementation("io.ktor:ktor-server-core-jvm:2.3.5")
     implementation("com.github.pengrad:java-telegram-bot-api:6.9.1")
-    implementation("com.google.firebase:firebase-admin:9.2.0") {
-        exclude(group = "org.slf4j")
-    }
+    implementation("com.zaxxer:HikariCP:5.0.1")
+    implementation("io.github.microutils:kotlin-logging-jvm:2.0.11")
+    implementation("ch.qos.logback:logback-classic:1.2.9")
+
+    implementation(project(":complaints"))
 }
 
-repositories {
-    mavenCentral()
-}
-
-tasks.withType<KotlinCompile> {
-    kotlinOptions {
-        freeCompilerArgs += "-Xjsr305=strict"
-    }
-}
-
-kotlin {
-    jvmToolchain(17)
+flyway {
+    url = "jdbc:postgresql://localhost:55000/postgres"
+    user = "postgres"
+    password = "postgres"
+    driver = "org.postgresql.Driver"
+    locations = arrayOf("filesystem:src/main/resources/db/migrations")
 }
