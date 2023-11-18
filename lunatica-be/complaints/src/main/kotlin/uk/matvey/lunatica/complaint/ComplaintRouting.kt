@@ -39,7 +39,7 @@ fun Route.complaintRouting(complaintRepo: ComplaintRepo, messageRepo: MessageRep
             }
             patch { request: UpdateComplaintRequest ->
                 val complaint = complaintRepo.get(UUID.fromString(call.parameters["id"]))
-                complaintRepo.update(complaint.update(request.state))
+                complaintRepo.update(complaint.copy(state = request.state))
                 call.respond(NoContent)
             }
         }

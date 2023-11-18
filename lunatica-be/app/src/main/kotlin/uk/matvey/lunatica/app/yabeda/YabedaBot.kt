@@ -6,36 +6,35 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.newSingleThreadContext
-import mu.KotlinLogging
+import uk.matvey.lunatica.app.Repos
+import uk.matvey.lunatica.app.Services
 import uk.matvey.lunatica.app.yabeda.YabedaAction.FileComplaint
 import uk.matvey.lunatica.app.yabeda.YabedaAction.SendComplaintMessage
 import uk.matvey.lunatica.app.yabeda.YabedaAction.SetAccountEmail
 import uk.matvey.lunatica.app.yabeda.YabedaAction.SetComplaintCountry
 import uk.matvey.lunatica.app.yabeda.YabedaAction.SetComplaintType
-import uk.matvey.lunatica.complaint.ComplaintRepo
-import uk.matvey.lunatica.account.AccountRepo
-import uk.matvey.lunatica.message.MessageRepo
-
-private val log = KotlinLogging.logger("YabedaBot")
 
 @OptIn(DelicateCoroutinesApi::class)
-fun startYabedaBot(accountRepo: AccountRepo, complaintRepo: ComplaintRepo, messageRepo: MessageRepo) {
+fun startYabedaBot(
+    services: Services,
+    repos: Repos,
+) {
     val bot = TelegramBot(System.getenv("YABEDA_BOT_TOKEN"))
-    val actionSelector = YabedaActionSelector(accountRepo, complaintRepo, messageRepo)
+    val actionSelector = YabedaActionSelector(repos.accountRepo, repos.complaintRepo, repos.messageRepo)
     val yabedaScope = CoroutineScope(newSingleThreadContext("yabeda-bot"))
-    bot.setUpdatesListener({ updates ->
+    bot.setUpdatesListener { updates ->
         updates.forEach { update ->
             yabedaScope.launch {
                 when (val action = actionSelector.select(update)) {
-                    is FileComplaint -> fileComplaint(action, accountRepo, complaintRepo, bot)
-                    is SetComplaintCountry -> setComplaintCountry(complaintRepo, action, bot)
-                    is SetComplaintType -> setComplaintType(complaintRepo, action, bot)
-                    is SendComplaintMessage -> sendComplaintMessage(action, messageRepo, bot)
-                    is SetAccountEmail -> setAccountEmail(accountRepo, complaintRepo, action, bot)
+                    is FileComplaint -> fileComplaint(action, services.accountService, services.complaintService, bot)
+                    is SetComplaintCountry -> setComplaintCountry(services.complaintService, action, bot)
+                    is SetComplaintType -> setComplaintType(services.complaintService, action, bot)
+                    is SendComplaintMessage -> sendComplaintMessage(action, services.messageService, bot)
+                    is SetAccountEmail -> setAccountEmail(services.accountService, services.complaintService, action, bot)
                     is YabedaAction.Noop -> {}
                 }
             }
         }
         CONFIRMED_UPDATES_ALL
-    }, { e -> log.error(e) {} })
+    }
 }

@@ -7,19 +7,15 @@ import com.pengrad.telegrambot.request.AnswerCallbackQuery
 import com.pengrad.telegrambot.request.EditMessageText
 import uk.matvey.lunatica.app.yabeda.YabedaAction.SetComplaintCountry
 import uk.matvey.lunatica.complaint.Complaint
-import uk.matvey.lunatica.complaint.ComplaintRepo
+import uk.matvey.lunatica.complaint.ComplaintService
 import uk.matvey.lunatica.complaint.ComplaintSetup.toTgLabel
 
 suspend fun setComplaintCountry(
-    complaintRepo: ComplaintRepo,
+    complaintService: ComplaintService,
     action: SetComplaintCountry,
     bot: TelegramBot
 ) {
-    complaintRepo.update(
-        action.complaint.copy(
-            problemCountry = action.country
-        )
-    )
+    complaintService.updateComplaintProblemCountry(action.complaint, action.country)
     bot.execute(
         EditMessageText(
             action.userId,
