@@ -1,5 +1,9 @@
 rootProject.name = "lunatica-be"
 
 include(
-    "app"
+    "app",
+    "complaints",
+    "persistence",
+    "persistence-fb",
+    "persistence-pg",
 )
