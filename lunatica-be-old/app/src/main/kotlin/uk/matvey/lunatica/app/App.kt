@@ -10,6 +10,6 @@ fun main() {
 //    val repos = FbRepos(System.getenv("FB_PROJECT_ID"))
     val repos = PgRepos(HikariConfig("/configs/hikari-local.properties"))
     log.info { "Starting server" }
-    createServer(repos.complaintRepo, repos.messageRepo).start()
+    createServer(repos.accountRepo, repos.complaintRepo, repos.messageRepo).start()
     startYabedaBot(repos.accountRepo, repos.complaintRepo, repos.messageRepo)
 }
