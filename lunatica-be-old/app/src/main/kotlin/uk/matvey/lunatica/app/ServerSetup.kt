@@ -17,32 +17,37 @@ import io.ktor.server.routing.routing
 import org.slf4j.event.Level
 import uk.matvey.lunatica.complaints.ComplaintRepo
 import uk.matvey.lunatica.complaints.ComplaintSetup.JSON
+import uk.matvey.lunatica.complaints.account.AccountRepo
+import uk.matvey.lunatica.complaints.account.accountRouting
 import uk.matvey.lunatica.complaints.complaintRouting
 import uk.matvey.lunatica.complaints.messages.MessageRepo
+import uk.matvey.lunatica.complaints.messages.messageRouting
 
-fun createServer(complaintRepo: ComplaintRepo, messageRepo: MessageRepo): ApplicationEngine {
+fun createServer(accountRepo: AccountRepo, complaintRepo: ComplaintRepo, messageRepo: MessageRepo): ApplicationEngine {
     return embeddedServer(Netty, port = 8080) {
-        setupServer(complaintRepo, messageRepo)
+        setupServer(accountRepo, complaintRepo, messageRepo)
     }
 }
 
-fun Application.setupServer(complaintRepo: ComplaintRepo, messageRepo: MessageRepo) {
+fun Application.setupServer(accountRepo: AccountRepo, complaintRepo: ComplaintRepo, messageRepo: MessageRepo) {
     install(CallLogging) {
         level = Level.INFO
     }
     install(ContentNegotiation) {
         json(JSON)
     }
-    setupRouting(complaintRepo, messageRepo)
+    setupRouting(accountRepo, complaintRepo, messageRepo)
 }
 
-fun Application.setupRouting(complaintRepo: ComplaintRepo, messageRepo: MessageRepo) {
+fun Application.setupRouting(accountRepo: AccountRepo, complaintRepo: ComplaintRepo, messageRepo: MessageRepo) {
     routing {
         get("/healthcheck") {
             call.respond(OK)
         }
         route("/api") {
+            accountRouting(accountRepo)
             complaintRouting(complaintRepo, messageRepo)
+            messageRouting(messageRepo)
         }
     }
 }

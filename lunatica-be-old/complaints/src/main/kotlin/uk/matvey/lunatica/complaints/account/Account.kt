@@ -1,5 +1,7 @@
 package uk.matvey.lunatica.complaints.account
 
+import kotlinx.serialization.Contextual
+import kotlinx.serialization.Serializable
 import uk.matvey.lunatica.repo.Entity
 import uk.matvey.lunatica.repo.RelCol
 import uk.matvey.lunatica.repo.RelCol.TimeStamp.Companion.timeStampRel
@@ -9,13 +11,14 @@ import java.time.Instant
 import java.util.UUID
 import java.util.UUID.randomUUID
 
+@Serializable
 data class Account(
-    val id: UUID,
+    val id: @Contextual UUID,
     val email: String?,
     val passHash: String?,
     val tgChatId: Long?,
-    val createdAt: Instant,
-    val updatedAt: Instant
+    val createdAt: @Contextual Instant,
+    val updatedAt: @Contextual Instant
 ) : Entity<Uuid> {
     companion object {
         fun tgAccount(tgChatId: Long): Account {
