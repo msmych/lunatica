@@ -6,6 +6,10 @@ import java.time.Instant
 import kotlin.coroutines.CoroutineContext
 
 class AccountFbRepo(db: Firestore, dispatcher: CoroutineContext) : FbRepo<Account>("accounts", db, dispatcher), AccountRepo {
+    override suspend fun findByEmail(email: String): Account? {
+        TODO("Not yet implemented")
+    }
+
     override suspend fun findByTgChatId(tgChatId: Long): Account {
         TODO("Not yet implemented")
     }

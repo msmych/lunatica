@@ -15,6 +15,11 @@ import javax.sql.DataSource
 
 class AccountPgRepo(ds: DataSource, dispatcher: CoroutineDispatcher) :
     PgEntityRepo<Uuid, Account>("accounts", ds, dispatcher), AccountRepo {
+
+    override suspend fun findByEmail(email: String): Account? {
+        return selectStar("where email = ?", textRel(email)).singleOrNull()
+    }
+
     override suspend fun findByTgChatId(tgChatId: Long): Account? {
         return selectStar("where tg_chat_id = ?", numRel(tgChatId)).singleOrNull()
     }

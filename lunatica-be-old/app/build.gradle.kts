@@ -9,6 +9,8 @@ dependencies {
     implementation("io.ktor:ktor-server-call-logging")
     implementation("io.ktor:ktor-server-content-negotiation")
     implementation("io.ktor:ktor-serialization-kotlinx-json")
+    implementation("io.ktor:ktor-server-auth-jvm:2.3.5")
+    implementation("io.ktor:ktor-server-core-jvm:2.3.5")
     implementation("com.github.pengrad:java-telegram-bot-api:6.9.1")
     implementation("com.zaxxer:HikariCP:5.0.1")
     implementation("io.github.microutils:kotlin-logging-jvm:2.0.11")
