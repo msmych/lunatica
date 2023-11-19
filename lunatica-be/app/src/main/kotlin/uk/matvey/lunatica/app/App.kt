@@ -7,7 +7,7 @@ import uk.matvey.lunatica.app.yabeda.startYabedaBot
 val log = KotlinLogging.logger("Lunatica App")
 
 fun main() {
-    val repos = Repos(HikariConfig("/configs/hikari-local.properties"))
+    val repos = Repos(HikariConfig("/configs/config-local-compose.properties"))
     val services = Services(repos)
     log.info { "Starting server" }
     val yabedaBot = startYabedaBot(services, repos)
