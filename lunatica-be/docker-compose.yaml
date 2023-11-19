@@ -1,0 +1,23 @@
+version: '3'
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      - YABEDA_BOT_TOKEN=${YABEDA_BOT_TOKEN:-NONE}
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+    command: ["./wait-for-it.sh", "pg:5432", "-t", "5", "--", "java", "-jar", "app-all.jar"]
+  db:
+    image: postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./data:/var/lib/postgresql/data

@@ -10,6 +10,6 @@ fun main() {
     val repos = Repos(HikariConfig("/configs/hikari-local.properties"))
     val services = Services(repos)
     log.info { "Starting server" }
-    createServer(services, repos).start()
-    startYabedaBot(services, repos)
+    val yabedaBot = startYabedaBot(services, repos)
+    createServer(services, repos).start(wait = yabedaBot == null)
 }
