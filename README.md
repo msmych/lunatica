@@ -2,8 +2,15 @@
 
 ### Backend
 
-To run locally:
+To run locally (just API):
 ```shell
 cd lunatica-be
-./gradlew app:bootRun --args='--spring.profiles.active=local'
+docker-compose up
 ```
+
+To run locally (API and Telegram bot):
+```shell
+cd lunatica-be
+YABEDA_BOT_TOKEN=<bot-token> docker-compose up
+```
+

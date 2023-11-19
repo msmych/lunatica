@@ -1,6 +1,8 @@
 plugins {
     id("io.ktor.plugin") version "2.3.5"
     id("org.flywaydb.flyway") version "9.22.3"
+    id("com.github.johnrengelman.shadow") version "8.1.1"
+    java
 }
 
 dependencies {
@@ -25,4 +27,16 @@ flyway {
     password = "postgres"
     driver = "org.postgresql.Driver"
     locations = arrayOf("filesystem:src/main/resources/db/migrations")
+}
+
+tasks {
+    shadowJar {
+        manifest {
+            attributes["Main-Class"] = "uk.matvey.lunatica.app.AppKt"
+        }
+    }
+}
+
+application {
+    mainClass = "uk.matvey.lunatica.app.AppKt"
 }
