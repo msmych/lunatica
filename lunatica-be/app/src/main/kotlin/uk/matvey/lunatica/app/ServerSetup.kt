@@ -10,6 +10,7 @@ import io.ktor.server.auth.authentication
 import io.ktor.server.auth.basic
 import io.ktor.server.engine.ApplicationEngine
 import io.ktor.server.engine.embeddedServer
+import io.ktor.server.http.content.staticResources
 import io.ktor.server.netty.Netty
 import io.ktor.server.plugins.callloging.CallLogging
 import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
@@ -58,6 +59,7 @@ fun Application.setupServer(
 
 fun Application.setupRouting(services: Services, repos: Repos) {
     routing {
+        staticResources("/", "public")
         get("/healthcheck") {
             call.respond(OK)
         }
