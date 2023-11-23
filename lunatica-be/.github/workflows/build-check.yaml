@@ -2,15 +2,11 @@ name: Build Check
 
 on:
   pull_request:
-    branches: [ master ]
+    branches: [ main ]
 
 jobs:
   build:
     runs-on: ubuntu-latest
-
-    defaults:
-      run:
-        working-directory: lunatica-be
 
     steps:
       - name: Checkout code
@@ -22,4 +18,6 @@ jobs:
           java-version: '17'
 
       - name: Build and Check
-        run: ./gradlew app:check
+        run: |
+          cd lunatica-be
+          ./gradlew app:check
