@@ -1,16 +1,12 @@
 name: Build Check
 
-'on':
+on:
   pull_request:
     branches: [ main ]
 
 jobs:
   build:
     runs-on: ubuntu-latest
-
-    defaults:
-      run:
-        working-directory: lunatica-be
 
     steps:
       - name: Checkout code
@@ -20,7 +16,9 @@ jobs:
         uses: actions/setup-java@v2
         with:
           java-version: '17'
-          distribution: 'temurin'
 
       - name: Build and Check
-        run: ./gradlew app:check
+        run: |
+          cd lunatica-be
+          ./gradlew app:check
+

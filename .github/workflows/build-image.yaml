@@ -1,6 +1,6 @@
 name: Build Docker image
 
-'on':
+on:
   push:
     branches:
       - main
@@ -9,22 +9,31 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
-    defaults:
-      run:
-        working-directory: lunatica-be
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
+
+      - name: Setup Node
+        uses: actions/setup-node@v2
+        with:
+          node-version: 20
+
+      - name: Build frontend app
+        run: |
+          cd lunatica-fe
+          yarn install
+          yarn build
+          mkdir ../lunatica-be/app/src/main/resources/public 
+          cp -R dist/* ../lunatica-be/app/src/main/resources/public
 
       - name: Set up JDK
         uses: actions/setup-java@v2
         with:
           java-version: '17'
-          distribution: 'temurin'
 
       - name: Build Docker Image
         uses: docker/build-push-action@v2
         with:
           context: lunatica-be
           push: false
+
