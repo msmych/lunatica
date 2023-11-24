@@ -51,8 +51,8 @@ jobs:
       - name: Deploy to EC2
         uses: appleboy/ssh-action@master
         with:
-          host: ${{ secrets.EC2_HOST }}
-          username: ${{ secrets.EC2_USERNAME }}
+          host: ec2-18-130-133-217.eu-west-2.compute.amazonaws.com
+          username: ubuntu
           key: ${{ secrets.EC2_PRIVATE_KEY }}
           script: |
             docker stop matvey-docker || true
@@ -61,7 +61,7 @@ jobs:
             docker run -d \
               --name lunatica-app \
               -e LUNATICA_PROFILE=aws \
-              -e DB_PASS=${{ secrets.RDS_DB_PASS }} \
+              -e "DB_PASS=${{ secrets.RDS_DB_PASS }}" \
               -p 8080:8080 \
               667377285515.dkr.ecr.eu-west-2.amazonaws.com/matvey-docker:latest
 
