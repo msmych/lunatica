@@ -17,6 +17,8 @@ dependencies {
     implementation("io.github.microutils:kotlin-logging-jvm:2.0.11")
     implementation("ch.qos.logback:logback-classic:1.2.9")
     implementation("org.flywaydb:flyway-core:9.22.3")
+    implementation("com.sksamuel.hoplite:hoplite-core:2.7.5")
+    implementation("com.sksamuel.hoplite:hoplite-yaml:2.7.5")
 
     implementation(project(":complaints"))
 }

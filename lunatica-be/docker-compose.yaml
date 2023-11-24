@@ -5,6 +5,7 @@ services:
       context: .
       dockerfile: Dockerfile
     environment:
+      - LUNATICA_PROFILE=compose
       - YABEDA_BOT_TOKEN=${YABEDA_BOT_TOKEN:-NONE}
     ports:
       - "8080:8080"
