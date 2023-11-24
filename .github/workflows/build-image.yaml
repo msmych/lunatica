@@ -48,3 +48,20 @@ jobs:
           docker tag matvey-docker:latest 667377285515.dkr.ecr.eu-west-2.amazonaws.com/matvey-docker:latest
           docker push 667377285515.dkr.ecr.eu-west-2.amazonaws.com/matvey-docker:latest
 
+      - name: Deploy to EC2
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_PRIVATE_KEY }}
+          script: |
+            docker stop matvey-docker || true
+            docker rm matvey-docker || true
+            docker pull 667377285515.dkr.ecr.eu-west-2.amazonaws.com/matvey-docker:latest
+            docker run -d \
+              --name lunatica-app \
+              -e LUNATICA_PROFILE=aws \
+              -e DB_PASS=${{ secrets.RDS_DB_PASS }} \
+              -p 8080:8080 \
+              667377285515.dkr.ecr.eu-west-2.amazonaws.com/matvey-docker:latest
+

@@ -1,0 +1,5 @@
+db:
+  jdbcUrl: jdbc:postgresql://matvey-pg.cv3jxdawbqpx.eu-west-2.rds.amazonaws.com:5432/postgres
+  username: postgres
+  password: ${DB_PASS}
+  driverClassName: org.postgresql.Driver
