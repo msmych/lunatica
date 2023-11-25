@@ -93,6 +93,7 @@ fun Application.setupRouting(services: Services, repos: Repos) {
                         .sign(HMAC256("auth-secret")),
                     httpOnly = true,
                 )
+                call.respond(OK)
             }
             post("/logout") {
                 call.response.cookies.append(
@@ -100,6 +101,7 @@ fun Application.setupRouting(services: Services, repos: Repos) {
                     value = "",
                     expires = GMTDate.START,
                 )
+                call.respond(OK)
             }
             accountRouting(services.accountService)
             complaintRouting(repos.complaintRepo, repos.messageRepo)
