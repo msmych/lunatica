@@ -55,8 +55,8 @@ jobs:
           username: ubuntu
           key: ${{ secrets.EC2_PRIVATE_KEY }}
           script: |
-            docker stop lunatica-docker || true
-            docker rm lunatica-docker || true
+            docker stop lunatica-app || true
+            docker rm lunatica-app || true
             aws ecr get-login-password --region eu-west-2 | docker login --username AWS --password-stdin 667377285515.dkr.ecr.eu-west-2.amazonaws.com
             docker pull 667377285515.dkr.ecr.eu-west-2.amazonaws.com/lunatica-docker:latest
             docker run -d \
