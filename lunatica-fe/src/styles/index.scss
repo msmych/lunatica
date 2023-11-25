@@ -1,0 +1,11 @@
+@import './colors';
+@import './reset';
+@import './media-queries';
+
+body {
+  height: 100vh;
+}
+
+#app {
+  height: 100%;
+}

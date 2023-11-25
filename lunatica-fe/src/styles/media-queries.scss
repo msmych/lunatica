@@ -1,0 +1,56 @@
+/*---------------------------------
+  Breakpoints + Variables
+ ---------------------------------*/
+
+// Breakpoints
+// Used throughout legos; can be used by consuming projects as well
+// Or those projects can set their own breakpoints, e.g. $break--base--projectname
+// Important that consuming projects at least have access to these,
+// so they can hook into the points where the left nav hides, for example
+$break--xs: 23.4375rem; // Triggers at 375px
+$break--xs-plus: 37.5rem; // Triggers at 600px
+$break--base: 47.9375rem; // Triggers at 767px
+$break--small: 63.75rem; // Triggers at 1020px
+$break--medium: 79.9375rem; // Triggers at 1279px
+$break--large: 100rem; // Triggers at 1600px
+$break--extra: 125rem; // Triggers at 2000px
+
+$break--reg-exp-medium: 60.875rem; // Triggers at 974px
+$break--reg-exp-large: 88.0625rem; // Triggers at 1409px
+$break--reg-exp-extra: 102.125rem; // Triggers at 1634px
+
+$break--4x-zoom: 16.875rem; // Triggers at 270px (1080px / 4)
+$break--3x-zoom: 25.3125rem; // Triggers at 405px
+$break--2x-zoom: 33.75rem; // Triggers at 540px (1080px / 2)
+
+// Note: Most times you use a breakpoint mixin it should use 'at-break', please try to only
+// use 'under-break' when it avoids creating unnecessary overrides at larger breakpoints
+
+// Example: @include at-break(breakpoint-variable)
+@mixin at-break($viewportWidth) {
+	@media only screen and (min-width: $viewportWidth) {
+		@content;
+	}
+}
+// Example: @include under-break(breakpoint-variable)
+@mixin under-break($viewportWidth) {
+	@media only screen and (max-width: ($viewportWidth - 0.0625rem)) {
+		@content;
+	}
+}
+
+// Example: @include under-height-break(breakpoint-variable)
+@mixin under-height-break($viewportHeight) {
+	@media only screen and (max-height: ($viewportHeight - 0.0625rem)) {
+		@content;
+	}
+}
+
+:export {
+	breakXs: math.div($break--xs * 16, 1rem);
+	breakBase: math.div($break--base * 16, 1rem);
+	breakSmall: math.div($break--small * 16, 1rem);
+	breakMedium: math.div($break--medium * 16, 1rem);
+	breakLarge: math.div($break--large * 16, 1rem);
+	breakExtra: math.div($break--extra * 16, 1rem);
+}
