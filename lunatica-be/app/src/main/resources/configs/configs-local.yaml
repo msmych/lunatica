@@ -3,3 +3,4 @@ db:
   username: postgres
   password: postgres
   driverClassName: org.postgresql.Driver
+baseUrl: localhost:8080
