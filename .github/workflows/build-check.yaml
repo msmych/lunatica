@@ -18,8 +18,14 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      - name: Build and Check
+      - name: Build and Check Backend
         run: |
           cd lunatica-be
           ./gradlew app:check
+          cd ..
 
+      - name: Build and Check Frontend
+        run: |
+          cd lunatica-fe
+          yarn install && yarn build
+          cd ..
