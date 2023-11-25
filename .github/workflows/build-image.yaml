@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - main
-      - remove-not-latest-images
 
 jobs:
   build:
