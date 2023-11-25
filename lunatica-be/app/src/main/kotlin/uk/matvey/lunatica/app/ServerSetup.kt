@@ -8,6 +8,7 @@ import io.ktor.http.HttpHeaders.AccessControlAllowOrigin
 import io.ktor.http.HttpHeaders.Authorization
 import io.ktor.http.HttpHeaders.ContentType
 import io.ktor.http.HttpHeaders.Cookie
+import io.ktor.http.HttpHeaders.SetCookie
 import io.ktor.http.HttpMethod.Companion.Delete
 import io.ktor.http.HttpMethod.Companion.Options
 import io.ktor.http.HttpMethod.Companion.Patch
@@ -72,6 +73,8 @@ fun Application.setupServer(
         allowHeader(ContentType)
         allowHeader(Authorization)
         allowHeader(Cookie)
+
+        exposeHeader(SetCookie)
 
         allowCredentials = true
 
