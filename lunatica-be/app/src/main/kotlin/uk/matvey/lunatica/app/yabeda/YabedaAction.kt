@@ -1,8 +1,8 @@
 package uk.matvey.lunatica.app.yabeda
 
 import com.neovisionaries.i18n.CountryCode
-import uk.matvey.lunatica.complaint.Complaint
 import uk.matvey.lunatica.account.Account
+import uk.matvey.lunatica.complaint.Complaint
 
 sealed class YabedaAction {
 
@@ -23,7 +23,7 @@ sealed class YabedaAction {
         val type: Complaint.Type,
     ) : YabedaAction()
 
-    class SendComplaintMessage(val userId: Long, val complaint: Complaint, val text: String) : YabedaAction()
+    class SendComplaintMessage(val userId: Long, val account: Account, val complaint: Complaint, val text: String) : YabedaAction()
     class SetAccountEmail(val userId: Long, val account: Account, val complaint: Complaint, val email: String) :
         YabedaAction()
 
