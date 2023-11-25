@@ -2,7 +2,12 @@ package uk.matvey.lunatica.app
 
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm.HMAC256
+import io.ktor.http.HttpHeaders.AccessControlAllowHeaders
+import io.ktor.http.HttpHeaders.AccessControlAllowMethods
+import io.ktor.http.HttpHeaders.AccessControlAllowOrigin
 import io.ktor.http.HttpHeaders.Authorization
+import io.ktor.http.HttpHeaders.ContentType
+import io.ktor.http.HttpHeaders.Cookie
 import io.ktor.http.HttpMethod.Companion.Delete
 import io.ktor.http.HttpMethod.Companion.Options
 import io.ktor.http.HttpMethod.Companion.Patch
@@ -61,7 +66,14 @@ fun Application.setupServer(
         allowMethod(Delete)
         allowMethod(Patch)
 
+        allowHeader(AccessControlAllowHeaders)
+        allowHeader(AccessControlAllowMethods)
+        allowHeader(AccessControlAllowOrigin)
+        allowHeader(ContentType)
         allowHeader(Authorization)
+        allowHeader(Cookie)
+
+        allowCredentials = true
 
         anyHost()
     }
