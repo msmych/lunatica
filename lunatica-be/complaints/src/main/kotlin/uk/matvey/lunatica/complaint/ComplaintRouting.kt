@@ -1,6 +1,8 @@
 package uk.matvey.lunatica.complaint
 
+import com.auth0.jwt.JWT
 import com.neovisionaries.i18n.CountryCode
+import io.ktor.http.HttpStatusCode
 import io.ktor.http.HttpStatusCode.Companion.Created
 import io.ktor.http.HttpStatusCode.Companion.NoContent
 import io.ktor.server.application.call
@@ -12,13 +14,11 @@ import io.ktor.server.routing.post
 import io.ktor.server.routing.route
 import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
-import uk.matvey.lunatica.message.Message
-import uk.matvey.lunatica.message.MessageRepo
+import uk.matvey.lunatica.message.MessageService
 import java.time.LocalDate
 import java.util.UUID
-import java.util.UUID.randomUUID
 
-fun Route.complaintRouting(complaintRepo: ComplaintRepo, messageRepo: MessageRepo) {
+fun Route.complaintRouting(complaintRepo: ComplaintRepo, messageService: MessageService) {
     route("complaints") {
         get {
             val limit = call.request.queryParameters["limit"]?.toInt() ?: 20
@@ -26,14 +26,16 @@ fun Route.complaintRouting(complaintRepo: ComplaintRepo, messageRepo: MessageRep
             call.respond(complaints)
         }
         post { request: CreateComplaintRequest ->
+            val token = call.request.cookies["auth"] ?: return@post call.respond(HttpStatusCode.Unauthorized)
+            val accountId = UUID.fromString(JWT.decode(token).subject)
             val complaint = Complaint.new(
-                randomUUID(),
+                accountId,
                 request.problemCountry,
                 request.problemDate,
                 request.type
             )
             complaintRepo.insert(complaint)
-            messageRepo.insert(Message.complaintMessage(complaint.id, request.content))
+            messageService.createMessage(accountId, complaint.id, request.content)
             call.respond(Created, """{"id":"${complaint.id}"}""")
         }
         route("/{id}") {
