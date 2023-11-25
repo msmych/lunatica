@@ -3,9 +3,6 @@ name: Build Check
 on:
   pull_request:
     branches: [ main ]
-  push:
-    branches:
-      - build-and-check-update
 
 jobs:
   build:
