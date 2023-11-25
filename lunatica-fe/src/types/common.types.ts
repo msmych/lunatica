@@ -32,3 +32,10 @@ export interface Complaint {
 	content: string,
 	status: string
 }
+
+export interface User {
+	id: string,
+	roles: string[],
+	email: string,
+}
+
