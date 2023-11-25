@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - remove-not-latest-images
 
 jobs:
   build:
@@ -41,6 +42,12 @@ jobs:
 
       - name: AWS ECR login
         uses: aws-actions/amazon-ecr-login@v1
+
+      - name: Remove previous Docker image from ECR
+        run: |
+          REPOSITORY_NAME="lunatica-docker"
+          IMAGE_TAG="latest"
+          aws ecr batch-delete-image --repository-name $REPOSITORY_NAME --image-ids imageTag=$IMAGE_TAG || true
 
       - name: Build and push Docker image
         run: |
