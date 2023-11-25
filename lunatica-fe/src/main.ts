@@ -13,8 +13,7 @@ const pinia = createPinia()
 app.use(pinia)
 app.use(router)
 
-const BaseURL = import.meta.env.MODE === 'development' ? 'http://localhost:8080/' : ''
-console.log('import.meta.env.MODE', import.meta.env.MODE === 'development')
+const BaseURL = import.meta?.env?.MODE === 'development' ? 'http://localhost:8080/' : ''
 console.log('BaseURL', BaseURL)
 
 axios.interceptors.request.use(function (config) {
