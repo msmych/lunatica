@@ -1,5 +1,10 @@
 package uk.matvey.lunatica.app
 
+import io.ktor.http.HttpHeaders.Authorization
+import io.ktor.http.HttpMethod.Companion.Delete
+import io.ktor.http.HttpMethod.Companion.Options
+import io.ktor.http.HttpMethod.Companion.Patch
+import io.ktor.http.HttpMethod.Companion.Put
 import io.ktor.http.HttpStatusCode.Companion.OK
 import io.ktor.serialization.kotlinx.json.json
 import io.ktor.server.application.Application
@@ -14,6 +19,7 @@ import io.ktor.server.http.content.staticResources
 import io.ktor.server.netty.Netty
 import io.ktor.server.plugins.callloging.CallLogging
 import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.server.plugins.cors.routing.CORS
 import io.ktor.server.response.respond
 import io.ktor.server.routing.get
 import io.ktor.server.routing.post
@@ -45,6 +51,16 @@ fun Application.setupServer(
     }
     install(ContentNegotiation) {
         json(JSON)
+    }
+    install(CORS) {
+        allowMethod(Options)
+        allowMethod(Put)
+        allowMethod(Delete)
+        allowMethod(Patch)
+
+        allowHeader(Authorization)
+
+        anyHost()
     }
     authentication {
         basic {

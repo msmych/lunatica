@@ -12,6 +12,7 @@ dependencies {
     implementation("io.ktor:ktor-serialization-kotlinx-json")
     implementation("io.ktor:ktor-server-auth-jvm")
     implementation("io.ktor:ktor-server-core-jvm")
+    implementation("io.ktor:ktor-server-cors-jvm")
     implementation("com.github.pengrad:java-telegram-bot-api:6.9.1")
     implementation("com.zaxxer:HikariCP:5.0.1")
     implementation("io.github.microutils:kotlin-logging-jvm:2.0.11")
