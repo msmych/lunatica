@@ -113,6 +113,16 @@ object ComplaintSetup {
         OTHER to TgLabel("❔", "Другое"),
     )
 
+    val COMPLAINTS_STATES = mapOf(
+        Complaint.State.DRAFT to TgLabel("\uD83D\uDCDD", "Черновик"),
+        Complaint.State.NEW to TgLabel("\uD83C\uDD95", "Новое"),
+        Complaint.State.READ to TgLabel("\uD83D\uDC40", "Прочитанное"),
+        Complaint.State.IN_PROGRESS to TgLabel("🚀", "В обработке"),
+        Complaint.State.RESOLVED to TgLabel("✅", "Готово"),
+        Complaint.State.CANCELLED to TgLabel("\uD83D\uDDD1\uFE0F", "Отменено"),
+        Complaint.State.DELETED to TgLabel("\uD83D\uDEAB", "Удалено"),
+    )
+
     @Serializable
     data class TgLabel(
         val emoji: String,
