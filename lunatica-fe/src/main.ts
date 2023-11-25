@@ -17,6 +17,7 @@ app.use(router)
 axios.interceptors.request.use(function (config) {
 	// console.log(config)
 	config.baseURL = import.meta.env.MODE === 'development' ? 'http://localhost:8080/' : ''
+	console.log('import.meta.env.MODE', import.meta.env.MODE)
 	return config;
 }, function (error) {
 	return Promise.reject(error);
