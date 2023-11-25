@@ -5,16 +5,17 @@ import com.sksamuel.hoplite.addResourceSource
 import com.zaxxer.hikari.HikariConfig
 import mu.KotlinLogging
 import uk.matvey.lunatica.app.yabeda.startYabedaBot
+import java.net.URI
 
 val log = KotlinLogging.logger("Lunatica App")
 
 fun main() {
-    val configs = loadConfigs(System.getenv("LUNATICA_PROFILE"))
-    val repos = Repos(configs.db.hikariConfig())
+    val config = loadConfigs(System.getenv("LUNATICA_PROFILE"))
+    val repos = Repos(config.db.hikariConfig())
     val services = Services(repos)
     migrateDb(repos.ds)
     log.info { "Starting server" }
-    val yabedaBot = startYabedaBot(services, repos)
+    val yabedaBot = startYabedaBot(services, repos, config)
     createServer(services, repos).start(wait = yabedaBot == null)
 }
 
@@ -27,6 +28,7 @@ fun loadConfigs(profile: String): AppConfig {
 
 data class AppConfig(
     val db: DbConfig,
+    val baseUrl: URI,
 ) {
     data class DbConfig(
         val jdbcUrl: String,

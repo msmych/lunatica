@@ -2,13 +2,19 @@ package uk.matvey.lunatica.app.yabeda
 
 import com.pengrad.telegrambot.TelegramBot
 import com.pengrad.telegrambot.request.SendMessage
+import uk.matvey.lunatica.app.AppConfig
 import uk.matvey.lunatica.message.MessageService
 
 suspend fun sendComplaintMessage(
     action: YabedaAction.SendComplaintMessage,
     messageService: MessageService,
-    bot: TelegramBot
+    bot: TelegramBot,
+    config: AppConfig,
 ) {
     messageService.createMessage(action.complaint.id, action.text)
-    bot.execute(SendMessage(action.userId, "Напишите адрес электронной почты для обратной связи:"))
+    if (action.account.email == null) {
+        bot.execute(SendMessage(action.userId, "Напишите адрес электронной почты для обратной связи:"))
+    } else {
+        bot.sendComplaintLink(action.userId, action.complaint.id, config)
+    }
 }

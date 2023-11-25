@@ -6,6 +6,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.newSingleThreadContext
+import uk.matvey.lunatica.app.AppConfig
 import uk.matvey.lunatica.app.Repos
 import uk.matvey.lunatica.app.Services
 import uk.matvey.lunatica.app.yabeda.YabedaAction.FileComplaint
@@ -18,6 +19,7 @@ import uk.matvey.lunatica.app.yabeda.YabedaAction.SetComplaintType
 fun startYabedaBot(
     services: Services,
     repos: Repos,
+    config: AppConfig,
 ): TelegramBot? {
     val bot = System.getenv("YABEDA_BOT_TOKEN").takeIf { it != "NONE" }?.let(::TelegramBot)
     val actionSelector = YabedaActionSelector(repos.accountRepo, repos.complaintRepo, repos.messageRepo)
@@ -29,8 +31,15 @@ fun startYabedaBot(
                     is FileComplaint -> fileComplaint(action, services.accountService, services.complaintService, bot)
                     is SetComplaintCountry -> setComplaintCountry(services.complaintService, action, bot)
                     is SetComplaintType -> setComplaintType(services.complaintService, action, bot)
-                    is SendComplaintMessage -> sendComplaintMessage(action, services.messageService, bot)
-                    is SetAccountEmail -> setAccountEmail(services.accountService, services.complaintService, action, bot)
+                    is SendComplaintMessage -> sendComplaintMessage(action, services.messageService, bot, config)
+                    is SetAccountEmail -> setAccountEmail(
+                        services.accountService,
+                        services.complaintService,
+                        action,
+                        bot,
+                        config
+                    )
+
                     is YabedaAction.Noop -> {}
                 }
             }

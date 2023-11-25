@@ -38,6 +38,7 @@ import io.ktor.server.routing.routing
 import io.ktor.util.date.GMTDate
 import kotlinx.serialization.Serializable
 import org.slf4j.event.Level
+import uk.matvey.lunatica.account.Account
 import uk.matvey.lunatica.account.accountRouting
 import uk.matvey.lunatica.complaint.ComplaintSetup.JSON
 import uk.matvey.lunatica.complaint.complaintRouting
@@ -109,7 +110,7 @@ fun Application.setupRouting(services: Services, repos: Repos) {
                 val token = JWT.create()
                     .withSubject(account.id.toString())
                     .withClaim("email", request.email)
-                    .withClaim("roles", listOf("BASIC"))
+                    .withClaim("roles", listOf(Account.Role.BASIC.name))
                     .sign(HMAC256("auth-secret"))
                 call.response.cookies.append(
                     name = "auth",

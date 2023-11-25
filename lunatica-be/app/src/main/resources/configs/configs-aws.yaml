@@ -3,3 +3,4 @@ db:
   username: postgres
   password: ${DB_PASS}
   driverClassName: org.postgresql.Driver
+baseUrl: http://ec2-13-41-186-167.eu-west-2.compute.amazonaws.com
