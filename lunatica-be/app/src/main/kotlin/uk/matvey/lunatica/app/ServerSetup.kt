@@ -127,6 +127,7 @@ fun Application.setupRouting(services: Services, repos: Repos) {
                 )
                 call.respond(OK)
             }
+            infoRouting()
             accountRouting(services.accountService, repos.accountRepo)
             complaintRouting(repos.complaintRepo, repos.messageRepo)
             messageRouting(repos.messageRepo)
