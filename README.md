@@ -53,6 +53,19 @@ Response: `200` + set cookie `auth`
 Request: `POST /api/logout`
 Response: `200` + Expire cookie `auth`
 
+### Update own account
+Request: `PATCH /api/me`
+```json
+{
+    "pass": "string"
+}
+```
+Response: `200`
+
+### Toggle account role
+Request: `POST /api/accounts/:id/roles/:role/toggle`
+Response: `200`
+
 ### Create complaint
 Request: `POST /api/complaints`
 ```json

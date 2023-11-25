@@ -1,6 +1,6 @@
 package uk.matvey.lunatica.message
 
-import io.ktor.http.HttpStatusCode.Companion.OK
+import io.ktor.http.HttpStatusCode.Companion.Created
 import io.ktor.server.application.call
 import io.ktor.server.response.respond
 import io.ktor.server.routing.Route
@@ -14,7 +14,7 @@ fun Route.messageRouting(messageRepo: MessageRepo) {
         get {
             val complaintId = UUID.fromString(call.request.queryParameters.getOrFail("complaintId"))
             val messages = messageRepo.listByComplaintId(complaintId)
-            call.respond(OK, messages)
+            call.respond(Created, messages)
         }
     }
 }
