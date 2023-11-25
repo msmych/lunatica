@@ -23,8 +23,9 @@ data class Account(
 ) : Entity<Uuid> {
 
     enum class Role {
-        BASIC,
         ADMIN,
+        WORKER,
+        CLIENT,
     }
 
     companion object {
@@ -34,7 +35,7 @@ data class Account(
                 randomUUID(),
                 null,
                 null,
-                listOf(Role.BASIC),
+                listOf(Role.CLIENT),
                 tgChatId,
                 now,
                 now
@@ -46,7 +47,7 @@ data class Account(
                 randomUUID(),
                 email,
                 passHash,
-                listOf(Role.BASIC),
+                listOf(Role.CLIENT),
                 null,
                 now,
                 now
