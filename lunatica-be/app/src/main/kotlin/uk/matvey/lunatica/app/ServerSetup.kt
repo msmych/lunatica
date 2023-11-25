@@ -110,7 +110,7 @@ fun Application.setupRouting(services: Services, repos: Repos) {
                 val token = JWT.create()
                     .withSubject(account.id.toString())
                     .withClaim("email", request.email)
-                    .withClaim("roles", listOf(Account.Role.BASIC.name))
+                    .withClaim("roles", listOf(Account.Role.CLIENT.name))
                     .sign(HMAC256("auth-secret"))
                 call.response.cookies.append(
                     name = "auth",

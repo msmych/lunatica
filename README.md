@@ -42,6 +42,9 @@ Response: `201`
 }
 ```
 
+### Get accounts
+Request: `GET /api/accounts?role=ADMIN`
+
 ### Login
 Request: `POST /api/login`
 ```json

@@ -21,8 +21,8 @@ class AccountPgRepo(ds: DataSource, dispatcher: CoroutineDispatcher) :
         return selectStar("where id = ?", uuidRel(id)).single()
     }
 
-    suspend fun getCollaborators(): List<Account> {
-        return selectStar("where 'ADMIN' = any(roles)")
+    suspend fun list(role: Account.Role?): List<Account> {
+        return selectStar(role?.let { "where '$it' = any(roles)" } ?: "")
     }
 
     override suspend fun findByEmail(email: String): Account? {

@@ -17,9 +17,10 @@ import java.util.UUID
 
 fun Route.accountRouting(accountService: AccountService, accountPgRepo: AccountPgRepo) {
     route("/accounts") {
-        get("/collaborators") {
-            val collaborators = accountPgRepo.getCollaborators()
-            call.respond(collaborators)
+        get {
+            val role = call.request.queryParameters["role"]?.let(Account.Role::valueOf)
+            val accounts = accountPgRepo.list(role)
+            call.respond(accounts)
         }
         post { request: CreateAccountRequest ->
             val accountId = accountService.createAccount(request.email, request.pass)
