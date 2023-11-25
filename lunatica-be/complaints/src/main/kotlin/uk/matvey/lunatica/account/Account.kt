@@ -16,10 +16,16 @@ data class Account(
     val id: @Contextual UUID,
     val email: String?,
     val passHash: String?,
+    val roles: List<Role>,
     val tgChatId: Long?,
     val createdAt: @Contextual Instant,
     val updatedAt: @Contextual Instant
 ) : Entity<Uuid> {
+
+    enum class Role {
+        BASIC,
+        ADMIN,
+    }
 
     companion object {
         fun tgAccount(tgChatId: Long): Account {
@@ -28,6 +34,7 @@ data class Account(
                 randomUUID(),
                 null,
                 null,
+                listOf(Role.BASIC),
                 tgChatId,
                 now,
                 now
@@ -39,6 +46,7 @@ data class Account(
                 randomUUID(),
                 email,
                 passHash,
+                listOf(Role.BASIC),
                 null,
                 now,
                 now

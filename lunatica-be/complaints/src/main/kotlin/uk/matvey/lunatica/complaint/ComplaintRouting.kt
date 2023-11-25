@@ -21,6 +21,10 @@ import java.util.UUID.randomUUID
 
 fun Route.complaintRouting(complaintRepo: ComplaintRepo, messageRepo: MessageRepo) {
     route("complaints") {
+        get {
+            val limit = call.request.queryParameters["limit"]?.toInt() ?: 20
+            complaintRepo.list(limit)
+        }
         post { request: CreateComplaintRequest ->
             val complaint = Complaint.new(
                 randomUUID(),

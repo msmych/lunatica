@@ -10,6 +10,7 @@ import uk.matvey.lunatica.repo.RelCol.Date
 import uk.matvey.lunatica.repo.RelCol.Jsonb
 import uk.matvey.lunatica.repo.RelCol.Num
 import uk.matvey.lunatica.repo.RelCol.Text
+import uk.matvey.lunatica.repo.RelCol.TextArray
 import uk.matvey.lunatica.repo.RelCol.TimeStamp
 import uk.matvey.lunatica.repo.RelCol.Uuid
 import uk.matvey.lunatica.repo.RelTab
@@ -72,6 +73,7 @@ abstract class PgRepo<E>(
             }
 
             is TimeStamp -> statement.setTimestamp(i, Timestamp.from(value.value))
+            is TextArray -> statement.setArray(i, statement.connection.createArrayOf("text", value.value.toTypedArray()))
             is Jsonb -> statement.setObject(i, PGobject().apply {
                 this.type = "jsonb"
                 this.value = Json.encodeToString(value.value)
