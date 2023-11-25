@@ -2,6 +2,7 @@ package uk.matvey.lunatica.complaint
 
 import com.neovisionaries.i18n.CountryCode
 import kotlinx.serialization.KSerializer
+import kotlinx.serialization.Serializable
 import kotlinx.serialization.descriptors.PrimitiveKind
 import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
 import kotlinx.serialization.encoding.Decoder
@@ -9,7 +10,15 @@ import kotlinx.serialization.encoding.Encoder
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.modules.contextual
-import uk.matvey.lunatica.complaint.Complaint.Type.*
+import uk.matvey.lunatica.complaint.Complaint.Type.BANK_ACCOUNT_OPENING_REJECTED
+import uk.matvey.lunatica.complaint.Complaint.Type.BANK_DEPOSIT_REJECTED
+import uk.matvey.lunatica.complaint.Complaint.Type.EMPLOYMENT_REJECTED
+import uk.matvey.lunatica.complaint.Complaint.Type.FLAT_RENT_REJECTED
+import uk.matvey.lunatica.complaint.Complaint.Type.FLIGHT_ENTRY_REJECTED
+import uk.matvey.lunatica.complaint.Complaint.Type.INSTAGRAM_AD_REJECTED
+import uk.matvey.lunatica.complaint.Complaint.Type.OTHER
+import uk.matvey.lunatica.complaint.Complaint.Type.RESIDENCE_PERMIT_REJECTED
+import uk.matvey.lunatica.complaint.Complaint.Type.RESIDENCE_PERMIT_REVOKED
 import java.time.Instant
 import java.time.LocalDate
 import java.util.UUID
@@ -92,18 +101,19 @@ object ComplaintSetup {
         CountryCode.UNDEFINED to TgLabel("❔", "Другая")
     )
 
-    fun Complaint.Type.toTgLabel() = when (this) {
-        BANK_ACCOUNT_OPENING_REJECTED -> TgLabel("🏦", "Не дают открыть счет")
-        FLIGHT_ENTRY_REJECTED -> TgLabel("🛫", "Не пустили на самолёт")
-        BANK_DEPOSIT_REJECTED -> TgLabel("💰", "Не дают внести деньги на имеющийся счёт")
-        INSTAGRAM_AD_REJECTED -> TgLabel("📱", "Инстаграм не даёт оплатить рекламу")
-        FLAT_RENT_REJECTED -> TgLabel("🏠", "Не сдают квартиру")
-        EMPLOYMENT_REJECTED -> TgLabel("👷‍♂️", "Не берут на работу")
-        RESIDENCE_PERMIT_REJECTED -> TgLabel("🪪", "Отказали в ВНЖ без объяснения причин")
-        RESIDENCE_PERMIT_REVOKED -> TgLabel("🧌", "Забрали ВНЖ")
-        OTHER -> TgLabel("❔", "Другое")
-    }
+    val COMPLAINTS_TYPES = mapOf(
+        BANK_ACCOUNT_OPENING_REJECTED to TgLabel("🏦", "Не дают открыть счет"),
+        FLIGHT_ENTRY_REJECTED to TgLabel("🛫", "Не пустили на самолёт"),
+        BANK_DEPOSIT_REJECTED to TgLabel("💰", "Не дают внести деньги на имеющийся счёт"),
+        INSTAGRAM_AD_REJECTED to TgLabel("📱", "Инстаграм не даёт оплатить рекламу"),
+        FLAT_RENT_REJECTED to TgLabel("🏠", "Не сдают квартиру"),
+        EMPLOYMENT_REJECTED to TgLabel("👷‍♂️", "Не берут на работу"),
+        RESIDENCE_PERMIT_REJECTED to TgLabel("🪪", "Отказали в ВНЖ без объяснения причин"),
+        RESIDENCE_PERMIT_REVOKED to TgLabel("🧌", "Забрали ВНЖ"),
+        OTHER to TgLabel("❔", "Другое"),
+    )
 
+    @Serializable
     data class TgLabel(
         val emoji: String,
         val nameRu: String

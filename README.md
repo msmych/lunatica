@@ -24,6 +24,9 @@ YABEDA_BOT_TOKEN=<bot-token> docker-compose up --build
 
 ## Endpoints
 
+### Get app info
+Request: `/api/info`
+
 ### Create account
 Request: `POST /api/accounts`
 ```json
