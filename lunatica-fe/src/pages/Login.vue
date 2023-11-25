@@ -1,12 +1,10 @@
 <script setup lang="ts">
   import { reactive } from 'vue'
-  // import { reactive, getCurrentInstance } from 'vue'
   import axios from 'axios';
   import router from './../router'
   import { useConfigStore } from './../state'
 
-  // const app = getCurrentInstance()
-  // const BASE_URL = app.appContext.config.globalProperties.$BASE_URL
+  const BaseURL = import.meta.env.MODE === 'development' ? 'http://localhost:8080/' : ''
 
   const data = reactive({
     credentials: {
@@ -21,7 +19,7 @@
     axios({
       method: 'post',
       url: 'api/login',
-      baseURL: 'http://localhost:8080/',
+      baseURL: BaseURL,
       headers: {'Content-Type': 'application/json'},
       withCredentials: true,
       data: data.credentials
@@ -43,7 +41,7 @@
     axios({
       method: 'get',
       url: 'api/me',
-      baseURL: 'http://localhost:8080/',
+      baseURL: BaseURL,
       withCredentials: true
     }).then(response => {
       useConfigStore().setUser({
