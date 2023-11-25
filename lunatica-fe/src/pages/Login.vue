@@ -4,6 +4,8 @@
   import router from './../router'
   import { useConfigStore } from './../state'
 
+  const BaseURL = import.meta.env.MODE === 'development' ? 'http://localhost:8080/' : ''
+
   const data = reactive({
     credentials: {
       email: '',
@@ -16,7 +18,8 @@
   function login() {
     axios({
       method: 'post',
-      url: 'http://localhost:8080/api/login',
+      url: 'api/login',
+      baseURL: BaseURL,
       headers: {'Content-Type': 'application/json'},
       withCredentials: true,
       data: data.credentials
@@ -37,7 +40,8 @@
   function getUserData() {
     axios({
       method: 'get',
-      url: 'http://localhost:8080/api/me',
+      url: 'api/me',
+      baseURL: BaseURL,
       withCredentials: true
     }).then(response => {
       useConfigStore().setUser({
