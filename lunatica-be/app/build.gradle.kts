@@ -19,6 +19,7 @@ dependencies {
     implementation("org.flywaydb:flyway-core:9.22.3")
     implementation("com.sksamuel.hoplite:hoplite-core:2.7.5")
     implementation("com.sksamuel.hoplite:hoplite-yaml:2.7.5")
+    implementation("com.auth0:java-jwt:4.4.0")
 
     implementation(project(":complaints"))
 }

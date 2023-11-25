@@ -16,8 +16,10 @@ import io.ktor.server.plugins.callloging.CallLogging
 import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.server.response.respond
 import io.ktor.server.routing.get
+import io.ktor.server.routing.post
 import io.ktor.server.routing.route
 import io.ktor.server.routing.routing
+import kotlinx.serialization.Serializable
 import org.slf4j.event.Level
 import uk.matvey.lunatica.account.accountRouting
 import uk.matvey.lunatica.complaint.ComplaintSetup.JSON
@@ -64,9 +66,18 @@ fun Application.setupRouting(services: Services, repos: Repos) {
             call.respond(OK)
         }
         route("/api") {
+            post("/login") { request: LoginRequest ->
+
+            }
             accountRouting(services.accountService)
             complaintRouting(repos.complaintRepo, repos.messageRepo)
             messageRouting(repos.messageRepo)
         }
     }
 }
+
+@Serializable
+data class LoginRequest(
+    val email: String,
+    val pass: String,
+)
