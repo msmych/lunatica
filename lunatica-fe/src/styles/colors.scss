@@ -1,0 +1,70 @@
+// figma:   https://www.figma.com/file/awhGlPEnTyAOfb1ExzVq24/Agency-IQ-Design-System
+// zeplin: https://app.zeplin.io/project/5dcf034eec737944ea226f0b/screen/5eb40b4b321e16742b600ad8
+
+// Naming Methodology: ${{primaryColor}}{{hue lightness}}
+//
+// Color Format: HSL to allow easier distinction between similar colors
+// and prevent duplication of similar colors
+//
+// Comment: Provide the hex value that you use for converting to HSL in
+// the event designers need to refer to it
+
+// moon
+$moonLight7: rgba(0, 0, 0, 0.07);
+$moon10: hsl(229, 31%, 10%); // #474A57
+$moon20: hsl(228, 23%, 20%); // #282d40
+$moon24: hsl(210, 29%, 24%); // #2c3e50
+$moon25: hsl(0, 0%, 25%); // #404040
+$moon30: hsl(0, 0%, 30%); // #4c4c4c
+$moon35: hsla(0, 0%, 71%, 0.35); // #b4b4b4 @ 35% Opacity
+$moon37: hsl(0, 0%, 37%); // #5e5e5e
+$moon38: hsl(0, 0%, 38%); // #616161
+$moon43: hsl(206, 3%, 43%); // #696d70
+$moon46: hsl(0, 0%, 46%); // #757575
+$moon48: hsl(0, 0%, 48%); // #7b7b7b
+$moon56: hsl(218, 10%, 56%); //#848c9a
+$moon66: hsl(0, 0%, 66%); // #a8a8a8
+$moon70: hsl(0, 0%, 70%); // #b3b3b3
+$moon72: hsl(225, 8%, 72%); // #b1b4bd
+$moon79: hsl(0, 1%, 79%); // #c9c8c8
+$moon83: hsl(0, 0%, 83%); // #d4d4d4
+$moon84: hsl(0, 0%, 84%); // #d5d5d5
+$moon89: hsl(0, 0%, 89%); // #e3e3e3
+$moon91: hsl(220, 13%, 91%); // #e5e7eb
+$moon92: hsl(0, 0%, 92%); // #eaeaea
+$moon94: hsl(0, 0%, 94%); // #f0f0f0
+$moon97: hsl(0, 0%, 97%); // #f7f7f7
+
+// royal
+$royal22: hsl(249, 44%, 23%); // #282053
+$royal23: hsl(243, 60%, 23%); // #1c185f
+$royal37: hsl(245, 49%, 37%); // #39318e
+$royal40: hsl(244, 53%, 40%); // #362f9b
+$royal53: hsl(243, 58%, 53%); // #4a42cd
+$royalLight53: hsla(243, 58%, 53%, 0.1); // #4942cd
+$royal60: hsla(243, 58%, 81%, 1); // #B6B3EB
+$royal63: hsl(243, 58%, 63%); // #6f69d7
+$royal72: hsl(244, 58%, 72%); // #938ee1
+$royal80: hsl(243, 58%, 80%); // #b1aeea
+$royal91: hsl(242, 58%, 91%); // #dad9f5
+$royal96:	hsl(251, 58%, 96%); // #f2f0fb
+
+// meadow
+$meadow22: hsl(169, 52%, 22%); // #1b564b
+$meadow26: hsl(170, 77%, 26%); // #0f7665
+$meadow29: hsl(170, 62%, 29%); // #1c7969
+$meadow35: hsl(171, 78%, 35%); // #149f89
+$meadow39: hsl(203, 100%, 39%); // #007bc7
+$meadow45: hsl(170, 77%, 45%); // #1acbae
+$meadow49: hsl(161, 68%, 49%); // #28d09c
+$meadow77: hsl(170, 37%, 77%); // #aedad3
+
+// blush
+$blush74: hsl(0, 69%, 52%); // #d93030
+$blush53: hsl(336, 58%, 53%); // #cd4279
+$blush72: hsl(336, 58%, 72%); // #e18eaf
+$blush73: hsl(357, 81%, 40%); // #ba131a
+$blush96: hsl(336, 58%, 96%); // #fbeff4
+
+// wheat
+$wheat69: hsl(40, 75%, 69%); // #ebc273
