@@ -130,7 +130,7 @@ fun Application.setupRouting(services: Services, repos: Repos) {
             }
             infoRouting()
             accountRouting(services.accountService, repos.accountRepo)
-            complaintRouting(repos.complaintRepo, services.messageService)
+            complaintRouting(repos.complaintRepo, services.messageService, repos.accountRepo)
             messageRouting(services.messageService, repos.messageRepo)
         }
     }
