@@ -2,6 +2,7 @@ package uk.matvey.lunatica.app.yabeda
 
 import com.neovisionaries.i18n.CountryCode
 import com.pengrad.telegrambot.model.Update
+import uk.matvey.lunatica.account.AccountRepo
 import uk.matvey.lunatica.app.yabeda.YabedaAction.FileComplaint
 import uk.matvey.lunatica.app.yabeda.YabedaAction.SendComplaintMessage
 import uk.matvey.lunatica.app.yabeda.YabedaAction.SetAccountEmail
@@ -9,7 +10,6 @@ import uk.matvey.lunatica.app.yabeda.YabedaAction.SetComplaintCountry
 import uk.matvey.lunatica.complaint.Complaint
 import uk.matvey.lunatica.complaint.ComplaintRepo
 import uk.matvey.lunatica.complaint.ComplaintSetup.PROBLEM_COUNTRIES
-import uk.matvey.lunatica.account.AccountRepo
 import uk.matvey.lunatica.message.MessageRepo
 
 class YabedaActionSelector(
@@ -52,6 +52,7 @@ class YabedaActionSelector(
                     return if (messageRepo.listByComplaintId(draftComplaint.id).isEmpty())
                         SendComplaintMessage(
                             update.message().from().id(),
+                            account,
                             draftComplaint,
                             update.message().text()
                         )

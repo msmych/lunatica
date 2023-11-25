@@ -23,6 +23,7 @@ class MessagePgRepo(ds: DataSource, dispatcher: CoroutineDispatcher) :
         return RelTab(
             linkedMapOf(
                 "id" to uuidRel(this.id),
+                "author_id" to uuidRel(this.authorId),
                 "complaint_id" to uuidRel(this.complaintId),
                 "content" to textRel(this.content),
                 "created_at" to timeStampRel(this.createdAt),
@@ -34,6 +35,7 @@ class MessagePgRepo(ds: DataSource, dispatcher: CoroutineDispatcher) :
     override fun ResultSet.toEntity(): Message {
         return Message(
             UUID.fromString(this.getObject("id").toString()),
+            UUID.fromString(this.getObject("author_id").toString()),
             UUID.fromString(this.getObject("complaint_id").toString()),
             this.getString("content"),
             this.getTimestamp("created_at").toInstant(),

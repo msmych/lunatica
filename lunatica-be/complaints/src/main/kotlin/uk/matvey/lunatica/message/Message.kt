@@ -14,6 +14,7 @@ import java.util.UUID.randomUUID
 @Serializable
 data class Message(
     val id: @Contextual UUID,
+    val authorId: @Contextual UUID,
     val complaintId: @Contextual UUID?,
     val content: String,
     val createdAt: @Contextual Instant,
@@ -29,9 +30,9 @@ data class Message(
 
     companion object {
 
-        fun complaintMessage(complaintId: UUID, content: String): Message {
+        fun complaintMessage(authorId: UUID, complaintId: UUID, content: String): Message {
             val now = Instant.now()
-            return Message(randomUUID(), complaintId, content, now, now)
+            return Message(randomUUID(), authorId, complaintId, content, now, now)
         }
     }
 }

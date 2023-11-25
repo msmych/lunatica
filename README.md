@@ -91,3 +91,18 @@ Request: `GET /api/complaints/:id`
 
 ### Get messages by complaint
 Request: `GET /api/messages?complaintId=uuid`
+
+### Create message
+Request: `POST /api/messages`
+```json
+{
+    "complaintId": "uuid",
+    "content": "string"
+}
+```
+Response: `201`
+```json
+{
+    "id": "uuid"
+}
+```
