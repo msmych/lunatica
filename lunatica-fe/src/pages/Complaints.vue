@@ -2,6 +2,7 @@
   import { reactive, onMounted } from 'vue'
   import axios from 'axios';
   import { ApiEndpoints } from './../types/common.types'
+  import { Complaint } from './../types/common.types'
 
   const BaseURL = import.meta.env.MODE === 'development' ? 'http://localhost:8080/api' : 'api/'
   const complaints = reactive([])
