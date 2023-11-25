@@ -15,7 +15,7 @@ build: build-frontend copy-frontend
 build-frontend:
 	cd $(FRONTEND_DIR) && yarn install && yarn build
 
-# copying frontend assets to the backend public directory
+# copying frontend assets to the backend pub dir
 copy-frontend:
 	mkdir -p $(PUBLIC_DIR)
 	cp -R $(DIST_DIR)/* $(PUBLIC_DIR)
@@ -39,4 +39,4 @@ help:
 	@echo "  run-api          - Запуск только API."
 	@echo "  run-bot          - Запуск API вместе с Telegram ботом."
 	@echo "  help             - Показать это сообщение с подсказками."
-	@echo "  clean-docker     - Остановка и удаление Docker'ов."
+	@echo "  clean-docker     - Остановка и удаление докеров."
