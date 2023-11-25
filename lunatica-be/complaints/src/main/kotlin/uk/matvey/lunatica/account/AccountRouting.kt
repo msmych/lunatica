@@ -7,7 +7,6 @@ import io.ktor.server.routing.Route
 import io.ktor.server.routing.post
 import io.ktor.server.routing.route
 import kotlinx.serialization.Serializable
-import uk.matvey.lunatica.sha256
 
 fun Route.accountRouting(accountService: AccountService) {
     route("/accounts") {
