@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
-import { ConfigState, User } from './config.types'
+import { ConfigState } from './config.types'
+import { User } from './../../../types/common.types'
 
 export const useConfigStore = defineStore('ConfigStore', {
 	state: (): ConfigState => ({
