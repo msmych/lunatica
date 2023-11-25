@@ -12,12 +12,13 @@ const app = createApp({
 const pinia = createPinia()
 app.use(pinia)
 app.use(router)
-// app.config.globalProperties.$BASE_URL = import.meta.env.MODE === 'development' ? 'http://localhost:8080/' : ''
+
+const BaseURL = import.meta.env.MODE === 'development' ? 'http://localhost:8080/' : ''
+console.log('import.meta.env.MODE', import.meta.env.MODE)
+console.log('BaseURL', BaseURL)
 
 axios.interceptors.request.use(function (config) {
-	// console.log(config)
-	config.baseURL = import.meta.env.MODE === 'development' ? 'http://localhost:8080/' : ''
-	console.log('import.meta.env.MODE', import.meta.env.MODE)
+	config.baseURL = BaseURL
 	return config;
 }, function (error) {
 	return Promise.reject(error);
