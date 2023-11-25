@@ -68,6 +68,7 @@ jobs:
             docker run -d \
               --name lunatica-app \
               -e LUNATICA_PROFILE=aws \
+              -e YABEDA_BOT_TOKEN=${{ secrets.YABEDA_BOT_TOKEN }} \
               -e DB_PASS=${{ secrets.RDS_DB_PASS }} \
               -p 80:8080 \
               667377285515.dkr.ecr.eu-west-2.amazonaws.com/lunatica-docker:latest
