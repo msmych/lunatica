@@ -11,6 +11,7 @@ dependencies {
     implementation("io.github.microutils:kotlin-logging-jvm:2.0.11")
     implementation("ch.qos.logback:logback-classic:1.2.9")
     implementation("commons-codec:commons-codec:1.16.0")
+    implementation("com.auth0:java-jwt:4.4.0")
 
     api(project(":persistence-pg"))
 }

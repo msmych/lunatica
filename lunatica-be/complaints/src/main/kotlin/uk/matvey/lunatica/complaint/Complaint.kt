@@ -28,6 +28,7 @@ data class Complaint(
         DRAFT,
         NEW,
         READ,
+        IN_PROGRESS,
         RESOLVED,
         CANCELLED,
         DELETED,

@@ -37,6 +37,12 @@ sealed interface RelCol {
         }
     }
 
+    class TextArray(val value: List<String>) : RelCol {
+        companion object {
+            fun textArrayRel(value: List<String>) = TextArray(value)
+        }
+    }
+
     class Jsonb(val value: JsonElement) : RelCol {
         companion object {
             fun jsonbRel(value: JsonElement) = Jsonb(value)
