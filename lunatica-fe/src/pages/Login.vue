@@ -1,10 +1,12 @@
 <script setup lang="ts">
-  import { reactive } from 'vue'
+  // import { reactive } from 'vue'
+  import { reactive, onMounted } from 'vue'
   import axios from 'axios';
   import router from './../router'
   import { useConfigStore } from './../state'
+  import { ApiEndpoints } from './../types/common.types'
 
-  const BaseURL = import.meta.env.MODE === 'development' ? 'http://localhost:8080/' : ''
+  const BaseURL = import.meta.env.MODE === 'development' ? 'http://localhost:8080/api' : 'api/'
 
   const data = reactive({
     credentials: {
@@ -18,7 +20,7 @@
   function login() {
     axios({
       method: 'post',
-      url: 'api/login',
+      url: ApiEndpoints.Login,
       baseURL: BaseURL,
       headers: {'Content-Type': 'application/json'},
       withCredentials: true,
@@ -40,19 +42,23 @@
   function getUserData() {
     axios({
       method: 'get',
-      url: 'api/me',
+      url: ApiEndpoints.Me,
       baseURL: BaseURL,
       withCredentials: true
     }).then(response => {
       useConfigStore().setUser({
         id: response.data.id,
-        role: response.data.role,
+        roles: Object.values(response.data.roles),
         email: response.data.email
       })
 
-      router.push('/home')
+      router.push('/complaints')
     })
   }
+
+  // onMounted(() => {
+	// 	getUserData()
+	// })
 </script>
 
 <template>

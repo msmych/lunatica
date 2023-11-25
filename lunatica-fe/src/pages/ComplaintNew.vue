@@ -2,7 +2,7 @@
 </script>
 
 <template>
-  <p>home page</p>
+  <h1>New complaint</h1>
 </template>
 
 <style scoped>
