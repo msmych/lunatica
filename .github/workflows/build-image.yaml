@@ -62,16 +62,16 @@ jobs:
           username: ubuntu
           key: ${{ secrets.EC2_PRIVATE_KEY }}
           script: |
-            if [ "$(docker ps -aq -f name=lunatica-app)" ]; then
-              docker stop lunatica-app
-              docker rm lunatica-app
+            if [ "$(docker ps -aq -f name=lunatica-docker)" ]; then
+              docker stop lunatica-docker
+              docker rm lunatica-docker
             fi
             docker stop lunatica-docker || true
             docker rm lunatica-docker || true
             aws ecr get-login-password --region eu-west-2 | docker login --username AWS --password-stdin 667377285515.dkr.ecr.eu-west-2.amazonaws.com
             docker pull 667377285515.dkr.ecr.eu-west-2.amazonaws.com/lunatica-docker:latest
             docker run -d \
-              --name lunatica-app \
+              --name lunatica-docker \
               -e LUNATICA_PROFILE=aws \
               -e DB_PASS=${{ secrets.RDS_DB_PASS }} \
               -p 8080:8080 \
