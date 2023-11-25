@@ -5,6 +5,6 @@ export interface ConfigState {
 
 export interface User {
 	id: string,
-	role: string,
+	roles: string[],
 	email: string,
 }

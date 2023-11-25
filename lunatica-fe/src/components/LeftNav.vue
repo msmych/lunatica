@@ -1,20 +1,30 @@
 <script setup lang="ts">
+  import { useConfigStore } from './../state'
+  import { UserType } from './../types/common.types'
+
+  const roles = Object.values(useConfigStore().user.roles)
 </script>
 
 <template>
   <div class="nav">
-    <a class="logo">
-      <img sr="" alt="logo" />
-    </a>
+    <router-link class="logo" to="/">
+      <img src="" alt="logo" />
+    </router-link>
     <ul>
       <li>
-        <router-link to="/active">Active complains</router-link>
+        <router-link to="/complaint-new">Create new complaint</router-link>
       </li>
       <li>
-        <router-link to="/completed">Completed complains</router-link>
+        <router-link to="/complaints">Active complaints</router-link>
+      </li>
+      <li v-if="roles.includes(UserType.Admin) || roles.includes(UserType.Basic)">
+        <router-link to="/complaints-completed">Completed complaints</router-link>
       </li>
       <li>
         <router-link to="/settings">Settings</router-link>
+      </li>
+      <li v-if="roles.includes(UserType.Admin)">
+        <router-link to="/users">Users</router-link>
       </li>
     </ul>
   </div>
@@ -36,7 +46,8 @@
   ul {
     li {
       text-align: center;
-      margin-bottom: 10px;
+      margin-bottom: 20px;
+      border-bottom: 1px solid #fff;
 
       a {
         color: #fff;

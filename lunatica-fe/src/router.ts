@@ -36,20 +36,44 @@ const router = createRouter({
       component: () => import('./pages/Registration.vue')
     },
 		{
-			path: '/home',
-			name: RouteName.Home,
+			path: '/complaint-new',
+			name: RouteName.ComplaintNew,
 			meta: {
-				title: 'Home'
+				title: 'New Complaint'
 			},
-			component: () => import('./pages/Home.vue')
+			component: () => import('./pages/ComplaintNew.vue')
 		},
 		{
-			path: '/dashboard',
-			name: RouteName.Dashboard,
+			path: '/complaints',
+			name: RouteName.Complaints,
 			meta: {
-				title: 'Dashboard'
+				title: 'Complaints'
 			},
-			component: () => import('./pages/Dashboard.vue')
+			component: () => import('./pages/Complaints.vue')
+		},
+		{
+			path: '/complaints-completed',
+			name: RouteName.ComplaintsCompleted,
+			meta: {
+				title: 'Completed Complaints'
+			},
+			component: () => import('./pages/ComplaintsCompleted.vue')
+		},
+		{
+			path: '/settings',
+			name: RouteName.Settings,
+			meta: {
+				title: 'Settings'
+			},
+			component: () => import('./pages/Settings.vue')
+		},
+		{
+			path: '/users',
+			name: RouteName.Users,
+			meta: {
+				title: 'Users'
+			},
+			component: () => import('./pages/Users.vue')
 		},
 	]
 })
