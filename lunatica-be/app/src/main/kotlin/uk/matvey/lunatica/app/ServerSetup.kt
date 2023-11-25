@@ -14,6 +14,7 @@ import io.ktor.http.HttpMethod.Companion.Options
 import io.ktor.http.HttpMethod.Companion.Patch
 import io.ktor.http.HttpMethod.Companion.Put
 import io.ktor.http.HttpStatusCode.Companion.OK
+import io.ktor.http.HttpStatusCode.Companion.Unauthorized
 import io.ktor.serialization.kotlinx.json.json
 import io.ktor.server.application.Application
 import io.ktor.server.application.call
@@ -28,6 +29,7 @@ import io.ktor.server.netty.Netty
 import io.ktor.server.plugins.callloging.CallLogging
 import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.server.plugins.cors.routing.CORS
+import io.ktor.server.response.header
 import io.ktor.server.response.respond
 import io.ktor.server.routing.get
 import io.ktor.server.routing.post
@@ -73,8 +75,10 @@ fun Application.setupServer(
         allowHeader(ContentType)
         allowHeader(Authorization)
         allowHeader(Cookie)
+        allowHeader("Auth-Token")
 
         exposeHeader(SetCookie)
+        exposeHeader("Auth-Token")
 
         allowCredentials = true
 
@@ -101,14 +105,19 @@ fun Application.setupRouting(services: Services, repos: Repos) {
         }
         route("/api") {
             post("/login") { request: LoginRequest ->
+                val account = repos.accountRepo.findByEmail(request.email) ?: return@post call.respond(Unauthorized)
+                val token = JWT.create()
+                    .withSubject(account.id.toString())
+                    .withClaim("email", request.email)
+                    .withClaim("roles", listOf("BASIC"))
+                    .sign(HMAC256("auth-secret"))
                 call.response.cookies.append(
                     name = "auth",
-                    value = JWT.create()
-                        .withClaim("email", request.email)
-                        .sign(HMAC256("auth-secret")),
+                    value = token,
                     httpOnly = true,
                 )
-                call.respond(OK)
+                call.response.header("Auth-Token", token)
+                call.respond(OK, token)
             }
             post("/logout") {
                 call.response.cookies.append(
@@ -117,6 +126,15 @@ fun Application.setupRouting(services: Services, repos: Repos) {
                     expires = GMTDate.START,
                 )
                 call.respond(OK)
+            }
+            get("/me") {
+                val token = call.request.cookies["auth"] ?: return@get call.respond(Unauthorized)
+                val decoded = JWT.decode(token)
+                val account =
+                    repos.accountRepo.findByEmail(decoded.getClaim("email").asString()) ?: return@get call.respond(
+                        Unauthorized
+                    )
+                call.respond(account)
             }
             accountRouting(services.accountService)
             complaintRouting(repos.complaintRepo, repos.messageRepo)
