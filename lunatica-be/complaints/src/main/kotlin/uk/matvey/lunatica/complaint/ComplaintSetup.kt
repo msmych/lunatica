@@ -9,6 +9,7 @@ import kotlinx.serialization.encoding.Encoder
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.modules.contextual
+import uk.matvey.lunatica.complaint.Complaint.Type.*
 import java.time.Instant
 import java.time.LocalDate
 import java.util.UUID
@@ -92,13 +93,13 @@ object ComplaintSetup {
     )
 
     fun Complaint.Type.toTgLabel() = when (this) {
-        ACCOUNT_OPENING -> TgLabel("🏦", "Не дают открыть счет")
-        FLIGHT_ENTRY -> TgLabel("🛫", "Не пустили на самолёт")
-        DEPOSIT -> TgLabel("💰", "Не дают внести деньги на имеющийся счёт")
-        INSTAGRAM -> TgLabel("📱", "Инстаграм не даёт оплатить рекламу")
-        APARTMENT -> TgLabel("🏠", "Не сдают квартиру")
-        EMPLOYMENT -> TgLabel("👷‍♂️", "Не берут на работу")
-        RESIDENCE_PERMIT_DENIED -> TgLabel("🪪", "Отказали в ВНЖ без объяснения причин")
+        BANK_ACCOUNT_OPENING_REJECTED -> TgLabel("🏦", "Не дают открыть счет")
+        FLIGHT_ENTRY_REJECTED -> TgLabel("🛫", "Не пустили на самолёт")
+        BANK_DEPOSIT_REJECTED -> TgLabel("💰", "Не дают внести деньги на имеющийся счёт")
+        INSTAGRAM_AD_REJECTED -> TgLabel("📱", "Инстаграм не даёт оплатить рекламу")
+        FLAT_RENT_REJECTED -> TgLabel("🏠", "Не сдают квартиру")
+        EMPLOYMENT_REJECTED -> TgLabel("👷‍♂️", "Не берут на работу")
+        RESIDENCE_PERMIT_REJECTED -> TgLabel("🪪", "Отказали в ВНЖ без объяснения причин")
         RESIDENCE_PERMIT_REVOKED -> TgLabel("🧌", "Забрали ВНЖ")
         OTHER -> TgLabel("❔", "Другое")
     }
