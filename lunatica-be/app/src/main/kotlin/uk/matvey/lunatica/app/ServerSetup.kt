@@ -1,5 +1,7 @@
 package uk.matvey.lunatica.app
 
+import com.auth0.jwt.JWT
+import com.auth0.jwt.algorithms.Algorithm.HMAC256
 import io.ktor.http.HttpHeaders.Authorization
 import io.ktor.http.HttpMethod.Companion.Delete
 import io.ktor.http.HttpMethod.Companion.Options
@@ -25,6 +27,7 @@ import io.ktor.server.routing.get
 import io.ktor.server.routing.post
 import io.ktor.server.routing.route
 import io.ktor.server.routing.routing
+import io.ktor.util.date.GMTDate
 import kotlinx.serialization.Serializable
 import org.slf4j.event.Level
 import uk.matvey.lunatica.account.accountRouting
@@ -83,7 +86,20 @@ fun Application.setupRouting(services: Services, repos: Repos) {
         }
         route("/api") {
             post("/login") { request: LoginRequest ->
-
+                call.response.cookies.append(
+                    name = "auth",
+                    value = JWT.create()
+                        .withClaim("email", request.email)
+                        .sign(HMAC256("auth-secret")),
+                    httpOnly = true,
+                )
+            }
+            post("/logout") {
+                call.response.cookies.append(
+                    name = "auth",
+                    value = "",
+                    expires = GMTDate.START,
+                )
             }
             accountRouting(services.accountService)
             complaintRouting(repos.complaintRepo, repos.messageRepo)
