@@ -127,15 +127,6 @@ fun Application.setupRouting(services: Services, repos: Repos) {
                 )
                 call.respond(OK)
             }
-            get("/me") {
-                val token = call.request.cookies["auth"] ?: return@get call.respond(Unauthorized)
-                val decoded = JWT.decode(token)
-                val account =
-                    repos.accountRepo.findByEmail(decoded.getClaim("email").asString()) ?: return@get call.respond(
-                        Unauthorized
-                    )
-                call.respond(account)
-            }
             accountRouting(services.accountService, repos.accountRepo)
             complaintRouting(repos.complaintRepo, repos.messageRepo)
             messageRouting(repos.messageRepo)

@@ -3,7 +3,6 @@ package uk.matvey.lunatica.complaint
 import com.neovisionaries.i18n.CountryCode
 import io.ktor.http.HttpStatusCode.Companion.Created
 import io.ktor.http.HttpStatusCode.Companion.NoContent
-import io.ktor.http.HttpStatusCode.Companion.OK
 import io.ktor.server.application.call
 import io.ktor.server.response.respond
 import io.ktor.server.routing.Route
@@ -23,7 +22,8 @@ fun Route.complaintRouting(complaintRepo: ComplaintRepo, messageRepo: MessageRep
     route("complaints") {
         get {
             val limit = call.request.queryParameters["limit"]?.toInt() ?: 20
-            complaintRepo.list(limit)
+            val complaints = complaintRepo.list(limit)
+            call.respond(complaints)
         }
         post { request: CreateComplaintRequest ->
             val complaint = Complaint.new(
@@ -39,7 +39,7 @@ fun Route.complaintRouting(complaintRepo: ComplaintRepo, messageRepo: MessageRep
         route("/{id}") {
             get {
                 val complaint = complaintRepo.get(UUID.fromString(call.parameters["id"]))
-                call.respond(OK, complaint)
+                call.respond(complaint)
             }
             patch { request: UpdateComplaintRequest ->
                 val complaint = complaintRepo.get(UUID.fromString(call.parameters["id"]))
