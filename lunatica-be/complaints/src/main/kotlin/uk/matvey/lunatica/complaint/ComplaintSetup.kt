@@ -9,6 +9,7 @@ import kotlinx.serialization.encoding.Encoder
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.modules.contextual
+import uk.matvey.lunatica.complaint.Complaint.Type.*
 import java.time.Instant
 import java.time.LocalDate
 import java.util.UUID
@@ -60,17 +61,47 @@ object ComplaintSetup {
     }
 
     val PROBLEM_COUNTRIES = mapOf(
-        CountryCode.GB to TgLabel("🇬🇧", "Великобритания"),
-        CountryCode.IT to TgLabel("🇮🇹", "Италия"),
-        CountryCode.DE to TgLabel("🇩🇪", "Германия"),
-        CountryCode.FR to TgLabel("🇫🇷", "Франция"),
-        CountryCode.UNDEFINED to TgLabel("❔", "Другая"),
+        CountryCode.IT to TgLabel("🇮🇹", "Италия"), // 21
+        CountryCode.TR to TgLabel("🇹🇷", "Турция"), // 9
+        CountryCode.BG to TgLabel("🇧🇬", "Болгария"), // 7
+        CountryCode.HU to TgLabel("🇭🇺", "Венгрия"), // 7
+        CountryCode.DE to TgLabel("🇩🇪", "Германия"), // 6
+        CountryCode.ES to TgLabel("🇪🇸", "Испания"), // 6
+        CountryCode.PT to TgLabel("🇵🇹", "Португалия"), // 5
+        CountryCode.RO to TgLabel("🇷🇴", "Румыния"), // 5
+        CountryCode.ME to TgLabel("🇲🇪", "Черногория"), // 4
+        CountryCode.FR to TgLabel("🇫🇷", "Франция"), // 4
+        CountryCode.MD to TgLabel("🇲🇩", "Молдова"), // 4
+        CountryCode.SK to TgLabel("🇸🇰", "Словакия"), // 3
+        CountryCode.RS to TgLabel("🇷🇸", "Сербия"), // 3
+        CountryCode.CZ to TgLabel("🇨🇿", "Чехия"), // 3
+        CountryCode.AU to TgLabel("🇦🇺", "Австралия"), // 3
+        CountryCode.GE to TgLabel("🇬🇪", "Грузия"), // 2
+        CountryCode.CH to TgLabel("🇨🇭", "Швейцария"), // 2
+        CountryCode.HR to TgLabel("🇭🇷", "Хорватия"), // 2
+        CountryCode.LV to TgLabel("🇱🇻", "Латвия"), // 2
+        CountryCode.CY to TgLabel("🇨🇾", "Кипр"), // 2
+        CountryCode.AT to TgLabel("🇦🇹", "Австрия"), // 1
+        CountryCode.AM to TgLabel("🇦🇲", "Армения"), // 1
+        CountryCode.IL to TgLabel("🇮🇱", "Израиль"), // 1
+        CountryCode.US to TgLabel("🇺🇸", "США"), // 1
+        CountryCode.BE to TgLabel("🇧🇪", "Бельгия"), // 1
+        CountryCode.AE to TgLabel("🇦🇪", "Дубай"), // 1
+        CountryCode.FI to TgLabel("🇫🇮", "Финляндия"), // 1
+        CountryCode.SI to TgLabel("🇸🇮", "Словения"), // 1
+        CountryCode.UNDEFINED to TgLabel("❔", "Другая")
     )
 
     fun Complaint.Type.toTgLabel() = when (this) {
-        Complaint.Type.BANK -> TgLabel("🏦", "Банк")
-        Complaint.Type.AIRLINE -> TgLabel("🛫", "Авиакомпания")
-        Complaint.Type.OTHER -> TgLabel("❔", "Другое")
+        BANK_ACCOUNT_OPENING_REJECTED -> TgLabel("🏦", "Не дают открыть счет")
+        FLIGHT_ENTRY_REJECTED -> TgLabel("🛫", "Не пустили на самолёт")
+        BANK_DEPOSIT_REJECTED -> TgLabel("💰", "Не дают внести деньги на имеющийся счёт")
+        INSTAGRAM_AD_REJECTED -> TgLabel("📱", "Инстаграм не даёт оплатить рекламу")
+        FLAT_RENT_REJECTED -> TgLabel("🏠", "Не сдают квартиру")
+        EMPLOYMENT_REJECTED -> TgLabel("👷‍♂️", "Не берут на работу")
+        RESIDENCE_PERMIT_REJECTED -> TgLabel("🪪", "Отказали в ВНЖ без объяснения причин")
+        RESIDENCE_PERMIT_REVOKED -> TgLabel("🧌", "Забрали ВНЖ")
+        OTHER -> TgLabel("❔", "Другое")
     }
 
     data class TgLabel(

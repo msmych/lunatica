@@ -28,15 +28,22 @@ data class Complaint(
         DRAFT,
         NEW,
         READ,
+        IN_PROGRESS,
         RESOLVED,
         CANCELLED,
         DELETED,
     }
 
     enum class Type {
-        BANK,
-        AIRLINE,
-        OTHER,
+        BANK_ACCOUNT_OPENING_REJECTED,
+        FLIGHT_ENTRY_REJECTED,
+        BANK_DEPOSIT_REJECTED,
+        INSTAGRAM_AD_REJECTED,
+        FLAT_RENT_REJECTED,
+        EMPLOYMENT_REJECTED,
+        RESIDENCE_PERMIT_REJECTED,
+        RESIDENCE_PERMIT_REVOKED,
+        OTHER
     }
 
     companion object {
