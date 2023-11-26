@@ -23,7 +23,7 @@ fun Route.accountRouting(accountService: AccountService, accountPgRepo: AccountP
             call.respond(accounts)
         }
         post { request: CreateAccountRequest ->
-            val accountId = accountService.createAccount(request.email, request.pass)
+            val accountId = accountService.createAccount(request.email, request.pass, request.name)
             call.respond(Created, """{"id":"$accountId"}""")
         }
         route("{id}") {
@@ -60,6 +60,7 @@ fun Route.accountRouting(accountService: AccountService, accountPgRepo: AccountP
 data class CreateAccountRequest(
     val email: String,
     val pass: String,
+    val name: String?,
 )
 
 @Serializable

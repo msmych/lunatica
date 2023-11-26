@@ -15,7 +15,7 @@ suspend fun fileComplaint(
     complaintService: ComplaintService,
     bot: TelegramBot
 ) {
-    val account = accountService.ensureTgAccount(action.userId)
+    val account = accountService.ensureTgAccount(action.userId, action.username)
     complaintService.createDraftComplaint(account.id)
     bot.execute(
         SendMessage(action.userId, "В какой стране произошло нарушение?")

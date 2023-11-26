@@ -20,7 +20,7 @@ class YabedaActionSelector(
 
     suspend fun select(update: Update): YabedaAction {
         if (update.message()?.text() == "/complaint") {
-            return FileComplaint(update.message().from().id())
+            return FileComplaint(update.message().from().id(), update.message().from().username())
         }
         var account = update.callbackQuery()?.from()?.id()?.let { accountRepo.findByTgChatId(it) }
         if (account != null) {
