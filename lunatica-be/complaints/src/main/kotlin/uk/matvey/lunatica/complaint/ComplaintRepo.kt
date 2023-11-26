@@ -21,7 +21,7 @@ class ComplaintRepo(ds: DataSource, dispatcher: CoroutineDispatcher) :
     }
 
     suspend fun list(limit: Int?): List<Complaint> {
-        return selectStar("order by updated_at desc" + (limit?.let { " limit $it" } ?: ""))
+        return selectStar("where state not in ('DRAFT', 'DELETED') order by updated_at desc" + (limit?.let { " limit $it" } ?: ""))
     }
 
     suspend fun findLastDraftByAccountId(accountId: UUID): Complaint? {

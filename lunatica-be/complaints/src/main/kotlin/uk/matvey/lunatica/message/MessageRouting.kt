@@ -23,9 +23,11 @@ import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.add
 import kotlinx.serialization.json.buildJsonArray
+import uk.matvey.lunatica.account.Account
 import uk.matvey.lunatica.account.AccountRepo
 import uk.matvey.lunatica.complaint.ComplaintRepo
 import uk.matvey.lunatica.complaint.FileStorage
+import java.time.Instant
 import java.util.UUID
 
 fun Route.messageRouting(
@@ -40,6 +42,18 @@ fun Route.messageRouting(
         get {
             val complaintId = UUID.fromString(call.request.queryParameters.getOrFail("complaintId"))
             val messages = messageRepo.listByComplaintId(complaintId)
+                .map {
+                    val author = accountRepo.get(it.authorId)
+                    MessageResponseItem(
+                        it.id,
+                        author,
+                        it.complaintId,
+                        it.content,
+                        it.attachmentKey,
+                        it.createdAt,
+                        it.updatedAt,
+                    )
+                }
             call.respond(messages)
         }
         post { request: CreateMessageRequest ->
@@ -105,4 +119,15 @@ fun Route.messageRouting(
 data class CreateMessageRequest(
     val complaintId: @Contextual UUID,
     val content: String,
+)
+
+@Serializable
+data class MessageResponseItem(
+    val id: @Contextual UUID,
+    val author: Account,
+    val complaintId: @Contextual UUID?,
+    val content: String,
+    val attachmentKey: String?,
+    val createdAt: @Contextual Instant,
+    val updatedAt: @Contextual Instant,
 )
