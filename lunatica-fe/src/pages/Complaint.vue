@@ -1,78 +1,162 @@
 <script setup lang="ts">
-  // import { reactive, onMounted } from 'vue'
-  // import axios from 'axios';
-  // import { ApiEndpoints } from './../types/common.types'
-  // import { ComplaintFull } from './../types/common.types'
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-nocheck
 
-  // const BaseURL = import.meta.env.MODE === 'development' ? 'http://localhost:8080/api' : 'api/'
+  import { reactive, onMounted } from 'vue'
+  import axios from 'axios';
+  import { ApiEndpoints } from './../types/common.types'
+  import { ComplaintFull } from './../types/common.types'
+
+  import { useConfigStore } from './../state'
+  import ComplaintNew from './ComplaintNew.vue';
+
+  const currentUser = useConfigStore().user
+  const info = useConfigStore().info
+
+  const BaseURL = import.meta.env.MODE === 'development' ? 'http://localhost:8080/api' : 'api/'
   // const complaints = reactive([])
 
-  // const data = reactive({
-  //   complaint: ComplaintFull,
-  // })
+  const data = reactive({
+    complaint: {},
+    message: '',
+    messages: []
+  })
 
-  // function getComplaint() {
-  //   axios({
-  //     method: 'get',
-  //     url: ApiEndpoints.Complaints,
-  //     baseURL: BaseURL,
-  //     headers: {'Content-Type': 'application/json'},
-  //     withCredentials: true
-  //   }).then(response => {
-  //     data.complaints = response.data
-  //   })
-  // }
+  function getComplaint() {
+    axios({
+      method: 'get',
+      url: ApiEndpoints.Complaints,
+      baseURL: BaseURL,
+      headers: {'Content-Type': 'application/json'},
+      withCredentials: true
+    }).then(response => {
+      data.complaint = response.data[0] as ComplaintFull
+      getMessages()
+    })
+  }
 
-  // function getMessages() {
-  //   axios({
-  //     method: 'get',
-  //     url: ApiEndpoints.Messages,
-  //     baseURL: BaseURL,
-  //     headers: {'Content-Type': 'application/json'},
-  //     withCredentials: true,
-  //     params: {
-  //       complaintId: uuid
-  //     }
-  //   }).then(response => {
-  //     data.complaints = response.data
-  //   })
-  // }
+  onMounted(() => {
+		getComplaint()
+	})
 
-  // onMounted(() => {
-	// 	getComplaint()
-	// })
+  function getMessages() {
+    axios({
+      method: 'get',
+      url: ApiEndpoints.Messages,
+      baseURL: BaseURL,
+      headers: {'Content-Type': 'application/json'},
+      withCredentials: true,
+      params: {complaintId: data.complaint.id}
+    }).then(response => {
+      data.messages = response.data
+    })
+  }
+
+  function sendMessage() {
+    axios({
+      method: 'post',
+      url: ApiEndpoints.Messages,
+      baseURL: BaseURL,
+      headers: {'Content-Type': 'application/json'},
+      withCredentials: true,
+      data: {
+        complaintId: data.complaint.id,
+        content: data.message
+      }
+    }).then(response => {
+      data.messages.push({author: { email: currentUser.email }, content: data.message})
+      data.message = ''
+    })
+  }
 </script>
 
 <template>
   <h1>Complaint</h1>
 
-  <div class="chat"></div>
-  <!-- <div class="complaints-filters">
-    
+  <!-- <div class="email">{{ data.complaint.account.email }}</div>
+
+  <div class="status">{{ data.complaint.state.emoji }} {{ data.complaint.state.nameRu }}</div> -->
+
+  <label>Сменить статус</label>
+  <select v-model="data.state" class="input" @change="changeState(data.state)">
+    <option v-for="(state, index) in info.complaintStates" :key="index" :value="state.code">
+      {{ state.emoji }} {{ state.nameRu }}
+    </option>
+  </select>
+
+
+
+  <!-- <div class="country">{{ data.complaint.problemCountry.emoji }} {{ data.complaint.problemCountry.nameRu }}</div>
+  <div class="date-created">{{ data.complaint.problemDate }}</div>
+  <div class="type">{{ data.complaint.type.emoji }} {{ data.complaint.type.nameRu }}</div>
+  <div class="date-updated">{{ data.complaint.updatedAt }}</div> -->
+
+  <div class="chat">
+    Чатег
+    <div class="chat-window">
+      <!-- {{ data.messages }} -->
+      <ul class="messages" v-if="data.messages">
+        <li
+          class="messages__item"
+          v-for="message in data.messages"
+          :key="message?.id"
+        >
+          <div class="name">
+            {{ message?.author.email }}
+          </div>
+          <div class="content">
+            {{ message?.content }}
+          </div>
+        </li>
+      </ul>
+    </div>
+    <textarea class="textarea" v-model="data.message"></textarea>
+    <br />
+    <button @click.prevent="sendMessage()">Отправить</button>
   </div>
-  <div class="complaints complaints-head">
-    <div class="email">Email</div>
-    <div class="status">Статус</div>
-    <div class="country">Страна</div>
-    <div class="date-created">Дата создания</div>
-    <div class="type">Тип обращения</div>
-    <div class="date-updated">Дата изменения</div>
-  </div>
-  <ul v-if="data.complaints" class="complaints complaints-list">
-    <li v-for="complaint in (data.complaints as ComplaintFull[])" :key="complaint.id">
-      <router-link :to="`/complaint/ + ${complaint.id}`">
-        <div class="email">{{ complaint.account.email }}</div>
-        <div class="status">{{ complaint.state.emoji }} {{ complaint.state.nameRu }}</div>
-        <div class="country">{{ complaint.problemCountry.emoji }} {{ complaint.problemCountry.nameRu }}</div>
-        <div class="date-created">{{ complaint.problemDate }}</div>
-        <div class="type">{{ complaint.type.emoji }} {{ complaint.type.nameRu }}</div>
-        <div class="date-updated">{{ complaint.updatedAt }}</div>
-      </router-link>
-    </li>
-  </ul> -->
 </template>
 
 <style lang="scss" scoped>
+
+  .chat {
+    height: 90%;
+
+    &-window {
+      margin-top: 10px;
+      margin-bottom: 10px;
+      width: 100%;
+      height: 80%;
+      border: 1px solid #333;      
+      border-radius: 4px;
+      overflow-y: auto;
+    }
+
+    .textarea {
+      width: 100%;
+    }
+
+    .messages {
+      margin: 10px;
+      
+      &__item {
+        padding: 4px;
+        margin-bottom: 10px;
+        border: 1px solid #333;
+        border-radius: 4px;
+
+        .name {
+          font-weight: 600;
+          font-size: 12px;
+          margin-bottom: 4px;
+        }
+
+        .content {
+          font-size: 16px; 
+        }
+      }
+    }
+  }
+
   .complaints {
     
     &-head {
