@@ -29,7 +29,6 @@ import io.ktor.server.netty.Netty
 import io.ktor.server.plugins.callloging.CallLogging
 import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.server.plugins.cors.routing.CORS
-import io.ktor.server.response.header
 import io.ktor.server.response.respond
 import io.ktor.server.routing.get
 import io.ktor.server.routing.post
@@ -76,10 +75,8 @@ fun Application.setupServer(
         allowHeader(ContentType)
         allowHeader(Authorization)
         allowHeader(Cookie)
-        allowHeader("Auth-Token")
 
         exposeHeader(SetCookie)
-        exposeHeader("Auth-Token")
 
         allowCredentials = true
 
@@ -117,7 +114,6 @@ fun Application.setupRouting(services: Services, repos: Repos) {
                     value = token,
                     httpOnly = true,
                 )
-                call.response.header("Auth-Token", token)
                 call.respond(OK, token)
             }
             post("/logout") {
