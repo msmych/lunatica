@@ -1,18 +1,21 @@
 <script setup lang="ts">
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
- // @ts-nocheck
+  // @ts-nocheck
 
   import axios from 'axios';
   import { reactive, onMounted } from 'vue'
   import { ApiEndpoints, Country, ComplaintType } from './../types/common.types'
+  import { useConfigStore } from './../state'
+
+  const info = useConfigStore().info
 
   const BaseURL = import.meta.env.MODE === 'development' ? 'http://localhost:8080/api' : 'api/'
 
   const data = reactive({
-    info: {
-      countries: [],
-      complaintTypes: []
-    },
+    // info: {
+    //   countries: [],
+    //   complaintTypes: []
+    // },
     complaint: {
       problemCountry: '',
       type: '',
@@ -42,41 +45,41 @@
     })
   }
 
-  function getInfo() {
-    axios({
-      method: 'get',
-      url: ApiEndpoints.Info,
-      baseURL: BaseURL,
-      headers: {'Content-Type': 'application/json'},
-      withCredentials: true
-    }).then(response => {
-      if (response.status === 200) {
-        data.info.countries = response.data.countries
-        data.info.complaintTypes = response.data.complaintTypes
-      }
-    }).catch(error => {
-      if (error.response.status === 401) {
-        data.errorMessage = 'Неправильная почта или пароль'
-      }
-    })
-  }
+  // function getInfo() {
+  //   axios({
+  //     method: 'get',
+  //     url: ApiEndpoints.Info,
+  //     baseURL: BaseURL,
+  //     headers: {'Content-Type': 'application/json'},
+  //     withCredentials: true
+  //   }).then(response => {
+  //     if (response.status === 200) {
+  //       data.info.countries = response.data.countries
+  //       data.info.complaintTypes = response.data.complaintTypes
+  //     }
+  //   }).catch(error => {
+  //     if (error.response?.status === 401) {
+  //       data.errorMessage = 'Неправильная почта или пароль'
+  //     }
+  //   })
+  // }
 
-  onMounted(() => {
-		getInfo()
-	})
+  // onMounted(() => {
+	// 	getInfo()
+	// })
 </script>
 
 <template>
   <h1>New complaint</h1>
   <select v-model="data.complaint.problemCountry" class="input">
     <option value="" selected disabled hidden>Выберите страну</option>
-    <option v-for="(country, index) in (data.info.countries as Country)" :key="index" :value="country.code">
+    <option v-for="(country, index) in (info.countries as Country)" :key="index" :value="country.code">
       {{ country.emoji }} {{ country.nameRu }}
     </option>
   </select>
   <select v-model="data.complaint.type" class="input">
     <option value="" selected disabled hidden>Выберите тип обращения</option>
-    <option v-for="(type, index) in (data.info.complaintTypes as ComplaintType)" :key="index" :value="type.code">
+    <option v-for="(type, index) in (info.complaintTypes as ComplaintType)" :key="index" :value="type.code">
       {{ type.emoji }} {{ type.nameRu }}
     </option>
   </select>

@@ -25,7 +25,8 @@ export enum ApiEndpoints {
 	Login = 'login',
 	Me = 'me',
 	Complaints = 'complaints',
-	Info = 'info'
+	Info = 'info',
+	Messages = 'messages'
 }
 
 export interface Complaint {
@@ -66,6 +67,12 @@ export interface User {
 	id: string,
 	roles: string[],
 	email: string,
+}
+
+export interface State {
+	emoji: string,
+	nameRu: string,
+	code: string
 }
 
 export interface Country {

@@ -2,19 +2,23 @@
   // import { reactive, onMounted } from 'vue'
   // import axios from 'axios';
   // import { ApiEndpoints } from './../types/common.types'
-  // import { ComplaintFull } from './../types/common.types'
+  import { ComplaintFull } from './../types/common.types'
+
+  defineProps<{
+    complaint?: ComplaintFull
+  }>()
 
   // const BaseURL = import.meta.env.MODE === 'development' ? 'http://localhost:8080/api' : 'api/'
-  // const complaints = reactive([])
+  // // const complaints = reactive([])
 
   // const data = reactive({
-  //   complaint: ComplaintFull,
+  //   complaints: [],
   // })
 
-  // function getComplaint() {
+  // function getComplaints() {
   //   axios({
   //     method: 'get',
-  //     url: ApiEndpoints.Complaints,
+  //     url: ApiEndpoints.Complaint,
   //     baseURL: BaseURL,
   //     headers: {'Content-Type': 'application/json'},
   //     withCredentials: true
@@ -23,30 +27,14 @@
   //   })
   // }
 
-  // function getMessages() {
-  //   axios({
-  //     method: 'get',
-  //     url: ApiEndpoints.Messages,
-  //     baseURL: BaseURL,
-  //     headers: {'Content-Type': 'application/json'},
-  //     withCredentials: true,
-  //     params: {
-  //       complaintId: uuid
-  //     }
-  //   }).then(response => {
-  //     data.complaints = response.data
-  //   })
-  // }
-
   // onMounted(() => {
-	// 	getComplaint()
+	// 	getComplaints()
 	// })
 </script>
 
 <template>
   <h1>Complaint</h1>
-
-  <div class="chat"></div>
+  <!-- {{ complaint.id }} -->
   <!-- <div class="complaints-filters">
     
   </div>
