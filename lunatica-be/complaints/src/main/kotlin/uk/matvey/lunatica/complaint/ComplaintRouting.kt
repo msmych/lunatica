@@ -85,7 +85,37 @@ fun Route.complaintRouting(
         route("/{id}") {
             get {
                 val complaint = complaintRepo.get(UUID.fromString(call.parameters["id"]))
-                call.respond(complaint)
+                val account = accountRepo.get(complaint.accountId)
+                call.respond(
+                    ComplaintResponseItem(
+                        complaint.id,
+                        account,
+                        complaint.state.let {
+                            ComplaintStateInfo(
+                                it,
+                                COMPLAINTS_STATES.getValue(it).emoji,
+                                COMPLAINTS_STATES.getValue(it).nameRu
+                            )
+                        },
+                        complaint.problemCountry?.let {
+                            CountryInfo(
+                                it,
+                                PROBLEM_COUNTRIES.getValue(it).emoji,
+                                PROBLEM_COUNTRIES.getValue(it).nameRu
+                            )
+                        },
+                        complaint.problemDate,
+                        complaint.type?.let {
+                            ComplaintTypeInfo(
+                                it,
+                                COMPLAINTS_TYPES.getValue(it).emoji,
+                                COMPLAINTS_TYPES.getValue(it).nameRu
+                            )
+                        },
+                        complaint.createdAt,
+                        complaint.updatedAt
+                    )
+                )
             }
             patch { request: UpdateComplaintRequest ->
                 val complaint = complaintRepo.get(UUID.fromString(call.parameters["id"]))
