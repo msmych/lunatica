@@ -11,6 +11,12 @@ class ComplaintService(private val complaintRepo: ComplaintRepo) {
         return complaint
     }
 
+    suspend fun assignComplaintToAccount(complaint: Complaint, accountId: UUID) {
+        complaintRepo.update(
+            complaint.copy(assignedTo = accountId)
+        )
+    }
+
     suspend fun updateComplaintState(complaint: Complaint, state: Complaint.State) {
         complaintRepo.update(complaint.copy(state = state))
     }

@@ -3,11 +3,11 @@ package uk.matvey.lunatica.complaint
 import com.neovisionaries.i18n.CountryCode
 import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
-import uk.matvey.lunatica.repo.Entity
-import uk.matvey.lunatica.repo.RelCol.TimeStamp
-import uk.matvey.lunatica.repo.RelCol.TimeStamp.Companion.timeStampRel
-import uk.matvey.lunatica.repo.RelCol.Uuid
-import uk.matvey.lunatica.repo.RelCol.Uuid.Companion.uuidRel
+import uk.matvey.lunatica.pg.Entity
+import uk.matvey.lunatica.pg.RelCol.TimeStamp
+import uk.matvey.lunatica.pg.RelCol.TimeStamp.Companion.timeStampRel
+import uk.matvey.lunatica.pg.RelCol.Uuid
+import uk.matvey.lunatica.pg.RelCol.Uuid.Companion.uuidRel
 import java.time.Instant
 import java.time.LocalDate
 import java.util.UUID
@@ -21,6 +21,7 @@ data class Complaint(
     val problemCountry: CountryCode?,
     val problemDate: @Contextual LocalDate?,
     val type: Type?,
+    val assignedTo: @Contextual UUID?,
     val createdAt: @Contextual Instant,
     val updatedAt: @Contextual Instant
 ) : Entity<Uuid> {
@@ -58,6 +59,7 @@ data class Complaint(
                 null,
                 null,
                 null,
+                null,
                 now,
                 now
             )
@@ -70,15 +72,15 @@ data class Complaint(
             type: Type
         ): Complaint {
             val now = Instant.now()
-            return Complaint(randomUUID(), accountId, State.NEW, problemCountry, problemDate, type, now, now)
+            return Complaint(randomUUID(), accountId, State.NEW, problemCountry, problemDate, type, null, now, now)
         }
     }
 
-    override fun id(): Uuid {
+    override fun idRel(): Uuid {
         return uuidRel(id)
     }
 
-    override fun updatedAt(): TimeStamp {
+    override fun updatedAtRel(): TimeStamp {
         return timeStampRel(updatedAt)
     }
 }

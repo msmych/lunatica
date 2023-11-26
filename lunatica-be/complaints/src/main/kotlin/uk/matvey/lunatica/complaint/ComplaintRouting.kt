@@ -15,7 +15,7 @@ import io.ktor.server.routing.route
 import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
 import uk.matvey.lunatica.account.Account
-import uk.matvey.lunatica.account.AccountPgRepo
+import uk.matvey.lunatica.account.AccountRepo
 import uk.matvey.lunatica.complaint.ComplaintSetup.COMPLAINTS_STATES
 import uk.matvey.lunatica.complaint.ComplaintSetup.COMPLAINTS_TYPES
 import uk.matvey.lunatica.complaint.ComplaintSetup.PROBLEM_COUNTRIES
@@ -27,7 +27,12 @@ import java.time.Instant
 import java.time.LocalDate
 import java.util.UUID
 
-fun Route.complaintRouting(complaintRepo: ComplaintRepo, messageService: MessageService, accountPgRepo: AccountPgRepo) {
+fun Route.complaintRouting(
+    complaintService: ComplaintService,
+    complaintRepo: ComplaintRepo,
+    messageService: MessageService,
+    accountRepo: AccountRepo
+) {
     route("complaints") {
         get {
             val limit = call.request.queryParameters["limit"]?.toInt() ?: 20
@@ -35,8 +40,7 @@ fun Route.complaintRouting(complaintRepo: ComplaintRepo, messageService: Message
                 .map { complaint ->
                     ComplaintResponseItem(
                         complaint.id,
-                        complaint.accountId,
-                        accountPgRepo.get(complaint.accountId),
+                        accountRepo.get(complaint.accountId),
                         complaint.state.let {
                             ComplaintStateInfo(
                                 it,
@@ -85,7 +89,8 @@ fun Route.complaintRouting(complaintRepo: ComplaintRepo, messageService: Message
             }
             patch { request: UpdateComplaintRequest ->
                 val complaint = complaintRepo.get(UUID.fromString(call.parameters["id"]))
-                complaintRepo.update(complaint.copy(state = request.state))
+                request.assignedTo?.let { complaintService.assignComplaintToAccount(complaint, it) }
+                request.state?.let { complaintService.updateComplaintState(complaint, it) }
                 call.respond(NoContent)
             }
         }
@@ -102,13 +107,13 @@ data class CreateComplaintRequest(
 
 @Serializable
 data class UpdateComplaintRequest(
-    val state: Complaint.State,
+    val assignedTo: @Contextual UUID?,
+    val state: Complaint.State?,
 )
 
 @Serializable
 data class ComplaintResponseItem(
     val id: @Contextual UUID,
-    val accountId: @Contextual UUID,
     val account: Account,
     val state: ComplaintStateInfo,
     val problemCountry: CountryInfo?,

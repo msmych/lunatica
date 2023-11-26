@@ -15,16 +15,16 @@ import io.ktor.server.util.getOrFail
 import kotlinx.serialization.Serializable
 import java.util.UUID
 
-fun Route.accountRouting(accountService: AccountService, accountPgRepo: AccountPgRepo) {
+fun Route.accountRouting(accountService: AccountService, accountRepo: AccountRepo) {
     route("/accounts") {
         get {
             val role = call.request.queryParameters["role"]?.let(Account.Role::valueOf)
-            val accounts = accountPgRepo.list(role)
+            val accounts = accountRepo.list(role)
             call.respond(accounts)
         }
         post { request: CreateAccountRequest ->
             val accountId = request.email.let {
-                accountPgRepo.findByEmail(it)?.let { account ->
+                accountRepo.findByEmail(it)?.let { account ->
                     accountService.updateAccount(account.id, null, request.pass)
                     account.id
                 }
@@ -34,7 +34,7 @@ fun Route.accountRouting(accountService: AccountService, accountPgRepo: AccountP
         }
         route("{id}") {
             get {
-                val account = accountPgRepo.get(UUID.fromString(call.parameters.getOrFail("id")))
+                val account = accountRepo.get(UUID.fromString(call.parameters.getOrFail("id")))
                 call.respond(account)
             }
             route("roles/{role}") {
@@ -50,7 +50,7 @@ fun Route.accountRouting(accountService: AccountService, accountPgRepo: AccountP
         get {
             val token = call.request.cookies["auth"] ?: return@get call.respond(Unauthorized)
             val decoded = JWT.decode(token)
-            val account = accountPgRepo.get(UUID.fromString(decoded.subject))
+            val account = accountRepo.get(UUID.fromString(decoded.subject))
             call.respond(account)
         }
         patch { request: UpdateMeRequest ->
