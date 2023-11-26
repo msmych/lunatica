@@ -16,7 +16,7 @@ fun main() {
     migrateDb(repos.ds)
     log.info { "Starting server" }
     val yabedaBot = startYabedaBot(services, repos, config)
-    createServer(services, repos).start(wait = yabedaBot == null)
+    createServer(services, repos, yabedaBot).start(wait = yabedaBot == null)
 }
 
 fun loadConfigs(profile: String): AppConfig {

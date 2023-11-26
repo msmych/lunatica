@@ -2,6 +2,7 @@ package uk.matvey.lunatica.app
 
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm.HMAC256
+import com.pengrad.telegrambot.TelegramBot
 import io.ktor.http.HttpHeaders.AccessControlAllowHeaders
 import io.ktor.http.HttpHeaders.AccessControlAllowMethods
 import io.ktor.http.HttpHeaders.AccessControlAllowOrigin
@@ -46,15 +47,17 @@ import uk.matvey.lunatica.sha256
 fun createServer(
     services: Services,
     repos: Repos,
+    bot: TelegramBot?,
 ): ApplicationEngine {
     return embeddedServer(Netty, port = 8080) {
-        setupServer(services, repos)
+        setupServer(services, repos, bot)
     }
 }
 
 fun Application.setupServer(
     services: Services,
     repos: Repos,
+    bot: TelegramBot?,
 ) {
     install(CallLogging) {
         level = Level.INFO
@@ -91,10 +94,10 @@ fun Application.setupServer(
             }
         }
     }
-    setupRouting(services, repos)
+    setupRouting(services, repos, bot)
 }
 
-fun Application.setupRouting(services: Services, repos: Repos) {
+fun Application.setupRouting(services: Services, repos: Repos, bot: TelegramBot?) {
     routing {
         staticResources("/", "public")
         get("/healthcheck") {
@@ -128,7 +131,7 @@ fun Application.setupRouting(services: Services, repos: Repos) {
             infoRouting()
             accountRouting(services.accountService, repos.accountRepo)
             complaintRouting(services.complaintService, repos.complaintRepo, services.messageService, repos.accountRepo)
-            messageRouting(services.messageService, repos.messageRepo)
+            messageRouting(services.messageService, repos.messageRepo, repos.accountRepo, repos.complaintRepo, bot)
         }
     }
 }
