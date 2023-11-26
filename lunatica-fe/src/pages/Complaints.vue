@@ -160,15 +160,15 @@
 
 
     .go-in {
-      width: 120px;
+      width: 140px;
     }
 
     .email {
-      width: 160px;
+      width: 300px;
     }
 
     .status {
-      width: 120px;
+      width: 140px;
     }
 
     .country {
@@ -176,15 +176,15 @@
     }
 
     .date-created {
-      width: 120px;
+      width: 100px;
     }
 
     .type {
-      width: 140px;
+      width: 426px;
     }
 
     .date-updated {
-      width: 120px;
+      width: 100px;
     }
 
     &-table {
@@ -209,6 +209,7 @@
       width: 100%;
 
       div {
+        min-height: 50px;
         flex-shrink: 0;
         padding: 4px;
         border-right: 1px solid #333;
@@ -222,7 +223,7 @@
     &-list {
       li {
         display: flex;
-        box-shadow: 0 0 3px #333;
+        border-bottom: 1px solid #333;
 
         div {
           flex-shrink: 0;
