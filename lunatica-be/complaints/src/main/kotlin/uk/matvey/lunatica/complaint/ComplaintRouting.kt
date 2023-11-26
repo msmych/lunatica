@@ -35,7 +35,7 @@ fun Route.complaintRouting(
 ) {
     route("complaints") {
         get {
-            val limit = call.request.queryParameters["limit"]?.toInt() ?: 20
+            val limit = call.request.queryParameters["limit"]?.toInt()
             val complaints = complaintRepo.list(limit)
                 .map { complaint ->
                     ComplaintResponseItem(

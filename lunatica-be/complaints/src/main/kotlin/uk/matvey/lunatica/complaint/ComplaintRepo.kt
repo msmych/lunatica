@@ -20,8 +20,8 @@ class ComplaintRepo(ds: DataSource, dispatcher: CoroutineDispatcher) :
         return selectStar("where id = ?", uuidRel(id)).single()
     }
 
-    suspend fun list(limit: Int): List<Complaint> {
-        return selectStar("limit $limit")
+    suspend fun list(limit: Int?): List<Complaint> {
+        return selectStar("order by updated_at desc" + (limit?.let { " limit $it" } ?: ""))
     }
 
     suspend fun findLastDraftByAccountId(accountId: UUID): Complaint? {
