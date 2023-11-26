@@ -3,6 +3,7 @@
   // @ts-nocheck
 
   import axios from 'axios';
+  import router from './../router'
   import { reactive, onMounted } from 'vue'
   import { ApiEndpoints, Country, ComplaintType } from './../types/common.types'
   import { useConfigStore } from './../state'
@@ -35,12 +36,13 @@
       withCredentials: true,
       data: data.complaint
     }).then(response => {
-      if (response.status === 200) {
+      if (response.status === 201) {
         data.success = true
+        router.push(`/complaints/${response.data.id}`)
       }
     }).catch(error => {
       if (error.response.status === 401) {
-        data.errorMessage = 'Неправильная почта или пароль'
+        data.errorMessage = error
       }
     })
   }

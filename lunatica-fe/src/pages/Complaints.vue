@@ -61,6 +61,10 @@
     }
   }
 
+  function changeState(complaint, value) {
+    console.log(complaint, value)
+  }
+
   const allEmails = computed(() => {
     return [...new Set(data.complaints.map(complaint => complaint.account.email))]
   })
@@ -72,6 +76,7 @@
   <div class="complaints-filters">
     <h3>Фильтры:</h3>
 
+    <label>Email</label>
     <select v-model="data.complaintFilter.email" class="input" @change="filter('email', data.complaintFilter.email)">
       <option value="all" key="0" selected>Email</option>
       <option v-for="(email, index) in allEmails" :key="index" :value="email">
@@ -79,6 +84,7 @@
       </option>
     </select>
 
+    <label>Статус</label>
     <select v-model="data.complaintFilter.state" class="input" @change="filter('state', data.complaintFilter.state)">
       <option value="all" key="0" selected>Статус</option>
       <option v-for="(state, index) in info.complaintStates" :key="index" :value="state.code">
@@ -86,6 +92,7 @@
       </option>
     </select>
 
+    <label>Страна</label>
     <select v-model="data.complaintFilter.problemCountry" class="input" @change="filter('problemCountry', data.complaintFilter.problemCountry)">
       <option value="all" key="0" selected>Все страны</option>
       <option v-for="(country, index) in info.countries" :key="index" :value="country.code">
@@ -93,6 +100,7 @@
       </option>
     </select>
 
+    <label>Тип обращения</label>
     <select v-model="data.complaintFilter.type" class="input" @change="filter('type', data.complaintFilter.type)">
       <option value="all" key="0" selected>Все типы обращения</option>
       <option v-for="(type, index) in info.complaintTypes" :key="index" :value="type.code">
@@ -102,6 +110,7 @@
   </div>
 
   <div class="complaints complaints-head">
+    <div class="go-in">Зайти в заявку</div>
     <div class="email">Email</div>
     <div class="status">Статус</div>
     <div class="country">Страна</div>
@@ -112,14 +121,25 @@
 
   <ul v-if="data.complaints" class="complaints complaints-list">
     <li v-for="complaint in (data.complaints as ComplaintFull[])" :key="complaint.id">
-      <router-link :to="`/complaint/ + ${complaint.id}`">
-        <div class="email">{{ complaint.account.email }}</div>
-        <div class="status">{{ complaint.state.emoji }} {{ complaint.state.nameRu }}</div>
-        <div class="country">{{ complaint.problemCountry.emoji }} {{ complaint.problemCountry.nameRu }}</div>
-        <div class="date-created">{{ complaint.problemDate }}</div>
-        <div class="type">{{ complaint.type.emoji }} {{ complaint.type.nameRu }}</div>
-        <div class="date-updated">{{ moment(String(complaint.updatedAt)).format('DD-MM-YYYY') }}</div>
-      </router-link>
+      <div class="go-in">
+        <router-link :to="`/complaints/${complaint.id}`">
+          Зайти в заявку
+        </router-link>
+      </div>
+      <div class="email">{{ complaint.account.email }}</div>
+      <div class="status">
+        <!-- <select v-model="data.complaintFilter.type" class="input" @change="changeState(complaint, value)">
+          <option value="all" key="0" :selected="true">{{ complaint.state.emoji }} {{ complaint.state.nameRu }}</option>
+          <option v-for="(type, index) in info.complaintStates" :key="index" :value="type.code" :selected="false">
+            {{ type.emoji }} {{ type.nameRu }}
+          </option>
+        </select> -->
+        {{ complaint.state.emoji }} {{ complaint.state.nameRu }}
+      </div>
+      <div class="country">{{ complaint.problemCountry.emoji }} {{ complaint.problemCountry.nameRu }}</div>
+      <div class="date-created">{{ complaint.problemDate }}</div>
+      <div class="type">{{ complaint.type.emoji }} {{ complaint.type.nameRu }}</div>
+      <div class="date-updated">{{ moment(String(complaint.updatedAt)).format('DD-MM-YYYY') }}</div>
     </li>
   </ul>
 </template>
@@ -154,19 +174,16 @@
 
     &-list {
       li {
+        display: flex;
         box-shadow: 0 0 3px #333;
 
-        a {
-          display: flex;
+        div {
+          flex-shrink: 0;
+          padding: 4px;
+          border-right: 1px solid #333;
 
-          div {
-            flex-shrink: 0;
-            padding: 4px;
-            border-right: 1px solid #333;
-
-            &:last-child {
-              border-right: 0;
-            }
+          &:last-child {
+            border-right: 0;
           }
         }
       }
