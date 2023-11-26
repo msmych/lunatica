@@ -11,8 +11,11 @@ import java.sql.ResultSet
 import java.util.UUID
 import javax.sql.DataSource
 
-class MessageRepo(ds: DataSource, dispatcher: CoroutineDispatcher) :
-    PgEntityRepo<Uuid, Message>("messages", ds, dispatcher) {
+class MessageRepo(ds: DataSource, dispatcher: CoroutineDispatcher) : PgEntityRepo<Uuid, Message>("messages", ds, dispatcher) {
+
+    suspend fun get(id: UUID): Message {
+        return selectStar("where id = ?", uuidRel(id)).single()
+    }
 
     suspend fun listByComplaintId(complaintId: UUID): List<Message> {
         return selectStar("where complaint_id = ? order by created_at desc", uuidRel(complaintId))
@@ -25,6 +28,7 @@ class MessageRepo(ds: DataSource, dispatcher: CoroutineDispatcher) :
                 "author_id" to uuidRel(this.authorId),
                 "complaint_id" to uuidRel(this.complaintId),
                 "content" to textRel(this.content),
+                "attachment_key" to textRel(this.attachmentKey),
                 "created_at" to timeStampRel(this.createdAt),
                 "updated_at" to timeStampRel(this.updatedAt)
             )
@@ -37,6 +41,7 @@ class MessageRepo(ds: DataSource, dispatcher: CoroutineDispatcher) :
             UUID.fromString(this.getObject("author_id").toString()),
             UUID.fromString(this.getObject("complaint_id").toString()),
             this.getString("content"),
+            this.getString("attachment_key"),
             this.getTimestamp("created_at").toInstant(),
             this.getTimestamp("updated_at").toInstant(),
         )
