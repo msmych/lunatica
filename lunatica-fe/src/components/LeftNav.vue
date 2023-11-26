@@ -55,5 +55,32 @@
       }
     }
   }
+
+  @media only screen and (max-width: 1024px) {
+    width: 100%;
+    height: 60px;
+    flex-direction: row;
+
+    .logo {
+      display: block;
+      width: 40px;
+    }
+
+    ul {
+      display: flex;
+      align-items: center;
+
+      li {
+        text-align: center;
+        margin-bottom: 4px;
+        margin-right: 8px;
+        border-bottom: 0;
+
+        a {
+          font-size: 12px;
+        }
+      }
+    }
+  }
 }
 </style>
