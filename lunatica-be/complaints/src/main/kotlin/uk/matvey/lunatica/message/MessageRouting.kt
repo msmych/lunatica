@@ -2,6 +2,8 @@ package uk.matvey.lunatica.message
 
 import com.amazonaws.services.s3.AmazonS3ClientBuilder
 import com.auth0.jwt.JWT
+import com.pengrad.telegrambot.TelegramBot
+import com.pengrad.telegrambot.request.SendMessage
 import io.ktor.http.ContentType.Application.OctetStream
 import io.ktor.http.HttpStatusCode.Companion.Created
 import io.ktor.http.HttpStatusCode.Companion.Unauthorized
@@ -19,19 +21,38 @@ import io.ktor.server.routing.route
 import io.ktor.server.util.getOrFail
 import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
+import uk.matvey.lunatica.account.AccountRepo
+import uk.matvey.lunatica.complaint.ComplaintRepo
 import java.util.UUID
 
-fun Route.messageRouting(messageService: MessageService, messageRepo: MessageRepo) {
+fun Route.messageRouting(
+    messageService: MessageService,
+    messageRepo: MessageRepo,
+    accountRepo: AccountRepo,
+    complaintRepo: ComplaintRepo,
+    bot: TelegramBot?
+) {
     route("/messages") {
         get {
             val complaintId = UUID.fromString(call.request.queryParameters.getOrFail("complaintId"))
             val messages = messageRepo.listByComplaintId(complaintId)
-            call.respond(Created, messages)
+            call.respond(messages)
         }
         post { request: CreateMessageRequest ->
             val token = call.request.cookies["auth"] ?: return@post call.respond(Unauthorized)
             val accountId = UUID.fromString(JWT.decode(token).subject)
             val message = messageService.createMessage(accountId, request.complaintId, request.content)
+            bot?.let {
+                message.complaintId?.let { complaintId ->
+                    val complaint = complaintRepo.get(complaintId)
+                    if (complaint.accountId != accountId) {
+                        val receiverAccount = accountRepo.get(complaint.accountId)
+                        receiverAccount.tgChatId?.let { tgChatId ->
+                            bot.execute(SendMessage(tgChatId, "Обновление по вашему обращению:\n\n${message.content}"))
+                        }
+                    }
+                }
+            }
             call.respond(Created, """{"id":"${message.id}"}""")
         }
         get("/attachments/{key}") {
@@ -53,9 +74,11 @@ fun Route.messageRouting(messageService: MessageService, messageRepo: MessageRep
                             complaintId = UUID.fromString(part.value)
                         }
                     }
+
                     is PartData.FileItem -> {
                         files[part.originalFileName ?: "attachment"] = part.streamProvider().readAllBytes()
                     }
+
                     else -> {}
                 }
             }

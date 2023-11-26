@@ -7,7 +7,6 @@ COPY gradlew settings.gradle.kts build.gradle.kts /app/
 COPY gradle /app/gradle
 COPY app /app/app
 COPY complaints /app/complaints
-COPY persistence /app/persistence
 COPY persistence-pg /app/persistence-pg
 
 RUN ./gradlew app:shadowJar
