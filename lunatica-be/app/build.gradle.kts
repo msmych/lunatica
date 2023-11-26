@@ -21,6 +21,7 @@ dependencies {
     implementation("com.sksamuel.hoplite:hoplite-core:2.7.5")
     implementation("com.sksamuel.hoplite:hoplite-yaml:2.7.5")
     implementation("com.auth0:java-jwt:4.4.0")
+    implementation("com.amazonaws:aws-java-sdk-s3:1.12.595")
 
     implementation(project(":complaints"))
 }

@@ -17,6 +17,7 @@ data class Message(
     val authorId: @Contextual UUID,
     val complaintId: @Contextual UUID?,
     val content: String,
+    val attachmentKey: String?,
     val createdAt: @Contextual Instant,
     val updatedAt: @Contextual Instant,
 ) : Entity<Uuid> {
@@ -32,7 +33,13 @@ data class Message(
 
         fun complaintMessage(authorId: UUID, complaintId: UUID, content: String): Message {
             val now = Instant.now()
-            return Message(randomUUID(), authorId, complaintId, content, now, now)
+            return Message(randomUUID(), authorId, complaintId, content, null, now, now)
+        }
+
+        fun complaintAttachment(authorId: UUID, complaintId: UUID, fileName: String): Message {
+            val now = Instant.now()
+            val id = randomUUID()
+            return Message(id, authorId, complaintId, fileName, id.toString(), now, now)
         }
     }
 }

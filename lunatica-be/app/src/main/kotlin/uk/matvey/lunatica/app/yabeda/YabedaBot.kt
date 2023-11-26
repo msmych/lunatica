@@ -31,7 +31,14 @@ fun startYabedaBot(
                     is FileComplaint -> fileComplaint(action, services.accountService, services.complaintService, bot)
                     is SetComplaintCountry -> setComplaintCountry(services.complaintService, action, bot)
                     is SetComplaintType -> setComplaintType(services.complaintService, action, bot)
-                    is SendComplaintMessage -> sendComplaintMessage(action, services.messageService, bot, config)
+                    is SendComplaintMessage -> sendComplaintMessage(
+                        action,
+                        services.complaintService,
+                        services.messageService,
+                        bot,
+                        config
+                    )
+
                     is SetAccountEmail -> setAccountEmail(
                         services.accountService,
                         services.complaintService,
