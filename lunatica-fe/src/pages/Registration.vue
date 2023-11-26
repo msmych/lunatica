@@ -39,6 +39,10 @@
     border-radius: 4px;
     box-shadow: 0 0 3px #333;
 
+    @media only screen and (max-width: 1024px) {
+      width: 100%;
+    }
+
     h2 {
       text-align: center;
       margin-bottom: 6px;
