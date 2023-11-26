@@ -1,10 +1,10 @@
 package uk.matvey.lunatica.message
 
-import com.amazonaws.services.s3.AmazonS3ClientBuilder
 import com.auth0.jwt.JWT
 import com.pengrad.telegrambot.TelegramBot
 import com.pengrad.telegrambot.request.SendMessage
-import io.ktor.http.ContentType.Application.OctetStream
+import io.ktor.http.ContentType
+import io.ktor.http.ContentType.Application
 import io.ktor.http.HttpStatusCode.Companion.Created
 import io.ktor.http.HttpStatusCode.Companion.Unauthorized
 import io.ktor.http.content.PartData
@@ -23,6 +23,7 @@ import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
 import uk.matvey.lunatica.account.AccountRepo
 import uk.matvey.lunatica.complaint.ComplaintRepo
+import uk.matvey.lunatica.complaint.FileStorage
 import java.util.UUID
 
 fun Route.messageRouting(
@@ -30,6 +31,7 @@ fun Route.messageRouting(
     messageRepo: MessageRepo,
     accountRepo: AccountRepo,
     complaintRepo: ComplaintRepo,
+    fileStorage: FileStorage,
     bot: TelegramBot?
 ) {
     route("/messages") {
@@ -58,16 +60,15 @@ fun Route.messageRouting(
         route("/attachments") {
             get("/{key}") {
                 val attachmentKey = call.parameters.getOrFail("key")
-                val s3Client = AmazonS3ClientBuilder.standard().build()
-                val attachment = s3Client.getObject("lunatica-attachments", attachmentKey).objectContent.readAllBytes()
-                call.respondBytes(attachment, OctetStream)
+                val attachment = fileStorage.fetch(attachmentKey)
+                call.respondBytes(attachment.second, attachment.first)
             }
             post {
                 val token = call.request.cookies["auth"] ?: return@post call.respond(Unauthorized)
                 val accountId = UUID.fromString(JWT.decode(token).subject)
                 val multipart = call.receiveMultipart()
                 var complaintId: UUID? = null
-                val files = mutableMapOf<String, ByteArray>()
+                val files = mutableMapOf<String, Pair<ByteArray, ContentType>>()
                 multipart.forEachPart { part ->
                     when (part) {
                         is PartData.FormItem -> {
@@ -77,7 +78,8 @@ fun Route.messageRouting(
                         }
 
                         is PartData.FileItem -> {
-                            files[part.originalFileName ?: "attachment"] = part.streamProvider().readAllBytes()
+                            files[part.originalFileName ?: "attachment"] =
+                                part.streamProvider().readAllBytes() to (part.contentType ?: Application.OctetStream)
                         }
 
                         else -> {}
@@ -86,10 +88,11 @@ fun Route.messageRouting(
                 complaintId?.let {
                     files.forEach { (name, content) ->
                         val message = Message.complaintAttachment(accountId, it, name)
-                        val s3client = AmazonS3ClientBuilder.standard().build()
-                        s3client.putObject("lunatica-attachments", message.attachmentKey, String(content))
+                        messageRepo.insert(message)
+                        fileStorage.upload(name, content.first, content.second)
                     }
                 }
+                call.respond(Created)
             }
         }
     }

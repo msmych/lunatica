@@ -40,6 +40,7 @@ import kotlinx.serialization.Serializable
 import org.slf4j.event.Level
 import uk.matvey.lunatica.account.accountRouting
 import uk.matvey.lunatica.complaint.ComplaintSetup.JSON
+import uk.matvey.lunatica.complaint.FileStorage
 import uk.matvey.lunatica.complaint.complaintRouting
 import uk.matvey.lunatica.message.messageRouting
 import uk.matvey.lunatica.sha256
@@ -47,16 +48,18 @@ import uk.matvey.lunatica.sha256
 fun createServer(
     services: Services,
     repos: Repos,
+    fileStorage: FileStorage,
     bot: TelegramBot?,
 ): ApplicationEngine {
     return embeddedServer(Netty, port = 8080) {
-        setupServer(services, repos, bot)
+        setupServer(services, repos, fileStorage, bot)
     }
 }
 
 fun Application.setupServer(
     services: Services,
     repos: Repos,
+    fileStorage: FileStorage,
     bot: TelegramBot?,
 ) {
     install(CallLogging) {
@@ -94,10 +97,10 @@ fun Application.setupServer(
             }
         }
     }
-    setupRouting(services, repos, bot)
+    setupRouting(services, repos, fileStorage, bot)
 }
 
-fun Application.setupRouting(services: Services, repos: Repos, bot: TelegramBot?) {
+fun Application.setupRouting(services: Services, repos: Repos, fileStorage: FileStorage, bot: TelegramBot?) {
     routing {
         staticResources("/", "public")
         get("/healthcheck") {
@@ -131,7 +134,7 @@ fun Application.setupRouting(services: Services, repos: Repos, bot: TelegramBot?
             infoRouting()
             accountRouting(services.accountService, repos.accountRepo)
             complaintRouting(services.complaintService, repos.complaintRepo, services.messageService, repos.accountRepo)
-            messageRouting(services.messageService, repos.messageRepo, repos.accountRepo, repos.complaintRepo, bot)
+            messageRouting(services.messageService, repos.messageRepo, repos.accountRepo, repos.complaintRepo, fileStorage, bot)
         }
     }
 }
