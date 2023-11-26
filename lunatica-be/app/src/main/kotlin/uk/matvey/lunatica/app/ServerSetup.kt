@@ -111,7 +111,7 @@ fun Application.setupRouting(services: Services, repos: Repos, bot: TelegramBot?
                 val token = JWT.create()
                     .withSubject(account.id.toString())
                     .withClaim("email", request.email)
-                    .withClaim("roles", account.roles)
+                    .withClaim("roles", account.roles.map { it.name })
                     .sign(HMAC256("auth-secret"))
                 call.response.cookies.append(
                     name = "auth",

@@ -55,38 +55,40 @@ fun Route.messageRouting(
             }
             call.respond(Created, """{"id":"${message.id}"}""")
         }
-        get("/attachments/{key}") {
-            val attachmentKey = call.parameters.getOrFail("key")
-            val s3Client = AmazonS3ClientBuilder.standard().build()
-            val attachment = s3Client.getObject("lunatica-attachments", attachmentKey).objectContent.readAllBytes()
-            call.respondBytes(attachment, OctetStream)
-        }
-        post("/attachments") {
-            val token = call.request.cookies["auth"] ?: return@post call.respond(Unauthorized)
-            val accountId = UUID.fromString(JWT.decode(token).subject)
-            val multipart = call.receiveMultipart()
-            var complaintId: UUID? = null
-            val files = mutableMapOf<String, ByteArray>()
-            multipart.forEachPart { part ->
-                when (part) {
-                    is PartData.FormItem -> {
-                        if (part.name == "complaintId") {
-                            complaintId = UUID.fromString(part.value)
-                        }
-                    }
-
-                    is PartData.FileItem -> {
-                        files[part.originalFileName ?: "attachment"] = part.streamProvider().readAllBytes()
-                    }
-
-                    else -> {}
-                }
+        route("/attachments") {
+            get("/{key}") {
+                val attachmentKey = call.parameters.getOrFail("key")
+                val s3Client = AmazonS3ClientBuilder.standard().build()
+                val attachment = s3Client.getObject("lunatica-attachments", attachmentKey).objectContent.readAllBytes()
+                call.respondBytes(attachment, OctetStream)
             }
-            complaintId?.let {
-                files.forEach { (name, content) ->
-                    val message = Message.complaintAttachment(accountId, it, name)
-                    val s3client = AmazonS3ClientBuilder.standard().build()
-                    s3client.putObject("lunatica-attachments", message.attachmentKey, String(content))
+            post {
+                val token = call.request.cookies["auth"] ?: return@post call.respond(Unauthorized)
+                val accountId = UUID.fromString(JWT.decode(token).subject)
+                val multipart = call.receiveMultipart()
+                var complaintId: UUID? = null
+                val files = mutableMapOf<String, ByteArray>()
+                multipart.forEachPart { part ->
+                    when (part) {
+                        is PartData.FormItem -> {
+                            if (part.name == "complaintId") {
+                                complaintId = UUID.fromString(part.value)
+                            }
+                        }
+
+                        is PartData.FileItem -> {
+                            files[part.originalFileName ?: "attachment"] = part.streamProvider().readAllBytes()
+                        }
+
+                        else -> {}
+                    }
+                }
+                complaintId?.let {
+                    files.forEach { (name, content) ->
+                        val message = Message.complaintAttachment(accountId, it, name)
+                        val s3client = AmazonS3ClientBuilder.standard().build()
+                        s3client.putObject("lunatica-attachments", message.attachmentKey, String(content))
+                    }
                 }
             }
         }
