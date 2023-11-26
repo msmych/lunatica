@@ -91,24 +91,24 @@ object ComplaintSetup {
         CountryCode.LV to TgLabel("🇱🇻", "Латвия"), // 2
         CountryCode.CY to TgLabel("🇨🇾", "Кипр"), // 2
         CountryCode.AT to TgLabel("🇦🇹", "Австрия"), // 1
-        CountryCode.AM to TgLabel("🇦🇲", "Армения"), // 1
-        CountryCode.IL to TgLabel("🇮🇱", "Израиль"), // 1
-        CountryCode.US to TgLabel("🇺🇸", "США"), // 1
-        CountryCode.BE to TgLabel("🇧🇪", "Бельгия"), // 1
-        CountryCode.AE to TgLabel("🇦🇪", "Дубай"), // 1
-        CountryCode.FI to TgLabel("🇫🇮", "Финляндия"), // 1
-        CountryCode.SI to TgLabel("🇸🇮", "Словения"), // 1
+//        CountryCode.AM to TgLabel("🇦🇲", "Армения"), // 1
+//        CountryCode.IL to TgLabel("🇮🇱", "Израиль"), // 1
+//        CountryCode.US to TgLabel("🇺🇸", "США"), // 1
+//        CountryCode.BE to TgLabel("🇧🇪", "Бельгия"), // 1
+//        CountryCode.AE to TgLabel("🇦🇪", "Дубай"), // 1
+//        CountryCode.FI to TgLabel("🇫🇮", "Финляндия"), // 1
+//        CountryCode.SI to TgLabel("🇸🇮", "Словения"), // 1
         CountryCode.UNDEFINED to TgLabel("❔", "Другая")
     )
 
     val COMPLAINTS_TYPES = mapOf(
         BANK_ACCOUNT_OPENING_REJECTED to TgLabel("🏦", "Не дают открыть счет"),
-        FLIGHT_ENTRY_REJECTED to TgLabel("🛫", "Не пустили на самолёт"),
-        BANK_DEPOSIT_REJECTED to TgLabel("💰", "Не дают внести деньги на имеющийся счёт"),
-        INSTAGRAM_AD_REJECTED to TgLabel("📱", "Инстаграм не даёт оплатить рекламу"),
+        FLIGHT_ENTRY_REJECTED to TgLabel("🛫", "Не пускают на самолет"),
+        BANK_DEPOSIT_REJECTED to TgLabel("💰", "Не дают внести деньги на счет"),
+        INSTAGRAM_AD_REJECTED to TgLabel("📱", "Инстаграм не дает оплатить рекламу"),
         FLAT_RENT_REJECTED to TgLabel("🏠", "Не сдают квартиру"),
         EMPLOYMENT_REJECTED to TgLabel("👷‍♂️", "Не берут на работу"),
-        RESIDENCE_PERMIT_REJECTED to TgLabel("🪪", "Отказали в ВНЖ без объяснения причин"),
+        RESIDENCE_PERMIT_REJECTED to TgLabel("🪪", "Отказали в ВНЖ"),
         RESIDENCE_PERMIT_REVOKED to TgLabel("🧌", "Забрали ВНЖ"),
         OTHER to TgLabel("❔", "Другое"),
     )

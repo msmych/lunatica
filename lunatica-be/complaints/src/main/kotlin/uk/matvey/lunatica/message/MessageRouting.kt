@@ -21,6 +21,8 @@ import io.ktor.server.routing.route
 import io.ktor.server.util.getOrFail
 import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.add
+import kotlinx.serialization.json.buildJsonArray
 import uk.matvey.lunatica.account.AccountRepo
 import uk.matvey.lunatica.complaint.ComplaintRepo
 import uk.matvey.lunatica.complaint.FileStorage
@@ -85,14 +87,15 @@ fun Route.messageRouting(
                         else -> {}
                     }
                 }
-                complaintId?.let {
-                    files.forEach { (name, content) ->
+                val messagesIds = complaintId?.let {
+                    files.map { (name, content) ->
                         val message = Message.complaintAttachment(accountId, it, name)
                         messageRepo.insert(message)
-                        fileStorage.upload(name, content.first, content.second)
+                        fileStorage.upload(requireNotNull(message.attachmentKey), content.first, content.second)
+                        message.id
                     }
-                }
-                call.respond(Created)
+                } ?: listOf()
+                call.respond(Created, buildJsonArray { messagesIds.forEach { id -> add(id.toString()) } })
             }
         }
     }
