@@ -60,7 +60,7 @@
   </select>
   <input class="input" type="date" v-model="data.complaint.problemDate" />
   <textarea v-model="data.complaint.content" class="input" placeholder="Текст обращения" />
-  <button class="input" @click.prevent="createComplaint">Создать</button>
+  <button @click.prevent="createComplaint">Создать</button>
 </template>
 
 <style lang="scss" scoped>
@@ -74,5 +74,23 @@ textarea {
   width: 100%;
   margin-bottom: 16px;
   padding: 4px;
+}
+
+button {
+  width: 100%;
+  padding: 10px;
+  margin-top: 10px;
+  margin-bottom: 6px;
+  border-radius: 4px;
+  border: 0;
+  background: #266796;
+  color: #fff;
+  transition: all .3s ease;
+  cursor: pointer;
+
+  &:hover {
+    background: #1a4a6d;
+    transition: all .2s ease;
+  }
 }
 </style>

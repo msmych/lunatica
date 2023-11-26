@@ -76,13 +76,13 @@
 
 <template>
   <div class="login">
-    <h1>Login</h1>
+    <h2>Вход</h2>
     <input placeholder="email" v-model="data.credentials.email" />
-    <input placeholder="password" v-model="data.credentials.pass" />
+    <input placeholder="пароль" v-model="data.credentials.pass" />
     <p class="error" v-if="data.errorMessage">{{ data.errorMessage }}</p>
-    <button @click.prevent="login()">Login</button>
+    <button @click.prevent="login()">Войти</button>
     <div class="login-links">
-      <router-link to="/registration">registration</router-link>
+      <router-link to="/registration">Регистрация</router-link>
       <!-- <router-link to="/forgot">forgot password</router-link> -->
     </div>
   </div>
@@ -95,7 +95,7 @@
     border-radius: 4px;
     box-shadow: 0 0 3px #333;
 
-    h1 {
+    h2 {
       text-align: center;
       margin-bottom: 6px;
     }
@@ -106,24 +106,40 @@
       padding: 4px;
       margin-bottom: 10px;
       border-radius: 4px;
+      border: 1px solid #333;
     }
 
     .error {
+      font-size: 12px;
       color: red;
     }
 
     button {
       width: 100%;
-      padding: 4px;
-      margin-top: 20px;
+      padding: 8px;
+      margin-top: 10px;
       margin-bottom: 6px;
       border-radius: 4px;
+      border: 0;
+      background: #266796;
+      color: #fff;
+      transition: all .3s ease;
+      cursor: pointer;
+
+      &:hover {
+        background: #1a4a6d;
+        transition: all .2s ease;
+      }
     }
 
     &-links {
       display: flex;
       width: 100%;
       justify-content: space-between;
+
+      a {
+        color: #266796;
+      }
     }
   }
 </style>

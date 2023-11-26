@@ -93,16 +93,20 @@
   <!-- <div class="email">{{ data.complaint.account.email }}</div> -->
 
 
-  <div v-if="data.complaint?.state" class="status">Статус: {{ data.complaint.state.emoji }} {{ data.complaint.state.nameRu }}</div>
-  <label>Сменить статус:</label>
-  <br />
-  <select v-model="data.state" class="input">
-    <option v-for="(state, index) in info.complaintStates" :key="index" :value="state">
-      {{ state.emoji }} {{ state.nameRu }}
-    </option>
-  </select>
-  <br />
-  <button @click.prevent="changeState(data.state)">Сменить статус</button>
+  <div v-if="data.complaint?.state" class="status">
+    Статус: {{ data.complaint.state.emoji }} {{ data.complaint.state.nameRu }}
+    <br />
+    <label>Сменить статус:</label>
+    <br />
+    <select v-model="data.state" class="input">
+      <option v-for="(state, index) in info.complaintStates" :key="index" :value="state">
+        {{ state.emoji }} {{ state.nameRu }}
+      </option>
+    </select>
+    <br />
+    <button @click.prevent="changeState(data.state)">Сменить статус</button>
+  </div>
+  
 
 
 
@@ -140,6 +144,11 @@
 
   .status {
     margin-bottom: 8px;
+    width: 200px;
+
+    select {
+      width: 100%;
+    }
   }
 
   label {
@@ -151,7 +160,20 @@
   }
 
   button {
+    width: 100%;
+    padding: 10px;
     margin-bottom: 8px;
+    border-radius: 4px;
+    border: 0;
+    background: #266796;
+    color: #fff;
+    transition: all .3s ease;
+    cursor: pointer;
+
+    &:hover {
+      background: #1a4a6d;
+      transition: all .2s ease;
+    }
   }
 
   .chat {
