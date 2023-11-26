@@ -13,6 +13,7 @@
   const complaints = useConfigStore().complaints
 
   const BaseURL = import.meta.env.MODE === 'development' ? 'http://localhost:8080/api' : 'api/'
+  console.log('BaseURL', BaseURL)
   // const complaints = reactive([])
 
   const data = reactive({
@@ -71,7 +72,7 @@
 </script>
 
 <template>
-  <h1>Complaints</h1>
+  <h1>Обращения</h1>
 
   <div class="complaints-filters">
     <h3>Фильтры:</h3>
@@ -109,43 +110,51 @@
     </select>
   </div>
 
-  <div class="complaints complaints-head">
-    <div class="go-in">Зайти в заявку</div>
-    <div class="email">Email</div>
-    <div class="status">Статус</div>
-    <div class="country">Страна</div>
-    <div class="date-created">Дата создания</div>
-    <div class="type">Тип обращения</div>
-    <div class="date-updated">Дата изменения</div>
-  </div>
+  <div class="complaints-table">
+    <div class="complaints complaints-head">
+      <div class="go-in">Зайти в заявку</div>
+      <div class="email">Email</div>
+      <div class="status">Статус</div>
+      <div class="country">Страна</div>
+      <div class="date-created">Дата создания</div>
+      <div class="type">Тип обращения</div>
+      <div class="date-updated">Дата изменения</div>
+    </div>
 
-  <ul v-if="data.complaints" class="complaints complaints-list">
-    <li v-for="complaint in (data.complaints as ComplaintFull[])" :key="complaint.id">
-      <div class="go-in">
-        <router-link :to="`/complaints/${complaint.id}`">
-          Зайти в заявку
-        </router-link>
-      </div>
-      <div class="email">{{ complaint.account.email }}</div>
-      <div class="status">
-        <!-- <select v-model="data.complaintFilter.type" class="input" @change="changeState(complaint, value)">
-          <option value="all" key="0" :selected="true">{{ complaint.state.emoji }} {{ complaint.state.nameRu }}</option>
-          <option v-for="(type, index) in info.complaintStates" :key="index" :value="type.code" :selected="false">
-            {{ type.emoji }} {{ type.nameRu }}
-          </option>
-        </select> -->
-        {{ complaint.state.emoji }} {{ complaint.state.nameRu }}
-      </div>
-      <div class="country">{{ complaint.problemCountry.emoji }} {{ complaint.problemCountry.nameRu }}</div>
-      <div class="date-created">{{ complaint.problemDate }}</div>
-      <div class="type">{{ complaint.type.emoji }} {{ complaint.type.nameRu }}</div>
-      <div class="date-updated">{{ moment(String(complaint.updatedAt)).format('DD-MM-YYYY') }}</div>
-    </li>
-  </ul>
+    <ul v-if="data.complaints" class="complaints complaints-list">
+      <li v-for="complaint in (data.complaints as ComplaintFull[])" :key="complaint.id">
+        <div class="go-in">
+          <router-link :to="`/complaints/${complaint.id}`">
+            Зайти в заявку
+          </router-link>
+        </div>
+        <div class="email">{{ complaint.account.email }}</div>
+        <div class="status">
+          <!-- <select v-model="data.complaintFilter.type" class="input" @change="changeState(complaint, value)">
+            <option value="all" key="0" :selected="true">{{ complaint.state.emoji }} {{ complaint.state.nameRu }}</option>
+            <option v-for="(type, index) in info.complaintStates" :key="index" :value="type.code" :selected="false">
+              {{ type.emoji }} {{ type.nameRu }}
+            </option>
+          </select> -->
+          {{ complaint.state.emoji }} {{ complaint.state.nameRu }}
+        </div>
+        <div class="country">{{ complaint.problemCountry.emoji }} {{ complaint.problemCountry.nameRu }}</div>
+        <div class="date-created">{{ complaint.problemDate }}</div>
+        <div class="type">{{ complaint.type.emoji }} {{ complaint.type.nameRu }}</div>
+        <div class="date-updated">{{ moment(String(complaint.updatedAt)).format('DD-MM-YYYY') }}</div>
+      </li>
+    </ul>
+  </div>
 </template>
 
 <style lang="scss" scoped>
   .complaints {
+
+    &-table {
+      height: 80%;
+      border: 1px solid #333;
+      overflow-y: auto;
+    }
 
     &-filters {
       margin-bottom: 16px;

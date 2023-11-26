@@ -19,8 +19,7 @@
   const data = reactive({
     complaint: {},
     message: '',
-    messages: [],
-    state: ''
+    messages: []
   })
 
   function getComplaint() {
@@ -47,7 +46,7 @@
       baseURL: BaseURL,
       headers: {'Content-Type': 'application/json'},
       withCredentials: true,
-      params: { complaintId: data.complaint.id }
+      params: {complaintId: data.complaint.id}
     }).then(response => {
       data.messages = response.data
     })
@@ -69,45 +68,21 @@
       data.message = ''
     })
   }
-
-  function changeState() {
-    console.log('1111')
-    axios({
-      method: 'patch',
-      url: ApiEndpoints.Complaints + '/' + data.complaint.id,
-      baseURL: BaseURL,
-      headers: {'Content-Type': 'application/json'},
-      withCredentials: true,
-      data: { state: data.state.code, assignedTo: null }
-    }).then(response => {
-      console.log(response)
-      console.log('data.state', data.state)
-      data.complaint.state = data.state
-    })
-  }
 </script>
 
 <template>
-  <h1>Complaint</h1>
+  <h1>Обращение</h1>
 
   <!-- <div class="email">{{ data.complaint.account.email }}</div>
 
   <div class="status">{{ data.complaint.state.emoji }} {{ data.complaint.state.nameRu }}</div> -->
 
-  <div v-if="data.complaint">
-    Текущий статус:
-    {{ data.complaint.state?.emoji }} {{ data.complaint.state?.nameRu }}
-  </div>
-
-  <br />
-
-  <label>Сменить статус на:</label>
-  <select v-model="data.state" class="input">
-    <option v-for="(state, index) in info.complaintStates" :key="index" :value="state">
+  <label>Сменить статус</label>
+  <select v-model="data.state" class="input" @change="changeState(data.state)">
+    <option v-for="(state, index) in info.complaintStates" :key="index" :value="state.code">
       {{ state.emoji }} {{ state.nameRu }}
     </option>
   </select>
-  <button @click.prevent="changeState(data.state)">Сменить статус</button>
 
 
 

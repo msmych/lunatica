@@ -11,11 +11,14 @@
 </script>
 
 <template>
-  <h1>Settings</h1>
-  <p>Change password:</p>
+  <h1>Настройки</h1>
+  <p>Сменить пароль:</p>
+  <br />
   <input :v-model="data.pass" />
+  <br />
+  <br />
   <button @click.prevent="changePassword">
-    Change
+    Сменить
   </button>
 </template>
 

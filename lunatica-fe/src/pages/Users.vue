@@ -39,7 +39,7 @@
 </script>
 
 <template>
-  <h1>Users</h1>
+  <h1>Пользователи</h1>
   <ul v-if="data.accounts.admins" class="accounts accounts-admins">
     <li v-for="account in (data.accounts.admins as User[])" :key="account.id">
       <div class="">{{ account.email }}</div>

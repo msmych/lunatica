@@ -5,36 +5,26 @@
   import { useConfigStore } from './../state'
   import { UserType } from './../types/common.types'
 
-  // import Gear from './../components/icons/Gear.svg'
-
   const roles = Object.values(useConfigStore().user.roles)
 </script>
 
 <template>
   <div class="nav">
-    <router-link class="logo" to="/">
-      <img src="" alt="logo" />
+    <router-link class="logo" to="/complaints">
+      <img src="/public/logo.png" alt="logo" />
     </router-link>
     <ul>
       <li>
-        <!-- <Gear color="#fff" /> -->
-        <router-link to="/complaint-new">Create new complaint</router-link>
+        <router-link to="/complaint-new">Новое обращение</router-link>
       </li>
       <li>
-        <!-- <Gear color="#fff" /> -->
-        <router-link to="/complaints">Active complaints</router-link>
-      </li>
-      <li v-if="roles.includes(UserType.Admin) || roles.includes(UserType.Worker)">
-        <!-- <Gear color="#fff" /> -->
-        <router-link to="/complaints-completed">Completed complaints</router-link>
+        <router-link to="/complaints">Обращения</router-link>
       </li>
       <li>
-        <!-- <Gear color="#fff" /> -->
-        <router-link to="/settings">Settings</router-link>
+        <router-link to="/settings">Настройки</router-link>
       </li>
       <li v-if="roles.includes(UserType.Admin)">
-        <!-- <Gear color="#fff" /> -->
-        <router-link to="/users">Users</router-link>
+        <router-link to="/users">Пользователи</router-link>
       </li>
     </ul>
   </div>
@@ -44,7 +34,7 @@
 .nav {
   display: flex;
   flex-direction: column;
-  width: 80px;
+  width: 100px;
   height: 100%;
   padding: 10px;
   background: #266796;
