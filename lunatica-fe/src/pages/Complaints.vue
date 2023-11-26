@@ -31,7 +31,7 @@
     axios({
       method: 'get',
       url: ApiEndpoints.Complaints,
-      baseURL: BaseURL,
+      baseURL: 'http://ec2-13-41-186-167.eu-west-2.compute.amazonaws.com/api',
       headers: {'Content-Type': 'application/json'},
       withCredentials: true
     }).then(response => {
@@ -120,7 +120,7 @@
 
   <div class="complaints-table">
     <div class="complaints complaints-head">
-      <div class="go-in">Зайти в заявку</div>
+      <div class="go-in"></div>
       <div class="email">Email</div>
       <div class="status">Статус</div>
       <div class="country">Страна</div>
@@ -157,6 +157,35 @@
 
 <style lang="scss" scoped>
   .complaints {
+
+
+    .go-in {
+      width: 120px;
+    }
+
+    .email {
+      width: 160px;
+    }
+
+    .status {
+      width: 120px;
+    }
+
+    .country {
+      width: 120px;
+    }
+
+    .date-created {
+      width: 120px;
+    }
+
+    .type {
+      width: 140px;
+    }
+
+    .date-updated {
+      width: 120px;
+    }
 
     &-table {
       height: 80%;
