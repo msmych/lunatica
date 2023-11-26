@@ -22,12 +22,12 @@
 
 <template>
   <div class="registration">
-    <h1>Registration</h1>
+    <h2>Регистрация</h2>
     <input placeholder="email" v-model="credentials.email" />
-    <input placeholder="password" v-model="credentials.pass" />
-    <button @click="registration()">Login</button>
-    <div class="login-links">
-      <router-link to="/">login</router-link>
+    <input placeholder="пароль" v-model="credentials.pass" />
+    <button @click="registration()">Зарегестрироваться</button>
+    <div class="registration-links">
+      <router-link to="/login">Вход</router-link>
     </div>
   </div>
 </template>
@@ -39,7 +39,7 @@
     border-radius: 4px;
     box-shadow: 0 0 3px #333;
 
-    h1 {
+    h2 {
       text-align: center;
       margin-bottom: 6px;
     }
@@ -47,21 +47,43 @@
     input {
       display: block;
       width: 100%;
+      padding: 4px;
       margin-bottom: 10px;
       border-radius: 4px;
+      border: 1px solid #333;
+    }
+
+    .error {
+      font-size: 12px;
+      color: red;
     }
 
     button {
       width: 100%;
-      margin-top: 20px;
+      padding: 8px;
+      margin-top: 10px;
       margin-bottom: 6px;
       border-radius: 4px;
+      border: 0;
+      background: #266796;
+      color: #fff;
+      transition: all .3s ease;
+      cursor: pointer;
+
+      &:hover {
+        background: #1a4a6d;
+        transition: all .2s ease;
+      }
     }
 
     &-links {
       display: flex;
       width: 100%;
       justify-content: space-between;
+
+      a {
+        color: #266796;
+      }
     }
   }
 </style>
