@@ -27,8 +27,12 @@
     })
   }
 
+  // function mapRolesNames(roles) {
+  //   return '123'
+  // }
+
   onMounted(() => {
-		getAccounts('admin')
+		getAccounts('ADMIN')
     // getAccounts('worker')
     // getAccounts('client')
 	})
@@ -38,10 +42,18 @@
   <h1>Users</h1>
   <ul v-if="data.accounts.admins" class="accounts accounts-admins">
     <li v-for="account in (data.accounts.admins as User[])" :key="account.id">
-      {{ account.email }}
+      <div class="">{{ account.email }}</div>
+      <!-- <div class="">{{ mapRolesNames(account.roles) }}</div> -->
+      <div class="">{{ account.roles }}</div>
     </li>
   </ul>
 </template>
 
-<style scoped>
+<style lang="scss" scoped>
+  .accounts {
+    li {
+      box-shadow: 0 0 3px #333;
+      margin-bottom: 16px;
+    }
+  }
 </style>

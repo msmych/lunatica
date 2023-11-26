@@ -1,9 +1,14 @@
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-nocheck
+
 import {
 	RouteLocationNormalized,
 	createRouter,
 	createWebHistory,
 	createWebHashHistory,
 } from 'vue-router'
+
+import { useConfigStore } from './state'
 
 import { RouteName } from './types/common.types'
 
@@ -21,9 +26,16 @@ const router = createRouter({
 	routes: [
 		{
       path: '/',
+      redirect: () => {
+				return { path: '/login' }
+			},
+    },
+		{
+      path: '/login',
       name: RouteName.Login,
 			meta: {
-				title: 'Login'
+				title: 'Login',
+				hideForAuth: true
 			},
       component: () => import('./pages/Login.vue')
     },
@@ -31,7 +43,8 @@ const router = createRouter({
       path: '/registration',
       name: RouteName.Registration,
 			meta: {
-				title: 'Registration'
+				title: 'Registration',
+				hideForAuth: true
 			},
       component: () => import('./pages/Registration.vue')
     },
@@ -39,7 +52,8 @@ const router = createRouter({
 			path: '/complaint-new',
 			name: RouteName.ComplaintNew,
 			meta: {
-				title: 'New Complaint'
+				title: 'New Complaint',
+				requiresAuth: true
 			},
 			component: () => import('./pages/ComplaintNew.vue')
 		},
@@ -47,15 +61,26 @@ const router = createRouter({
 			path: '/complaints',
 			name: RouteName.Complaints,
 			meta: {
-				title: 'Complaints'
+				title: 'Complaints',
+				requiresAuth: true
 			},
 			component: () => import('./pages/Complaints.vue')
+		},
+		{
+			path: '/complaints/:id',
+			name: RouteName.Complaint,
+			meta: {
+				title: 'Complaint',
+				requiresAuth: true
+			},
+			component: () => import('./pages/Complaint.vue')
 		},
 		{
 			path: '/complaints-completed',
 			name: RouteName.ComplaintsCompleted,
 			meta: {
-				title: 'Completed Complaints'
+				title: 'Completed Complaints',
+				requiresAuth: true
 			},
 			component: () => import('./pages/ComplaintsCompleted.vue')
 		},
@@ -63,7 +88,8 @@ const router = createRouter({
 			path: '/settings',
 			name: RouteName.Settings,
 			meta: {
-				title: 'Settings'
+				title: 'Settings',
+				requiresAuth: true
 			},
 			component: () => import('./pages/Settings.vue')
 		},
@@ -71,7 +97,8 @@ const router = createRouter({
 			path: '/users',
 			name: RouteName.Users,
 			meta: {
-				title: 'Users'
+				title: 'Users',
+				requiresAuth: true
 			},
 			component: () => import('./pages/Users.vue')
 		},
@@ -104,11 +131,22 @@ export const addTitleToDocument = (to: RouteLocationNormalized, pageTitle?: stri
 	}
 }
 
-
 router.beforeEach(async (to) => {
 	addTitleToDocument(to)
 })
 
-	
+router.beforeEach((to, from, next) => {
+	if (to.matched.some(record => record.meta.requiresAuth)) {
+    // this route requires auth, check if logged in
+    // if not, redirect to login page.
+    if (!useConfigStore().user.id) {
+      next({ name: 'Login' })
+    } else {
+      next() // go to wherever I'm going
+    }
+  } else {
+    next() // does not require auth, make sure to always call next()!
+  }
+});
 
 export default router

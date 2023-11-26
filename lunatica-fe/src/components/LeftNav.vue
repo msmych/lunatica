@@ -17,7 +17,7 @@
       <li>
         <router-link to="/complaints">Active complaints</router-link>
       </li>
-      <li v-if="roles.includes(UserType.Admin) || roles.includes(UserType.Basic)">
+      <li v-if="roles.includes(UserType.Admin) || roles.includes(UserType.Worker)">
         <router-link to="/complaints-completed">Completed complaints</router-link>
       </li>
       <li>
