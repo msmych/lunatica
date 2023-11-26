@@ -1,46 +1,46 @@
 <script setup lang="ts">
-  import { reactive, onMounted } from 'vue'
-  import axios from 'axios';
-  import { ApiEndpoints } from './../types/common.types'
-  import { ComplaintFull } from './../types/common.types'
+  // import { reactive, onMounted } from 'vue'
+  // import axios from 'axios';
+  // import { ApiEndpoints } from './../types/common.types'
+  // import { ComplaintFull } from './../types/common.types'
 
-  const BaseURL = import.meta.env.MODE === 'development' ? 'http://localhost:8080/api' : 'api/'
+  // const BaseURL = import.meta.env.MODE === 'development' ? 'http://localhost:8080/api' : 'api/'
   // const complaints = reactive([])
 
-  const data = reactive({
-    complaint: ComplaintFull,
-  })
+  // const data = reactive({
+  //   complaint: ComplaintFull,
+  // })
 
-  function getComplaint() {
-    axios({
-      method: 'get',
-      url: ApiEndpoints.Complaints,
-      baseURL: BaseURL,
-      headers: {'Content-Type': 'application/json'},
-      withCredentials: true
-    }).then(response => {
-      data.complaints = response.data
-    })
-  }
+  // function getComplaint() {
+  //   axios({
+  //     method: 'get',
+  //     url: ApiEndpoints.Complaints,
+  //     baseURL: BaseURL,
+  //     headers: {'Content-Type': 'application/json'},
+  //     withCredentials: true
+  //   }).then(response => {
+  //     data.complaints = response.data
+  //   })
+  // }
 
-  function getMessages() {
-    axios({
-      method: 'get',
-      url: ApiEndpoints.Messages,
-      baseURL: BaseURL,
-      headers: {'Content-Type': 'application/json'},
-      withCredentials: true,
-      params: {
-        complaintId: uuid
-      }
-    }).then(response => {
-      data.complaints = response.data
-    })
-  }
+  // function getMessages() {
+  //   axios({
+  //     method: 'get',
+  //     url: ApiEndpoints.Messages,
+  //     baseURL: BaseURL,
+  //     headers: {'Content-Type': 'application/json'},
+  //     withCredentials: true,
+  //     params: {
+  //       complaintId: uuid
+  //     }
+  //   }).then(response => {
+  //     data.complaints = response.data
+  //   })
+  // }
 
-  onMounted(() => {
-		getComplaint()
-	})
+  // onMounted(() => {
+	// 	getComplaint()
+	// })
 </script>
 
 <template>
