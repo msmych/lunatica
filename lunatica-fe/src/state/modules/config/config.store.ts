@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
-import { ConfigState } from './config.types'
-import { User } from './../../../types/common.types'
+import { ConfigState, Info } from './config.types'
+import { Complaint, User } from './../../../types/common.types'
 
 export const useConfigStore = defineStore('ConfigStore', {
 	state: (): ConfigState => ({
@@ -9,7 +9,13 @@ export const useConfigStore = defineStore('ConfigStore', {
 			roles: [],
 			email: ''
 		},
-		cookie: ''
+		cookie: '',
+		info: {
+			complaintStates: [],
+			countries: [],
+			complaintTypes: []
+		},
+		complaints: []
 	}),
 	actions: {
 		setUser(user: User) {
@@ -17,7 +23,13 @@ export const useConfigStore = defineStore('ConfigStore', {
 		},
 		setCookie(cookie: string) {
 			this.cookie = cookie
-		}
+		},
+		setInfo(info: Info) {
+			this.info = info
+		},
+		setComplaints(complaints: Complaint[]) {
+			this.complaints = complaints
+		},
 	},
 	persist: true
 })

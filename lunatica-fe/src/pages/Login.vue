@@ -52,13 +52,26 @@
         email: response.data.email
       })
 
+      getInfo()
+
       router.push('/complaints')
     })
   }
 
-  // onMounted(() => {
-	// 	getUserData()
-	// })
+  function getInfo() {
+    axios({
+      method: 'get',
+      url: ApiEndpoints.Info,
+      baseURL: BaseURL,
+      withCredentials: true
+    }).then(response => {
+      useConfigStore().setInfo({
+        complaintStates: response.data.complaintStates,
+        countries: response.data.countries,
+        complaintTypes: response.data.complaintTypes
+      })
+    })
+  }
 </script>
 
 <template>
