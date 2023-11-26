@@ -39,7 +39,7 @@ data class Message(
         fun complaintAttachment(authorId: UUID, complaintId: UUID, fileName: String): Message {
             val now = Instant.now()
             val id = randomUUID()
-            return Message(id, authorId, complaintId, fileName, id.toString(), now, now)
+            return Message(id, authorId, complaintId, fileName, "$id-$fileName", now, now)
         }
     }
 }
