@@ -19,7 +19,7 @@ suspend fun setComplaintCountry(
         EditMessageText(
             action.userId,
             action.messageId,
-            "Выберите тип учреждения, где произошло нарушение"
+            "Какое нарушение произошло?"
         )
             .replyMarkup(InlineKeyboardMarkup().apply {
                 COMPLAINTS_TYPES.map { (code, info) ->
