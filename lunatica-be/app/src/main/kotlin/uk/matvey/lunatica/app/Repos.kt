@@ -4,9 +4,9 @@ import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.newFixedThreadPoolContext
-import uk.matvey.lunatica.account.AccountPgRepo
-import uk.matvey.lunatica.complaint.ComplaintPgRepo
-import uk.matvey.lunatica.message.MessagePgRepo
+import uk.matvey.lunatica.account.AccountRepo
+import uk.matvey.lunatica.complaint.ComplaintRepo
+import uk.matvey.lunatica.message.MessageRepo
 
 class Repos(hikariConfig: HikariConfig) {
 
@@ -14,7 +14,7 @@ class Repos(hikariConfig: HikariConfig) {
     @OptIn(DelicateCoroutinesApi::class)
     val dispatcher = newFixedThreadPoolContext(4, "data-source")
 
-    val accountRepo = AccountPgRepo(ds, dispatcher)
-    val complaintRepo = ComplaintPgRepo(ds, dispatcher)
-    val messageRepo = MessagePgRepo(ds, dispatcher)
+    val accountRepo = AccountRepo(ds, dispatcher)
+    val complaintRepo = ComplaintRepo(ds, dispatcher)
+    val messageRepo = MessageRepo(ds, dispatcher)
 }

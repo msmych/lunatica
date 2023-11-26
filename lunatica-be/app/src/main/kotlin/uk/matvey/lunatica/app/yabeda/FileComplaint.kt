@@ -20,9 +20,11 @@ suspend fun fileComplaint(
     bot.execute(
         SendMessage(action.userId, "В какой стране произошло нарушение?")
             .replyMarkup(InlineKeyboardMarkup().apply {
-                PROBLEM_COUNTRIES.map { (code, info) ->
+                PROBLEM_COUNTRIES.entries.chunked(3).map { countries ->
                     addRow(
-                        InlineKeyboardButton(info.label()).callbackData(code.name)
+                        *countries.map { (code, info) ->
+                            InlineKeyboardButton(info.label()).callbackData(code.name)
+                        }.toTypedArray()
                     )
                 }
             })

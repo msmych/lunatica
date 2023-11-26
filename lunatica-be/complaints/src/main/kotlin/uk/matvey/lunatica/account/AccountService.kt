@@ -3,7 +3,7 @@ package uk.matvey.lunatica.account
 import uk.matvey.lunatica.sha256
 import java.util.UUID
 
-class AccountService(private val accountRepo: AccountPgRepo) {
+class AccountService(private val accountRepo: AccountRepo) {
 
     suspend fun createAccount(email: String, pass: String, name: String?): UUID {
         val account = Account.account(email, sha256(pass), name)

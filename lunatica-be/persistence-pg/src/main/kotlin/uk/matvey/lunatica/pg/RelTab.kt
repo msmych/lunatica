@@ -1,4 +1,4 @@
-package uk.matvey.lunatica.repo
+package uk.matvey.lunatica.pg
 
 class RelTab(
     val columns: LinkedHashMap<String, RelCol>

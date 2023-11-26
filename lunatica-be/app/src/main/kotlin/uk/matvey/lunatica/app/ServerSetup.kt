@@ -37,7 +37,6 @@ import io.ktor.server.routing.routing
 import io.ktor.util.date.GMTDate
 import kotlinx.serialization.Serializable
 import org.slf4j.event.Level
-import uk.matvey.lunatica.account.Account
 import uk.matvey.lunatica.account.accountRouting
 import uk.matvey.lunatica.complaint.ComplaintSetup.JSON
 import uk.matvey.lunatica.complaint.complaintRouting
@@ -103,11 +102,13 @@ fun Application.setupRouting(services: Services, repos: Repos) {
         }
         route("/api") {
             post("/login") { request: LoginRequest ->
-                val account = repos.accountRepo.findByEmail(request.email) ?: return@post call.respond(Unauthorized)
+                val account = repos.accountRepo.findByEmail(request.email)
+                    ?.takeIf { sha256(request.pass) == it.passHash }
+                    ?: return@post call.respond(Unauthorized)
                 val token = JWT.create()
                     .withSubject(account.id.toString())
                     .withClaim("email", request.email)
-                    .withClaim("roles", listOf(Account.Role.CLIENT.name))
+                    .withClaim("roles", account.roles)
                     .sign(HMAC256("auth-secret"))
                 call.response.cookies.append(
                     name = "auth",
@@ -126,7 +127,7 @@ fun Application.setupRouting(services: Services, repos: Repos) {
             }
             infoRouting()
             accountRouting(services.accountService, repos.accountRepo)
-            complaintRouting(repos.complaintRepo, services.messageService, repos.accountRepo)
+            complaintRouting(services.complaintService, repos.complaintRepo, services.messageService, repos.accountRepo)
             messageRouting(services.messageService, repos.messageRepo)
         }
     }

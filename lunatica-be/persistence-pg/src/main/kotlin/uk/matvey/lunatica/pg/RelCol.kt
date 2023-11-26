@@ -1,4 +1,4 @@
-package uk.matvey.lunatica.repo
+package uk.matvey.lunatica.pg
 
 import kotlinx.serialization.json.JsonElement
 import java.time.Instant

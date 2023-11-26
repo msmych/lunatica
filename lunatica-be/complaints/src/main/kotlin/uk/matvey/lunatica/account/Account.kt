@@ -2,11 +2,11 @@ package uk.matvey.lunatica.account
 
 import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
-import uk.matvey.lunatica.repo.Entity
-import uk.matvey.lunatica.repo.RelCol
-import uk.matvey.lunatica.repo.RelCol.TimeStamp.Companion.timeStampRel
-import uk.matvey.lunatica.repo.RelCol.Uuid
-import uk.matvey.lunatica.repo.RelCol.Uuid.Companion.uuidRel
+import uk.matvey.lunatica.pg.Entity
+import uk.matvey.lunatica.pg.RelCol
+import uk.matvey.lunatica.pg.RelCol.TimeStamp.Companion.timeStampRel
+import uk.matvey.lunatica.pg.RelCol.Uuid
+import uk.matvey.lunatica.pg.RelCol.Uuid.Companion.uuidRel
 import java.time.Instant
 import java.util.UUID
 import java.util.UUID.randomUUID
@@ -58,11 +58,11 @@ data class Account(
         }
     }
 
-    override fun id(): Uuid {
+    override fun idRel(): Uuid {
         return uuidRel(id)
     }
 
-    override fun updatedAt(): RelCol.TimeStamp {
+    override fun updatedAtRel(): RelCol.TimeStamp {
         return timeStampRel(updatedAt)
     }
 }
