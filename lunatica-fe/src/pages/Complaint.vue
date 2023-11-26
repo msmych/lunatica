@@ -29,7 +29,7 @@
     axios({
       method: 'get',
       url: ApiEndpoints.Complaints + '/' + location.pathname.split('/').pop(-1),
-      baseURL: BaseURL,
+      baseURL: 'http://ec2-13-41-186-167.eu-west-2.compute.amazonaws.com/api',
       headers: {'Content-Type': 'application/json'},
       withCredentials: true
     }).then(response => {
@@ -46,7 +46,7 @@
     axios({
       method: 'get',
       url: ApiEndpoints.Messages,
-      baseURL: BaseURL,
+      baseURL: 'http://ec2-13-41-186-167.eu-west-2.compute.amazonaws.com/api',
       headers: {'Content-Type': 'application/json'},
       withCredentials: true,
       params: { complaintId: location.pathname.split('/').pop(-1) }
@@ -59,7 +59,7 @@
     axios({
       method: 'post',
       url: ApiEndpoints.Messages,
-      baseURL: BaseURL,
+      baseURL: 'http://ec2-13-41-186-167.eu-west-2.compute.amazonaws.com/api',
       headers: {'Content-Type': 'application/json'},
       withCredentials: true,
       data: {
@@ -76,7 +76,7 @@
     axios({
       method: 'patch',
       url: ApiEndpoints.Complaints + '/' + data.complaint.id,
-      baseURL: BaseURL,
+      baseURL: 'http://ec2-13-41-186-167.eu-west-2.compute.amazonaws.com/api',
       headers: {'Content-Type': 'application/json'},
       withCredentials: true,
       data: { state: data.state.code, assignedTo: null }
