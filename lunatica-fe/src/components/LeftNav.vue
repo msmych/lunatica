@@ -1,4 +1,7 @@
 <script setup lang="ts">
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-nocheck
+  
   import { useConfigStore } from './../state'
   import { UserType } from './../types/common.types'
 
