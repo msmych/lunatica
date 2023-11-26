@@ -74,41 +74,49 @@
 <template>
   <h1>Обращения</h1>
 
-  <div class="complaints-filters">
-    <h3>Фильтры:</h3>
-
-    <label>Email</label>
-    <select v-model="data.complaintFilter.email" class="input" @change="filter('email', data.complaintFilter.email)">
-      <option value="all" key="0" selected>Email</option>
-      <option v-for="(email, index) in allEmails" :key="index" :value="email">
-        {{ email }}
-      </option>
-    </select>
-
-    <label>Статус</label>
-    <select v-model="data.complaintFilter.state" class="input" @change="filter('state', data.complaintFilter.state)">
-      <option value="all" key="0" selected>Статус</option>
-      <option v-for="(state, index) in info.complaintStates" :key="index" :value="state.code">
-        {{ state.emoji }} {{ state.nameRu }}
-      </option>
-    </select>
-
-    <label>Страна</label>
-    <select v-model="data.complaintFilter.problemCountry" class="input" @change="filter('problemCountry', data.complaintFilter.problemCountry)">
-      <option value="all" key="0" selected>Все страны</option>
-      <option v-for="(country, index) in info.countries" :key="index" :value="country.code">
-        {{ country.emoji }} {{ country.nameRu }}
-      </option>
-    </select>
-
-    <label>Тип обращения</label>
-    <select v-model="data.complaintFilter.type" class="input" @change="filter('type', data.complaintFilter.type)">
-      <option value="all" key="0" selected>Все типы обращения</option>
-      <option v-for="(type, index) in info.complaintTypes" :key="index" :value="type.code">
-        {{ type.emoji }} {{ type.nameRu }}
-      </option>
-    </select>
-  </div>
+  <h3>Фильтры:</h3>
+  <ul class="complaints-filters">
+    <li class="complaints-filters__item">
+      <label>Email</label>
+      <br />
+      <select v-model="data.complaintFilter.email" class="input" @change="filter('email', data.complaintFilter.email)">
+        <option value="all" key="0" selected>Email</option>
+        <option v-for="(email, index) in allEmails" :key="index" :value="email">
+          {{ email }}
+        </option>
+      </select>
+    </li>
+    <li class="complaints-filters__item">
+      <label>Статус</label>
+      <br />
+      <select v-model="data.complaintFilter.state" class="input" @change="filter('state', data.complaintFilter.state)">
+        <option value="all" key="0" selected>Статус</option>
+        <option v-for="(state, index) in info.complaintStates" :key="index" :value="state.code">
+          {{ state.emoji }} {{ state.nameRu }}
+        </option>
+      </select>
+    </li>
+    <li class="complaints-filters__item">
+      <label>Страна</label>
+      <br />
+      <select v-model="data.complaintFilter.problemCountry" class="input" @change="filter('problemCountry', data.complaintFilter.problemCountry)">
+        <option value="all" key="0" selected>Все страны</option>
+        <option v-for="(country, index) in info.countries" :key="index" :value="country.code">
+          {{ country.emoji }} {{ country.nameRu }}
+        </option>
+      </select>
+    </li>
+    <li class="complaints-filters__item">
+      <label>Тип обращения</label>
+      <br />
+      <select v-model="data.complaintFilter.type" class="input" @change="filter('type', data.complaintFilter.type)">
+        <option value="all" key="0" selected>Все типы обращения</option>
+        <option v-for="(type, index) in info.complaintTypes" :key="index" :value="type.code">
+          {{ type.emoji }} {{ type.nameRu }}
+        </option>
+      </select>
+    </li>
+  </ul>
 
   <div class="complaints-table">
     <div class="complaints complaints-head">
@@ -157,6 +165,7 @@
     }
 
     &-filters {
+      display: flex;
       margin-bottom: 16px;
 
       select {

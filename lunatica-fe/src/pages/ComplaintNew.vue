@@ -73,5 +73,6 @@ textarea {
   display: block;
   width: 100%;
   margin-bottom: 16px;
+  padding: 4px;
 }
 </style>

@@ -16,6 +16,9 @@
   const BaseURL = import.meta.env.MODE === 'development' ? 'http://localhost:8080/api' : 'api/'
   // const complaints = reactive([])
 
+  console.log('BaseURL', BaseURL)
+  console.log('ApiEndpoints.Complaints', ApiEndpoints.Complaints)
+
   const data = reactive({
     complaint: {},
     message: '',
@@ -25,12 +28,12 @@
   function getComplaint() {
     axios({
       method: 'get',
-      url: ApiEndpoints.Complaints,
+      url: ApiEndpoints.Complaints + '/' + location.pathname.split('/').pop(-1),
       baseURL: BaseURL,
       headers: {'Content-Type': 'application/json'},
       withCredentials: true
     }).then(response => {
-      data.complaint = response.data[0] as ComplaintFull
+      data.complaint = response.data as ComplaintFull
       getMessages()
     })
   }
@@ -46,7 +49,7 @@
       baseURL: BaseURL,
       headers: {'Content-Type': 'application/json'},
       withCredentials: true,
-      params: {complaintId: data.complaint.id}
+      params: { complaintId: location.pathname.split('/').pop(-1) }
     }).then(response => {
       data.messages = response.data
     })
@@ -60,7 +63,7 @@
       headers: {'Content-Type': 'application/json'},
       withCredentials: true,
       data: {
-        complaintId: data.complaint.id,
+        complaintId: location.pathname.split('/').pop(-1),
         content: data.message
       }
     }).then(response => {
@@ -68,21 +71,39 @@
       data.message = ''
     })
   }
+
+  function changeState() {
+    axios({
+      method: 'patch',
+      url: ApiEndpoints.Complaints + '/' + data.complaint.id,
+      baseURL: BaseURL,
+      headers: {'Content-Type': 'application/json'},
+      withCredentials: true,
+      data: { state: data.state.code, assignedTo: null }
+    }).then(response => {
+      data.complaint.state = data.state
+    })
+  }
+
 </script>
 
 <template>
   <h1>Обращение</h1>
 
-  <!-- <div class="email">{{ data.complaint.account.email }}</div>
+  <!-- <div class="email">{{ data.complaint.account.email }}</div> -->
 
-  <div class="status">{{ data.complaint.state.emoji }} {{ data.complaint.state.nameRu }}</div> -->
 
-  <label>Сменить статус</label>
-  <select v-model="data.state" class="input" @change="changeState(data.state)">
-    <option v-for="(state, index) in info.complaintStates" :key="index" :value="state.code">
+  <div v-if="data.complaint?.state" class="status">Статус: {{ data.complaint.state.emoji }} {{ data.complaint.state.nameRu }}</div>
+  <label>Сменить статус:</label>
+  <br />
+  <select v-model="data.state" class="input">
+    <option v-for="(state, index) in info.complaintStates" :key="index" :value="state">
       {{ state.emoji }} {{ state.nameRu }}
     </option>
   </select>
+  <br />
+  <button @click.prevent="changeState(data.state)">Сменить статус</button>
+
 
 
 
@@ -92,7 +113,6 @@
   <div class="date-updated">{{ data.complaint.updatedAt }}</div> -->
 
   <div class="chat">
-    Чатег
     <div class="chat-window">
       <!-- {{ data.messages }} -->
       <ul class="messages" v-if="data.messages">
@@ -118,14 +138,30 @@
 
 <style lang="scss" scoped>
 
+  .status {
+    margin-bottom: 8px;
+  }
+
+  label {
+    margin-bottom: 8px;
+  }
+
+  select {
+    margin-bottom: 8px;
+  }
+
+  button {
+    margin-bottom: 8px;
+  }
+
   .chat {
-    height: 90%;
+    height: 76%;
 
     &-window {
       margin-top: 10px;
       margin-bottom: 10px;
       width: 100%;
-      height: 80%;
+      height: 70%;
       border: 1px solid #333;      
       border-radius: 4px;
       overflow-y: auto;

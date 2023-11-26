@@ -34,7 +34,7 @@ const router = createRouter({
       path: '/login',
       name: RouteName.Login,
 			meta: {
-				title: 'Login',
+				title: 'Логин',
 				hideForAuth: true
 			},
       component: () => import('./pages/Login.vue')
@@ -43,7 +43,7 @@ const router = createRouter({
       path: '/registration',
       name: RouteName.Registration,
 			meta: {
-				title: 'Registration',
+				title: 'Регистрация',
 				hideForAuth: true
 			},
       component: () => import('./pages/Registration.vue')
@@ -52,7 +52,7 @@ const router = createRouter({
 			path: '/complaint-new',
 			name: RouteName.ComplaintNew,
 			meta: {
-				title: 'New Complaint',
+				title: 'Новое обращение',
 				requiresAuth: true
 			},
 			component: () => import('./pages/ComplaintNew.vue')
@@ -61,7 +61,7 @@ const router = createRouter({
 			path: '/complaints',
 			name: RouteName.Complaints,
 			meta: {
-				title: 'Complaints',
+				title: 'Обращения',
 				requiresAuth: true
 			},
 			component: () => import('./pages/Complaints.vue')
@@ -70,7 +70,7 @@ const router = createRouter({
 			path: '/complaints/:id',
 			name: RouteName.Complaint,
 			meta: {
-				title: 'Complaint',
+				title: 'Обращение',
 				requiresAuth: true
 			},
 			component: () => import('./pages/Complaint.vue')
@@ -79,7 +79,7 @@ const router = createRouter({
 			path: '/settings',
 			name: RouteName.Settings,
 			meta: {
-				title: 'Settings',
+				title: 'Настройки',
 				requiresAuth: true
 			},
 			component: () => import('./pages/Settings.vue')
@@ -88,7 +88,7 @@ const router = createRouter({
 			path: '/users',
 			name: RouteName.Users,
 			meta: {
-				title: 'Users',
+				title: 'Пользователи',
 				requiresAuth: true
 			},
 			component: () => import('./pages/Users.vue')
