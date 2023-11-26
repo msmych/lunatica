@@ -13,10 +13,6 @@
   const BaseURL = import.meta.env.MODE === 'development' ? 'http://localhost:8080/api' : 'api/'
 
   const data = reactive({
-    // info: {
-    //   countries: [],
-    //   complaintTypes: []
-    // },
     complaint: {
       problemCountry: '',
       type: '',
@@ -46,33 +42,10 @@
       }
     })
   }
-
-  // function getInfo() {
-  //   axios({
-  //     method: 'get',
-  //     url: ApiEndpoints.Info,
-  //     baseURL: BaseURL,
-  //     headers: {'Content-Type': 'application/json'},
-  //     withCredentials: true
-  //   }).then(response => {
-  //     if (response.status === 200) {
-  //       data.info.countries = response.data.countries
-  //       data.info.complaintTypes = response.data.complaintTypes
-  //     }
-  //   }).catch(error => {
-  //     if (error.response?.status === 401) {
-  //       data.errorMessage = 'Неправильная почта или пароль'
-  //     }
-  //   })
-  // }
-
-  // onMounted(() => {
-	// 	getInfo()
-	// })
 </script>
 
 <template>
-  <h1>New complaint</h1>
+  <h1>Новое обращение</h1>
   <select v-model="data.complaint.problemCountry" class="input">
     <option value="" selected disabled hidden>Выберите страну</option>
     <option v-for="(country, index) in (info.countries as Country)" :key="index" :value="country.code">

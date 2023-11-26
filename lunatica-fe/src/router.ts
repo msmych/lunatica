@@ -76,15 +76,6 @@ const router = createRouter({
 			component: () => import('./pages/Complaint.vue')
 		},
 		{
-			path: '/complaints-completed',
-			name: RouteName.ComplaintsCompleted,
-			meta: {
-				title: 'Completed Complaints',
-				requiresAuth: true
-			},
-			component: () => import('./pages/ComplaintsCompleted.vue')
-		},
-		{
 			path: '/settings',
 			name: RouteName.Settings,
 			meta: {
