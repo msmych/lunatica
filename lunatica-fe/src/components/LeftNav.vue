@@ -34,7 +34,7 @@
 .nav {
   display: flex;
   flex-direction: column;
-  width: 100px;
+  width: 120px;
   height: 100%;
   padding: 10px;
   background: #266796;
