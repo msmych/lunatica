@@ -16,6 +16,7 @@ data class Account(
     val id: @Contextual UUID,
     val email: String?,
     val passHash: String?,
+    val name: String?,
     val roles: List<Role>,
     val tgChatId: Long?,
     val createdAt: @Contextual Instant,
@@ -29,24 +30,26 @@ data class Account(
     }
 
     companion object {
-        fun tgAccount(tgChatId: Long): Account {
+        fun tgAccount(tgChatId: Long, name: String): Account {
             val now = Instant.now()
             return Account(
                 randomUUID(),
                 null,
                 null,
+                name,
                 listOf(Role.CLIENT),
                 tgChatId,
                 now,
                 now
             )
         }
-        fun account(email: String, passHash: String): Account {
+        fun account(email: String, passHash: String, name: String?): Account {
             val now = Instant.now()
             return Account(
                 randomUUID(),
                 email,
                 passHash,
+                name,
                 listOf(Role.CLIENT),
                 null,
                 now,

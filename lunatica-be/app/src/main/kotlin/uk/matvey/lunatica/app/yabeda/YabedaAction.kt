@@ -6,7 +6,7 @@ import uk.matvey.lunatica.complaint.Complaint
 
 sealed class YabedaAction {
 
-    class FileComplaint(val userId: Long) : YabedaAction()
+    class FileComplaint(val userId: Long, val username: String) : YabedaAction()
     class SetComplaintCountry(
         val userId: Long,
         val messageId: Int,
