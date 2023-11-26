@@ -136,7 +136,10 @@
             Зайти в заявку
           </router-link>
         </div>
-        <div class="email">{{ complaint.account.email }}</div>
+        <div class="email">
+          <label>Email:</label>
+          {{ complaint.account.email }}
+        </div>
         <div class="status">
           <!-- <select v-model="data.complaintFilter.type" class="input" @change="changeState(complaint, value)">
             <option value="all" key="0" :selected="true">{{ complaint.state.emoji }} {{ complaint.state.nameRu }}</option>
@@ -144,12 +147,25 @@
               {{ type.emoji }} {{ type.nameRu }}
             </option>
           </select> -->
+          <label>Статус:</label>
           {{ complaint.state.emoji }} {{ complaint.state.nameRu }}
         </div>
-        <div class="country">{{ complaint.problemCountry.emoji }} {{ complaint.problemCountry.nameRu }}</div>
-        <div class="date-created">{{ complaint.problemDate }}</div>
-        <div class="type">{{ complaint.type.emoji }} {{ complaint.type.nameRu }}</div>
-        <div class="date-updated">{{ moment(String(complaint.updatedAt)).format('DD-MM-YYYY') }}</div>
+        <div class="country">
+          <label>Страна:</label>
+          {{ complaint.problemCountry.emoji }} {{ complaint.problemCountry.nameRu }}
+        </div>
+        <div class="date-created">
+          <label>Дата происшествия:</label>
+          {{ complaint.problemDate }}
+        </div>
+        <div class="type">
+          <label>Тип обращения:</label>
+          {{ complaint.type.emoji }} {{ complaint.type.nameRu }}
+        </div>
+        <div class="date-updated">
+          <label>Дата изменения заявки:</label>
+          {{ moment(String(complaint.updatedAt)).format('DD-MM-YYYY') }}
+        </div>
       </li>
     </ul>
   </div>
@@ -200,6 +216,14 @@
       select {
         margin-right: 10px;
       }
+
+      @media only screen and (max-width: 1024px) {
+        display: block;
+
+        select {
+          width: 100%;
+        }
+      }
     }
     
     &-head {
@@ -207,6 +231,10 @@
       justify-content: space-between;
       align-items: center;
       width: 100%;
+
+      @media only screen and (max-width: 1024px) {
+        display: none;
+      }
 
       div {
         min-height: 50px;
@@ -230,8 +258,27 @@
           padding: 4px;
           border-right: 1px solid #333;
 
+          label {
+            display: none;
+          }
+
           &:last-child {
             border-right: 0;
+          }
+        }
+
+        @media only screen and (max-width: 1024px) {
+          display: block;
+          margin-bottom: 16px;
+
+          div {
+            width: 100% !important;
+            border: 0;
+            margin-bottom: 4px;
+
+            label {
+              display: block;
+            }
           }
         }
       }
