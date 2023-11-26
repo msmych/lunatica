@@ -11,9 +11,14 @@ class AccountService(private val accountRepo: AccountPgRepo) {
         return account.id
     }
 
-    suspend fun updateAccount(id: UUID, pass: String?) {
+    suspend fun updateAccount(id: UUID, name: String?, pass: String?) {
         val account = accountRepo.get(id)
-        accountRepo.update(account.copy(passHash = pass?.let(::sha256) ?: account.passHash))
+        accountRepo.update(
+            account.copy(
+                name = name ?: account.name,
+                passHash = pass?.let(::sha256) ?: account.passHash
+            )
+        )
     }
 
     suspend fun ensureTgAccount(tgUserId: Long, name: String): Account {

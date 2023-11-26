@@ -23,7 +23,13 @@ fun Route.accountRouting(accountService: AccountService, accountPgRepo: AccountP
             call.respond(accounts)
         }
         post { request: CreateAccountRequest ->
-            val accountId = accountService.createAccount(request.email, request.pass, request.name)
+            val accountId = request.email.let {
+                accountPgRepo.findByEmail(it)?.let { account ->
+                    accountService.updateAccount(account.id, null, request.pass)
+                    account.id
+                }
+            }
+                ?: accountService.createAccount(request.email, request.pass, request.name)
             call.respond(Created, """{"id":"$accountId"}""")
         }
         route("{id}") {
@@ -50,7 +56,7 @@ fun Route.accountRouting(accountService: AccountService, accountPgRepo: AccountP
         patch { request: UpdateMeRequest ->
             val token = call.request.cookies["auth"] ?: return@patch call.respond(Unauthorized)
             val decoded = JWT.decode(token)
-            accountService.updateAccount(UUID.fromString(decoded.subject), request.pass)
+            accountService.updateAccount(UUID.fromString(decoded.subject), request.name, request.pass)
             call.respond(OK)
         }
     }
@@ -65,5 +71,6 @@ data class CreateAccountRequest(
 
 @Serializable
 data class UpdateMeRequest(
-    val pass: String,
+    val name: String?,
+    val pass: String?,
 )
